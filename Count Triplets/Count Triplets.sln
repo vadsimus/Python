@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29306.81
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Count Triplets", "Count Triplets.pyproj", "{AED41573-8D34-4B96-86C2-CEFBBF934F87}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AED41573-8D34-4B96-86C2-CEFBBF934F87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AED41573-8D34-4B96-86C2-CEFBBF934F87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F45F2B7E-2AD2-4A48-8A45-BBE6EF8E1BAF}
+	EndGlobalSection
+EndGlobal
