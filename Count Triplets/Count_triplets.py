@@ -9,7 +9,6 @@ import sys
 
 # Complete the countTriplets function below.
 def countTriplets(arr, r):
-    ln=len(arr)
     counter=0
     p1=dict()
     p2=dict()
