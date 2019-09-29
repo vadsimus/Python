@@ -1,8 +1,7 @@
-
+import json
 
 
 def main():
-    import json
     name=[]
     while len(name) != 2:  #не успокоимся, пока не введутся 2 и только 2 слова разделенные пробелом
         input_name = input("First and second name: ")
