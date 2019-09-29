@@ -9,9 +9,9 @@ import sys
 
 # Complete the countTriplets function below.
 def countTriplets(arr, r):
-    counter=0
-    p1=dict()
-    p2=dict()
+    counter=0               #quantity of triplets                  
+    p2=dict()               #quantity of posibles for second value of triplet
+    p1=dict()               #quantity of posibles for first value of triplet
     for i in arr:
         w=i*r
         if i in p2:
