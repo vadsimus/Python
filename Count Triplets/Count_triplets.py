@@ -1,5 +1,5 @@
 #!/bin/python3
-#  https://www.hackerrank.com/challenges/count-triplets-1/problem?h_l=interview&playlist_slugs%5B%5D=interview-preparation-kit&playlist_slugs%5B%5D=dictionaries-hashmaps
+#  https://www.hackerrank.com/challenges/count-triplets-1/problem
 
 import math
 import os
@@ -9,10 +9,9 @@ import sys
 
 # Complete the countTriplets function below.
 def countTriplets(arr, r):
-    ln=len(arr)
-    counter=0
-    p1=dict()
-    p2=dict()
+    counter=0               #quantity of triplets                  
+    p2=dict()               #quantity of posibles for second value of triplet
+    p1=dict()               #quantity of posibles for first value of triplet
     for i in arr:
         w=i*r
         if i in p2:
