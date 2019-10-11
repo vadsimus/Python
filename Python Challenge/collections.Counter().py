@@ -1,4 +1,5 @@
-# Enter your code here. Read input from STDIN. Print output to STDOUT
+# https://www.hackerrank.com/challenges/collections-counter/problem
+
 from collections import Counter
 
 ss = []
