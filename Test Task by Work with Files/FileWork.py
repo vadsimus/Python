@@ -12,8 +12,7 @@ while True:
                     ip = ip[0]
                 except IndexError:
                     ip = 'None'
-                browser = re.findall(r'[^""]+', line)
-               
+                browser = re.findall(r'[^""]+', line)               
                 try:
                     browser = [browser[-2]][0]
                 except IndexError:
