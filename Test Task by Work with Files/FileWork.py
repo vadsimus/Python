@@ -30,6 +30,7 @@ for i in range(10) if len(ip_count)>10 else range(len(ip_count)):
     ip_found=[x for x in ips.keys() if ips[x] == ip_count[i]][0]
     print(ip_found.ljust(15), end='')
     print(':',ips[ip_found],'times')
+    ips[ip_found]=0
 print('----------')
 print('Most popular browsers:')
 br_count=[x for x in browsers.values()]
@@ -37,4 +38,5 @@ br_count.sort(reverse=True)
 for i in range(5) if len(br_count)>10 else range(len(br_count)):
     br_found=[x for x in browsers.keys() if browsers[x] == br_count[i]][0]
     print(br_found,':',browsers[br_found],'times')
+    browsers[br_found]=0
 
