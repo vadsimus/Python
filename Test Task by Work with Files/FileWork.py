@@ -10,15 +10,17 @@ while True:
                 try:
                     ip = re.findall(r'^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}', line)
                     ip = ip[0]
+                    ips[ip] += 1
                 except IndexError:
-                    ip = 'None'
+                    pass
+                   
                 browser = re.findall(r'[^""]+', line)               
                 try:
                     browser = [browser[-2]][0]
+                    browsers[browser] += 1
                 except IndexError:
-                    browser = 'None'
-                ips[ip] += 1
-                browsers[browser] += 1
+                    pass
+               
             break
     except FileNotFoundError:
         print('File not found')
