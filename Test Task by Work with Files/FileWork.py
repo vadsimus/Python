@@ -10,20 +10,23 @@ while True:
                 try:
                     ip = re.findall(r'^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}', line)
                     ip = ip[0]
-                    ips[ip] += 1
                 except IndexError:
-                    pass
+                    continue #IP is not found, this is wrong line, pass it.
+                else:
+                    ips[ip] += 1
                    
                 browser = re.findall(r'[^""]+', line)               
                 try:
                     browser = [browser[-2]][0]
-                    browsers[browser] += 1
                 except IndexError:
                     pass
+                else:
+                    browsers[browser] += 1
                
-            break
+            break #Stop cycle of file name input
     except FileNotFoundError:
         print('File not found')
+
 print('Access:')
 ip_count = [x for x in ips.values()]
 ip_count.sort(reverse=True)
