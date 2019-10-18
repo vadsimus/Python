@@ -2,10 +2,13 @@ import re
 from collections import defaultdict as dd
 while True:
     file_name = input('File name:')
+
     try:
         with open(file_name, 'r') as file:
             ips = dd(int)
-            browsers = dd(int)
+            # browsers = dd(int)
+
+            oss = dd(int)
             for line in file:
                 try:
                     ip = re.findall(r'^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}', line)
@@ -15,13 +18,33 @@ while True:
                 else:
                     ips[ip] += 1
                    
-                browser = re.findall(r'[^""]+', line)               
+                browser = re.findall(r'[^""]+', line)
+
                 try:
                     browser = [browser[-2]][0]
                 except IndexError:
                     pass
                 else:
-                    browsers[browser] += 1
+                    pass
+                try:
+                    os=re.split(r';', re.split(r'[()]', browser)[1])
+
+                except IndexError:
+                    pass
+                else:
+                    if os[0]=='compatible':
+                        os=None
+                    elif os[0]=='X11':
+                        os=os[1]
+                    else:
+                        os=os[0]
+                    if os:
+                        os=[os.split()][0][0]
+                        # print(os)
+
+                        oss[os]+=1
+
+
                
             break #Stop cycle of file name input
     except FileNotFoundError:
@@ -36,11 +59,11 @@ for i in range(10) if len(ip_count)>10 else range(len(ip_count)):
     print(':',ips[ip_found],'times')
     ips[ip_found]=0
 print('----------')
-print('Most popular browsers:')
-br_count=[x for x in browsers.values()]
-br_count.sort(reverse=True)
-for i in range(5) if len(br_count)>10 else range(len(br_count)):
-    br_found=[x for x in browsers.keys() if browsers[x] == br_count[i]][0]
-    print(br_found,':',browsers[br_found],'times')
-    browsers[br_found]=0
+print('Most popular OS:')
+os_count=[x for x in oss.values()]
+os_count.sort(reverse=True)
+for i in range(5) if len(os_count)>5 else range(len(os_count)):
+    os_found=[x for x in oss.keys() if oss[x] == os_count[i]][0]
+    print(os_found,':',oss[os_found],'times')
+    oss[os_found]=0
 
