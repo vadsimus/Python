@@ -23,20 +23,23 @@ while True:
                 try:
                     browser = [browser[-2]][0]
                 except IndexError:
-                    pass
+                    browser = None
                 else:
                     try:
                         os = re.split(r';', re.split(r'[()]', browser)[1])
                     except IndexError:
-                        pass
+                        os = None
                     else:
-                        if os[0] == 'compatible':
+                        if 'compatible' in ' '.join(os):
                             os = None
                         elif os[0] == 'X11':
-                            os = os[1]
+                            if os[1] == ' U':
+                                os = os[2]
+                            else:
+                                os = os[1]
                         else:
                             os = os[0]
-                        if os:
+                        if os and browser:
                             os = [os.split()][0][0]
                             oss[os] += 1
 
@@ -49,8 +52,7 @@ ip_count = [x for x in ips.values()]
 ip_count.sort(reverse=True)
 for i in range(10) if len(ip_count) > 10 else range(len(ip_count)):
     ip_found = [x for x in ips.keys() if ips[x] == ip_count[i]][0]
-    print(ip_found.ljust(15), end='')
-    print(':', ips[ip_found], 'times')
+    print(ip_found.ljust(15), ':', ips[ip_found], 'times')
     ips[ip_found] = 0
 print('----------')
 print('Most popular OS:')
