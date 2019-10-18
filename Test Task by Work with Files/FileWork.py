@@ -40,8 +40,6 @@ while True:
                         os=os[0]
                     if os:
                         os=[os.split()][0][0]
-                        # print(os)
-
                         oss[os]+=1
 
 
@@ -64,6 +62,6 @@ os_count=[x for x in oss.values()]
 os_count.sort(reverse=True)
 for i in range(5) if len(os_count)>5 else range(len(os_count)):
     os_found=[x for x in oss.keys() if oss[x] == os_count[i]][0]
-    print(os_found,':',oss[os_found],'times')
+    print(os_found.ljust(15),':',oss[os_found],'times')
     oss[os_found]=0
 
