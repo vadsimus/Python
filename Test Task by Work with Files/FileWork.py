@@ -2,7 +2,7 @@ import re
 from collections import defaultdict as dd
 
 
-def print_popular_items_from_dic(title: str, dic: dict, n: int, ):
+def print_popular_items_from_dic(title: str, dic: dict, n: int):
     """
     :param title: Title of print.
     :param dic: Dictionary where would be found and print most popular items.
