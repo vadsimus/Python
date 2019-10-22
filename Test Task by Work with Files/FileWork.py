@@ -3,7 +3,9 @@ from collections import defaultdict as dd
 
 
 def print_popular_items_from_dic(title: str, dic: dict, n: int):
-    """
+    """Print n elements from dictionary, which have max value.
+    This dictionary would be broken after print. Use copy if you need
+    dictionary somewhere else.
     :param title: Title of print.
     :param dic: Dictionary where would be found and print most popular items.
     :param n: Number items to print.
@@ -16,6 +18,7 @@ def print_popular_items_from_dic(title: str, dic: dict, n: int):
         print(item_found.ljust(20), ':', dic[item_found], 'times')
         dic[item_found] = 0
     print('-' * 20)
+    dic.clear()
 
 
 if __name__ == '__main__':
