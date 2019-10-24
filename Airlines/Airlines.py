@@ -26,6 +26,17 @@ def input_date(prompt):
         else:
             print('Wrong!!!')
 
+def airport_input(prompt):
+    print('Input airport (AUH,DXB,ISB,JED,KHI,LHE,MED,MUX,PEW,UET,RUH,SHJ) or help')
+    while True:
+        airport = input(prompt)
+        if airport.lower() == 'help':
+            print("""AUH - Abu Dhabi \nDXB - Dubai\nDMM - Dammam
+ISB - Islmabad\nJED - Jeddah\nKHI - Karachi\nLHE - Lahore\nMED - Medina
+MUX - Multan\nMCT - Muscat\nPEW - Peshawar\nRYK - Rahim Yar Khan
+UET - Quetta\nRUH - Riyadh\nSHJ - Sharjah\nSKT - Sialkot""")
+        elif airport.strip()
+
 def get_document_from_site(my_params):
     myUrl = "https://www.airblue.com/bookings/flight_selection.aspx?"
     value = {'TT': 'RT', 'DC': 'KHI', 'AC': 'ISB', "AM": "2019-11", 'AD': '2',
@@ -104,6 +115,8 @@ def get_info_from_doc(doc,depart_date, roundtrip):
             except Exception:
                 break
             break
+
+airport_input('asd')
 
 while True:
     depart_date = input_date('Date of flight out YYYY MM DD or today')
