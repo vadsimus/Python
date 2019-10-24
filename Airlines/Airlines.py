@@ -2,7 +2,7 @@ from urllib import request, parse
 import sys
 import re
 import lxml.html
-from datetime import datetime
+from datetime import datetime,timedelta
 
 
 def create_date(string):
@@ -27,15 +27,19 @@ def input_date(prompt):
             print('Wrong!!!')
 
 def airport_input(prompt):
-    print('Input airport (AUH,DXB,ISB,JED,KHI,LHE,MED,MUX,PEW,UET,RUH,SHJ) or help')
+    airports=['AUH','DXB','DMM','ISB','JED','KHI','LHE','MED','MUX','MCT','PEW','RYK','UET','RUH','SHJ','SKT']
+    print('Input airport (AUH,DXB,DMM,ISB,JED,KHI,LHE,MED,MUX,MCT,PEW,RYK,UET,RUH,SHJ,SKT) or help')
     while True:
         airport = input(prompt)
+        for ap in airports:
+            if airport.upper().strip() == ap:
+                return ap
         if airport.lower() == 'help':
             print("""AUH - Abu Dhabi \nDXB - Dubai\nDMM - Dammam
 ISB - Islmabad\nJED - Jeddah\nKHI - Karachi\nLHE - Lahore\nMED - Medina
 MUX - Multan\nMCT - Muscat\nPEW - Peshawar\nRYK - Rahim Yar Khan
 UET - Quetta\nRUH - Riyadh\nSHJ - Sharjah\nSKT - Sialkot""")
-        elif airport.strip()
+
 
 def get_document_from_site(my_params):
     myUrl = "https://www.airblue.com/bookings/flight_selection.aspx?"
@@ -45,14 +49,14 @@ def get_document_from_site(my_params):
     value['AD'] = my_params['AD']
     value['AM'] = my_params['AM']
 
-    # with open('Answer.html', "r") as file:
-    #     otvet = file.read()
+    with open('Answer.html', "r") as file:
+        otvet = file.read()
 
-    mydata = parse.urlencode(value)
-    myUrl = myUrl + mydata
-    req = request.Request(myUrl)
-    otvet = request.urlopen(req)
-    otvet = otvet.read().decode('UTF-8')
+    # mydata = parse.urlencode(value)
+    # myUrl = myUrl + mydata
+    # req = request.Request(myUrl)
+    # otvet = request.urlopen(req)
+    # otvet = otvet.read().decode('UTF-8')
 
     with open('Answer.html', 'w') as file:
         file.write(otvet)
@@ -116,8 +120,8 @@ def get_info_from_doc(doc,depart_date, roundtrip):
                 break
             break
 
-airport_input('asd')
-
+departure = airport_input('Departure:')
+arrive = airport_input('Destination:')
 while True:
     depart_date = input_date('Date of flight out YYYY MM DD or today')
     if depart_date:
@@ -127,7 +131,10 @@ while True:
 
 back_date = input_date('Date to return back or empty')
 if back_date == None:
-    back_date = '2019-11-02'
+    dep_date_datetime=create_date(depart_date)
+    back_date = dep_date_datetime+timedelta(days=1)
+    back_date = '{}-{:0>2}-{:0>2}'.format(back_date.year, back_date.month, back_date.day)
+    print(back_date)
 
 
 my_params = {}
@@ -135,6 +142,8 @@ my_params['AM'] = str(depart_date[:7])
 my_params['AD'] = str(depart_date[8:])
 my_params['RM'] = str(back_date[:7])
 my_params['RD'] = str(back_date[8:])
+my_params['DC'] = departure
+my_params['AC'] = arrive
 # try:
 
 
