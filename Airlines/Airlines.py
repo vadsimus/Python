@@ -175,7 +175,10 @@ def print_flights(mass_flights, number_forward_flights):
             if key in sequence:
                 print("{:^20}".format(mass_flights[i][key]), end='|')
         for ex_key in exclusive_keys:
-            print("{:^20}".format(mass_flights[i][ex_key]), end='|')
+            if ex_key in mass_flights[i].keys():
+                print("{:^20}".format(mass_flights[i][ex_key]), end='|')
+            else:
+                print(' '*20,end='+')
         print()
     if len(mass_flights) > number_forward_flights:
         print(sep * (len(header) + len(exclusive_keys)))
@@ -185,7 +188,10 @@ def print_flights(mass_flights, number_forward_flights):
                 if key in sequence:
                     print("{:^20}".format(flight[key]), end='|')
             for ex_key in exclusive_keys:
-                print("{:^20}".format(flight[ex_key]), end='|')
+                if ex_key in flight.keys():
+                    print("{:^20}".format(flight[ex_key]), end='|')
+                else:
+                    print(' '*20,end='+')
             print()
 
 
