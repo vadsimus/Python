@@ -2,7 +2,7 @@ from urllib import request, parse
 import sys
 import re
 import lxml.html
-from datetime import datetime,timedelta
+from datetime import datetime, timedelta
 
 
 def create_date(string):
@@ -11,6 +11,7 @@ def create_date(string):
         return dt
     except ValueError or TypeError:
         return None
+
 
 def input_date(prompt):
     while True:
@@ -26,9 +27,12 @@ def input_date(prompt):
         else:
             print('Wrong!!!')
 
+
 def airport_input(prompt):
-    airports=['AUH','DXB','DMM','ISB','JED','KHI','LHE','MED','MUX','MCT','PEW','RYK','UET','RUH','SHJ','SKT']
-    print('Input airport (AUH,DXB,DMM,ISB,JED,KHI,LHE,MED,MUX,MCT,PEW,RYK,UET,RUH,SHJ,SKT) or help')
+    airports = ['AUH', 'DXB', 'DMM', 'ISB', 'JED', 'KHI', 'LHE', 'MED', 'MUX',
+                'MCT', 'PEW',
+                'RYK', 'UET', 'RUH', 'SHJ', 'SKT']
+    print('Input airport (AUH,DXB,...) or help')
     while True:
         airport = input(prompt)
         for ap in airports:
@@ -52,22 +56,23 @@ def get_document_from_site(my_params):
     value['RD'] = my_params['RD']
     value['DC'] = my_params['DC']
     value['AC'] = my_params['AC']
-    with open('Answer.html', "r") as file:
-        otvet = file.read()
+    # with open('Answer.html', "r") as file:
+    #     otvet = file.read()
 
-    # mydata = parse.urlencode(value)
-    # myUrl = myUrl + mydata
-    # req = request.Request(myUrl)
-    # otvet = request.urlopen(req)
-    # otvet = otvet.read().decode('UTF-8')
+    mydata = parse.urlencode(value)
+    myUrl = myUrl + mydata
+    req = request.Request(myUrl)
+    otvet = request.urlopen(req)
+    otvet = otvet.read().decode('UTF-8')
 
-    with open('Answer.html', 'w') as file:
-        file.write(otvet)
+    # with open('Answer.html', 'w') as file:
+    #     file.write(otvet)
 
     doc = lxml.html.document_fromstring(otvet)
     return doc
 
-def get_info_from_doc(doc,depart_date, roundtrip):
+
+def get_info_from_doc(doc, depart_date, roundtrip):
     flights = []
 
     if roundtrip:
@@ -77,7 +82,7 @@ def get_info_from_doc(doc,depart_date, roundtrip):
     depart_date = depart_date.replace('-', '_')
     flights_counter = 1
     while True:
-        flight_info = []
+        flight_info = {}
         try:
             xpath_base = '//*[@id="trip_{}_date_{}"]/tbody[{}]/tr/td'
             xpath_base = xpath_base.format(rtrp, depart_date, flights_counter)
@@ -91,42 +96,35 @@ def get_info_from_doc(doc,depart_date, roundtrip):
                 try:
 
                     flight_class = doc.xpath(
-                        '//*[@id="trip_{}_date_{}"]/thead/tr[2]/th[{}]/span/text()'.format(rtrp,
+                        '//*[@id="trip_{}_date_{}"]/thead/tr[2]/th[{}]/span/text()'.format(
+                            rtrp,
                             depart_date, k))[0]
                     coast = \
-                        doc.xpath('{}[{}]/label/span/text()'.format(xpath_base, k + 1))[0]
+                        doc.xpath('{}[{}]/label/span/text()'.format(xpath_base,
+                                                                    k + 1))[0]
                     currency = doc.xpath(
-                        '{}[{}]/label/span/b/text()'.format(xpath_base, k + 1))[0]
+                        '{}[{}]/label/span/b/text()'.format(xpath_base, k + 1))[
+                        0]
                     flight_type[flight_class] = str(coast + " " + currency)
                     k += 1
                 except IndexError:
                     break
-
-            # print(depart_date, end=' | ')
-            flight_info.append(depart_date)
-
-            # print('flight:', flight, end=' | ')
-            flight_info.append(flight)
-
+            flight_info["depart_date"] = (depart_date)
+            flight_info['flight'] = (flight)
             depart_time = datetime.strptime(depart.lower(), '%I:%M %p')
-            # print('depart:', datetime.strftime(depart_time, '%H:%M'), end=' | ')
-            flight_info.append(datetime.strftime(depart_time, '%H:%M'))
-
+            flight_info['depart_time'] = (
+                datetime.strftime(depart_time, '%H:%M'))
             arrive_time = datetime.strptime(arrive.lower(), '%I:%M %p')
-            # print('arrive:', datetime.strftime(arrive_time, '%H:%M'), end=' | ')
-            flight_info.append(datetime.strftime(arrive_time, '%H:%M'))
-
+            flight_info['arrive_time'] = (
+                datetime.strftime(arrive_time, '%H:%M'))
             time_in_flight = arrive_time - depart_time
             h_in_flight = time_in_flight.seconds // 3600
             m_in_flight = (time_in_flight.seconds // 60) % 60
-            # print('Time in Flight: ', h_in_flight, "h ", m_in_flight, 'm', sep='', end=' | ')
-            flight_info.append('{}h {}m'.format(h_in_flight,m_in_flight))
-
+            flight_info['time_in_flight'] = (
+                '{}h {}m'.format(h_in_flight, m_in_flight))
 
             for ft in flight_type:
-                # print(ft, ":", flight_type[ft], end=" | ")
-                flight_info.append(ft)
-                flight_info.append(flight_type[ft])
+                flight_info[ft] = (flight_type[ft])
             flights_counter += 1
             flights.append(flight_info)
         except IndexError:
@@ -136,58 +134,95 @@ def get_info_from_doc(doc,depart_date, roundtrip):
                     print(err)
             except Exception:
                 break
-
             break
-
     return flights
 
 
+def print_flights(mass_flights, number_forward_flights):
+    max_len = 0
+    sep = str('-' * 20) + '+'
+    exclusive_keys = []
+    if len(mass_flights) > number_forward_flights:
+        back_flights = mass_flights[number_forward_flights]
+    else:
+        back_flights = ''
+    for i in mass_flights:
+        if len(i) >= max_len:
+            max_len = len(i)
+    header = ['Direction', 'Date', 'Flight', 'Depart Time', 'Arrive Time',
+              'Time in air']
+    sequence = ["depart_date", 'flight', 'depart_time', 'arrive_time',
+                'time_in_flight']
 
-# departure = airport_input('Departure:')
-departure='ISB'  #!!!!!!!!!!!!!!!!!!!!!!!
-# arrive = airport_input('Destination:')
-arrive = 'KHI'   #!!!!!!!!!!!!!!!!!!!!!!!
-# while True:
-#     depart_date = input_date('Date of flight out YYYY MM DD or today')
-#     if depart_date:
-#         break
-#     else:
-#         print("Depart date can't be empty")
-depart_date='2019-10-25' #!!!!!!!!!!!!!!!!!!!!!!!
+    for i in range(number_forward_flights):
+        for key in mass_flights[i]:
+            if key not in sequence and key not in exclusive_keys:
+                exclusive_keys.append(key)
+    for flight in back_flights:
+        for key in flight:
+            if key not in sequence and key not in exclusive_keys:
+                exclusive_keys.append(key)
 
-# back_date = input_date('Date to return back or empty')
-back_date = '2019-10-27'
-back_date_flag = True
-if back_date == None:
-    back_date_flag = False
-    dep_date_datetime=create_date(depart_date)
-    back_date = dep_date_datetime+timedelta(days=1)
-    back_date = '{}-{:0>2}-{:0>2}'.format(back_date.year, back_date.month, back_date.day)
-
-
-
-my_params = {}
-my_params['AM'] = str(depart_date[:7])
-my_params['AD'] = str(depart_date[8:])
-my_params['RM'] = str(back_date[:7])
-my_params['RD'] = str(back_date[8:])
-my_params['DC'] = departure
-my_params['AC'] = arrive
-
-
-
-doc = get_document_from_site(my_params)
-print(get_info_from_doc(doc,depart_date,False))
-if back_date_flag:
-    print('Back')
-    get_info_from_doc(doc,back_date,True)
+    for i in header:
+        print("{:^20}".format(i), end='|')
+    for i in exclusive_keys:
+        print("{:^20}".format(i), end='|')
+    print()
+    print(sep * (len(header) + len(exclusive_keys)))
+    for i in range(number_forward_flights):
+        print("{:^20}".format('Forward'), end='|')
+        for key in mass_flights[i]:
+            if key in sequence:
+                print("{:^20}".format(mass_flights[i][key]), end='|')
+        for ex_key in exclusive_keys:
+            print("{:^20}".format(mass_flights[i][ex_key]), end='|')
+        print()
+    if len(mass_flights) > number_forward_flights:
+        print(sep * (len(header) + len(exclusive_keys)))
+        for flight in back_flights:
+            print("{:^20}".format('Back'), end='|')
+            for key in flight:
+                if key in sequence:
+                    print("{:^20}".format(flight[key]), end='|')
+            for ex_key in exclusive_keys:
+                print("{:^20}".format(flight[ex_key]), end='|')
+            print()
 
 
-# except Exception:
-#      print('AHTUNG')
-#      print(sys.exc_info()[1])
+if __name__ == '__main__':
+    departure = airport_input('Departure:')
+    arrive = airport_input('Destination:')
+    while True:
+        depart_date = input_date('Date of flight out YYYY MM DD or today')
+        if depart_date:
+            break
+        else:
+            print("Depart date can't be empty")
+    back_date = input_date('Date to return back or empty')
+    back_date_flag = True
+    if back_date is None:
+        back_date_flag = False
+        dep_date_datetime = create_date(depart_date)
+        back_date = dep_date_datetime + timedelta(days=1)
+        back_date = '{}-{:0>2}-{:0>2}'.format(back_date.year, back_date.month,
+                                              back_date.day)
 
+    my_params = {'AM': str(depart_date[:7]), 'AD': str(depart_date[8:]),
+                 'RM': str(back_date[:7]), 'RD': str(back_date[8:]),
+                 'DC': departure, 'AC': arrive}
 
-# GET https://www.airblue.com/bookings/flight_selection.aspx?TT=RT&DC=KHI&AC=ISB&AM=2019-10&AD=23&RM=2019-10&RD=24&FL=on&CC=Y&CD=&PA=1&PC=&PI=&x=40&y=20 HTTP/1.1
-# GET          /bookings/flight_selection.aspx?TT=RT&SS=&RT=&FL=on&DC=ISB&AC=DXB&AM=2019-11&AD=02&DC=&AC=&AM=&AD=&DC=&AC=&AM=&AD=&DC=&AC=&AM=&AD=&RM=2019-11&RD=04&PA=1&PC=&PI=&CC=&NS=&CD= HTTP/1.1
-# //*[@id="trip_1_date_2019_11_02"]/tbody/tr/td[1]
+    try:
+        doc = get_document_from_site(my_params)
+    except Exception:
+        print('Some problems with site...')
+        print(sys.exc_info()[1])
+        exit(-1)
+
+    forward_flights = get_info_from_doc(doc, depart_date, False)
+    number_forward_flights = len(forward_flights)
+    all_flights = forward_flights
+    if back_date_flag:
+        back_flights = get_info_from_doc(doc, back_date, True)
+        all_flights.append(back_flights)
+
+    print_flights(all_flights, number_forward_flights)
