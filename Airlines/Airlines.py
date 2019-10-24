@@ -48,15 +48,18 @@ def get_document_from_site(my_params):
              'PA': '1', 'PC': '', 'PI': '', 'x': '40', 'y': '20'}
     value['AD'] = my_params['AD']
     value['AM'] = my_params['AM']
+    value['RM'] = my_params['RM']
+    value['RD'] = my_params['RD']
+    value['DC'] = my_params['DC']
+    value['AC'] = my_params['AC']
+    # with open('Answer.html', "r") as file:
+    #     otvet = file.read()
 
-    with open('Answer.html', "r") as file:
-        otvet = file.read()
-
-    # mydata = parse.urlencode(value)
-    # myUrl = myUrl + mydata
-    # req = request.Request(myUrl)
-    # otvet = request.urlopen(req)
-    # otvet = otvet.read().decode('UTF-8')
+    mydata = parse.urlencode(value)
+    myUrl = myUrl + mydata
+    req = request.Request(myUrl)
+    otvet = request.urlopen(req)
+    otvet = otvet.read().decode('UTF-8')
 
     with open('Answer.html', 'w') as file:
         file.write(otvet)
@@ -65,6 +68,8 @@ def get_document_from_site(my_params):
     return doc
 
 def get_info_from_doc(doc,depart_date, roundtrip):
+    flights = []
+    flight={}
     if roundtrip:
         rtrp = '2'
     else:
@@ -130,11 +135,14 @@ while True:
         print("Depart date can't be empty")
 
 back_date = input_date('Date to return back or empty')
+print(back_date)
+back_date_flag = True
 if back_date == None:
+    back_date_flag = False
     dep_date_datetime=create_date(depart_date)
     back_date = dep_date_datetime+timedelta(days=1)
     back_date = '{}-{:0>2}-{:0>2}'.format(back_date.year, back_date.month, back_date.day)
-    print(back_date)
+
 
 
 my_params = {}
@@ -144,13 +152,14 @@ my_params['RM'] = str(back_date[:7])
 my_params['RD'] = str(back_date[8:])
 my_params['DC'] = departure
 my_params['AC'] = arrive
-# try:
+
 
 
 doc = get_document_from_site(my_params)
 get_info_from_doc(doc,depart_date,False)
-print('Back')
-get_info_from_doc(doc,depart_date,True)
+if back_date_flag:
+    print('Back')
+    get_info_from_doc(doc,back_date,True)
 
 
 # except Exception:
