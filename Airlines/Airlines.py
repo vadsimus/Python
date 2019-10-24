@@ -52,14 +52,14 @@ def get_document_from_site(my_params):
     value['RD'] = my_params['RD']
     value['DC'] = my_params['DC']
     value['AC'] = my_params['AC']
-    # with open('Answer.html', "r") as file:
-    #     otvet = file.read()
+    with open('Answer.html', "r") as file:
+        otvet = file.read()
 
-    mydata = parse.urlencode(value)
-    myUrl = myUrl + mydata
-    req = request.Request(myUrl)
-    otvet = request.urlopen(req)
-    otvet = otvet.read().decode('UTF-8')
+    # mydata = parse.urlencode(value)
+    # myUrl = myUrl + mydata
+    # req = request.Request(myUrl)
+    # otvet = request.urlopen(req)
+    # otvet = otvet.read().decode('UTF-8')
 
     with open('Answer.html', 'w') as file:
         file.write(otvet)
@@ -69,7 +69,7 @@ def get_document_from_site(my_params):
 
 def get_info_from_doc(doc,depart_date, roundtrip):
     flights = []
-    flight={}
+
     if roundtrip:
         rtrp = '2'
     else:
@@ -77,6 +77,7 @@ def get_info_from_doc(doc,depart_date, roundtrip):
     depart_date = depart_date.replace('-', '_')
     flights_counter = 1
     while True:
+        flight_info = []
         try:
             xpath_base = '//*[@id="trip_{}_date_{}"]/tbody[{}]/tr/td'
             xpath_base = xpath_base.format(rtrp, depart_date, flights_counter)
@@ -101,21 +102,33 @@ def get_info_from_doc(doc,depart_date, roundtrip):
                 except IndexError:
                     break
 
-            print(depart_date, end=' | ')
-            print('flight:', flight, end=' | ')
+            # print(depart_date, end=' | ')
+            flight_info.append(depart_date)
+
+            # print('flight:', flight, end=' | ')
+            flight_info.append(flight)
+
             depart_time = datetime.strptime(depart.lower(), '%I:%M %p')
-            print('depart:', datetime.strftime(depart_time, '%H:%M'), end=' | ')
+            # print('depart:', datetime.strftime(depart_time, '%H:%M'), end=' | ')
+            flight_info.append(datetime.strftime(depart_time, '%H:%M'))
+
             arrive_time = datetime.strptime(arrive.lower(), '%I:%M %p')
-            print('arrive:', datetime.strftime(arrive_time, '%H:%M'), end=' | ')
+            # print('arrive:', datetime.strftime(arrive_time, '%H:%M'), end=' | ')
+            flight_info.append(datetime.strftime(arrive_time, '%H:%M'))
+
             time_in_flight = arrive_time - depart_time
             h_in_flight = time_in_flight.seconds // 3600
             m_in_flight = (time_in_flight.seconds // 60) % 60
-            print('Time in Flight: ', h_in_flight, "h ", m_in_flight, 'm', sep='', end=' | ')
+            # print('Time in Flight: ', h_in_flight, "h ", m_in_flight, 'm', sep='', end=' | ')
+            flight_info.append('{}h {}m'.format(h_in_flight,m_in_flight))
+
 
             for ft in flight_type:
-                print(ft, ":", flight_type[ft], end=" | ")
-            print()
+                # print(ft, ":", flight_type[ft], end=" | ")
+                flight_info.append(ft)
+                flight_info.append(flight_type[ft])
             flights_counter += 1
+            flights.append(flight_info)
         except IndexError:
             try:
                 err = doc.xpath('//*[@id="content"]/div/div[2]/div/text()')
@@ -123,19 +136,27 @@ def get_info_from_doc(doc,depart_date, roundtrip):
                     print(err)
             except Exception:
                 break
+
             break
 
-departure = airport_input('Departure:')
-arrive = airport_input('Destination:')
-while True:
-    depart_date = input_date('Date of flight out YYYY MM DD or today')
-    if depart_date:
-        break
-    else:
-        print("Depart date can't be empty")
+    return flights
 
-back_date = input_date('Date to return back or empty')
-print(back_date)
+
+
+# departure = airport_input('Departure:')
+departure='ISB'  #!!!!!!!!!!!!!!!!!!!!!!!
+# arrive = airport_input('Destination:')
+arrive = 'KHI'   #!!!!!!!!!!!!!!!!!!!!!!!
+# while True:
+#     depart_date = input_date('Date of flight out YYYY MM DD or today')
+#     if depart_date:
+#         break
+#     else:
+#         print("Depart date can't be empty")
+depart_date='2019-10-25' #!!!!!!!!!!!!!!!!!!!!!!!
+
+# back_date = input_date('Date to return back or empty')
+back_date = '2019-10-27'
 back_date_flag = True
 if back_date == None:
     back_date_flag = False
@@ -156,7 +177,7 @@ my_params['AC'] = arrive
 
 
 doc = get_document_from_site(my_params)
-get_info_from_doc(doc,depart_date,False)
+print(get_info_from_doc(doc,depart_date,False))
 if back_date_flag:
     print('Back')
     get_info_from_doc(doc,back_date,True)
