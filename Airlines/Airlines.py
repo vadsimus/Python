@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 
 def create_date(string):
     try:
-        dt = datetime.strptime(string, '%Y-%m-%d')
+        dt = datetime.strptime(string, '%d-%m-%y')
         return dt
     except ValueError or TypeError:
         return None
@@ -23,7 +23,8 @@ def input_date(prompt):
         elif date[0].strip() == '':
             return None
         elif create_date('-'.join(date)):
-            return '{}-{:0>2}-{:0>2}'.format(date[0], date[1], date[2])
+            d = create_date('-'.join(date))
+            return '{}-{:0>2}-{:0>2}'.format(d.year, d.month, d.day)
         else:
             print('Wrong!!!')
 
@@ -40,18 +41,19 @@ def airport_input(prompt):
         airport = input(prompt)
         for ap in airports:
             if airport.upper().strip() == ap:
+                print(airports[ap])
                 return ap
         if airport.lower() == 'help':
             for ap in airports:
                 print(ap, ':', airports[ap])
                 continue
-        print("Airport is invalid.")
+        print("Airport input is invalid.")
 
 
 def get_document_from_site(my_params):
     myUrl = "https://www.airblue.com/bookings/flight_selection.aspx?"
-    value = {'TT': 'RT', 'DC': 'KHI', 'AC': 'ISB', "AM": "2019-11", 'AD': '2',
-             'RM': "2019-11", 'RD': '3', 'FL': 'on', 'CC': 'Y', 'CD': '',
+    value = {'TT': 'RT',
+             'RD': '3', 'FL': 'on', 'CC': 'Y', 'CD': '',
              'PA': '1', 'PC': '', 'PI': '', 'x': '40', 'y': '20'}
     value['AD'] = my_params['AD']
     value['AM'] = my_params['AM']
@@ -59,14 +61,15 @@ def get_document_from_site(my_params):
     value['RD'] = my_params['RD']
     value['DC'] = my_params['DC']
     value['AC'] = my_params['AC']
-    with open('Answer.html', "r") as file:
-        otvet = file.read()
 
-    # mydata = parse.urlencode(value)
-    # myUrl = myUrl + mydata
-    # req = request.Request(myUrl)
-    # otvet = request.urlopen(req)
-    # otvet = otvet.read().decode('UTF-8')
+    # with open('Answer.html', "r") as file:
+    #     otvet = file.read()
+
+    mydata = parse.urlencode(value)
+    myUrl = myUrl + mydata
+    req = request.Request(myUrl)
+    otvet = request.urlopen(req)
+    otvet = otvet.read().decode('UTF-8')
 
     # with open('Answer.html', 'w') as file:
     #     file.write(otvet)
@@ -77,7 +80,6 @@ def get_document_from_site(my_params):
 
 def get_info_from_doc(doc, depart_date, roundtrip):
     flights = []
-
     if roundtrip:
         rtrp = '2'
     else:
@@ -100,8 +102,7 @@ def get_info_from_doc(doc, depart_date, roundtrip):
 
                     flight_class = doc.xpath(
                         '//*[@id="trip_{}_date_{}"]/thead/tr[2]/th[{}]/span/text()'.format(
-                            rtrp,
-                            depart_date, k))[0]
+                            rtrp, depart_date, k))[0]
                     coast = \
                         doc.xpath('{}[{}]/label/span/text()'.format(xpath_base,
                                                                     k + 1))[0]
@@ -204,19 +205,16 @@ if __name__ == '__main__':
     departure = airport_input('Departure:')
     arrive = airport_input('Destination:')
     while True:
-        depart_date = input_date('Date of flight out YYYY MM DD or today')
+        depart_date = input_date('Date of flight out {DD MM YY} or today:')
         if depart_date:
             break
         else:
-            print("Depart date can't be empty")
-    back_date = input_date('Date to return back or empty')
+            print("Depart date can't be empty!")
+    back_date = input_date('Date to return back {DD MM YY} or empty:')
     back_date_flag = True
     if back_date is None:
         back_date_flag = False
-        dep_date_datetime = create_date(depart_date)
-        back_date = dep_date_datetime + timedelta(days=1)
-        back_date = '{}-{:0>2}-{:0>2}'.format(back_date.year, back_date.month,
-                                              back_date.day)
+        back_date = depart_date
 
     my_params = {'AM': str(depart_date[:7]), 'AD': str(depart_date[8:]),
                  'RM': str(back_date[:7]), 'RD': str(back_date[8:]),
