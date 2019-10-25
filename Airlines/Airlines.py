@@ -29,9 +29,12 @@ def input_date(prompt):
 
 
 def airport_input(prompt):
-    airports = ['AUH', 'DXB', 'DMM', 'ISB', 'JED', 'KHI', 'LHE', 'MED', 'MUX',
-                'MCT', 'PEW',
-                'RYK', 'UET', 'RUH', 'SHJ', 'SKT']
+    airports = {'AUH':'Abu Dhabi', 'DXB':'Dubai', 'DMM':'Dammam',
+                'ISB':'Islmabad', 'JED':'Jeddah', 'KHI':'Karachi',
+                'LHE':'Lahore', 'MED':'Medina', 'MUX':'Multan',
+                'MCT':'Muscat', 'PEW':'Peshawar', 'RYK':'Rahim Yar Khan',
+                'UET':'Quetta', 'RUH':'Riyadh', 'SHJ':'Sharjah',
+                'SKT':'Sialkot'}
     print('Input airport (AUH,DXB,...) or help')
     while True:
         airport = input(prompt)
@@ -39,10 +42,10 @@ def airport_input(prompt):
             if airport.upper().strip() == ap:
                 return ap
         if airport.lower() == 'help':
-            print("""AUH - Abu Dhabi \nDXB - Dubai\nDMM - Dammam
-ISB - Islmabad\nJED - Jeddah\nKHI - Karachi\nLHE - Lahore\nMED - Medina
-MUX - Multan\nMCT - Muscat\nPEW - Peshawar\nRYK - Rahim Yar Khan
-UET - Quetta\nRUH - Riyadh\nSHJ - Sharjah\nSKT - Sialkot""")
+            for ap in airports:
+                print(ap,':',airports[ap])
+                continue
+        print("Airport is invalid.")
 
 
 def get_document_from_site(my_params):
@@ -56,14 +59,14 @@ def get_document_from_site(my_params):
     value['RD'] = my_params['RD']
     value['DC'] = my_params['DC']
     value['AC'] = my_params['AC']
-    # with open('Answer.html', "r") as file:
-    #     otvet = file.read()
+    with open('Answer.html', "r") as file:
+        otvet = file.read()
 
-    mydata = parse.urlencode(value)
-    myUrl = myUrl + mydata
-    req = request.Request(myUrl)
-    otvet = request.urlopen(req)
-    otvet = otvet.read().decode('UTF-8')
+    # mydata = parse.urlencode(value)
+    # myUrl = myUrl + mydata
+    # req = request.Request(myUrl)
+    # otvet = request.urlopen(req)
+    # otvet = otvet.read().decode('UTF-8')
 
     # with open('Answer.html', 'w') as file:
     #     file.write(otvet)
@@ -138,24 +141,26 @@ def get_info_from_doc(doc, depart_date, roundtrip):
     return flights
 
 
-def print_flights(mass_flights, number_forward_flights):
+def print_flights(mass_flights):
     max_len = 0
     sep = str('-' * 20) + '+'
     exclusive_keys = []
-    if len(mass_flights) > number_forward_flights:
-        back_flights = mass_flights[number_forward_flights]
+    forward_flights = mass_flights[0]
+    if len(mass_flights) == 2:
+        back_flights = mass_flights[1]
     else:
-        back_flights = ''
-    for i in mass_flights:
-        if len(i) >= max_len:
-            max_len = len(i)
+        back_flights = []
+    for k in mass_flights:
+        for i in k:
+            if len(i) >= max_len:
+                max_len = len(i)
     header = ['Direction', 'Date', 'Flight', 'Depart Time', 'Arrive Time',
               'Time in air']
     sequence = ["depart_date", 'flight', 'depart_time', 'arrive_time',
                 'time_in_flight']
 
-    for i in range(number_forward_flights):
-        for key in mass_flights[i]:
+    for i in forward_flights:
+        for key in i:
             if key not in sequence and key not in exclusive_keys:
                 exclusive_keys.append(key)
     for flight in back_flights:
@@ -169,18 +174,18 @@ def print_flights(mass_flights, number_forward_flights):
         print("{:^20}".format(i), end='|')
     print()
     print(sep * (len(header) + len(exclusive_keys)))
-    for i in range(number_forward_flights):
+    for fl in forward_flights:
         print("{:^20}".format('Forward'), end='|')
-        for key in mass_flights[i]:
+        for key in fl:
             if key in sequence:
-                print("{:^20}".format(mass_flights[i][key]), end='|')
+                print("{:^20}".format(fl[key]), end='|')
         for ex_key in exclusive_keys:
-            if ex_key in mass_flights[i].keys():
-                print("{:^20}".format(mass_flights[i][ex_key]), end='|')
+            if ex_key in fl.keys():
+                print("{:^20}".format(fl[ex_key]), end='|')
             else:
-                print(' '*20,end='+')
+                print(' '*20,end='|')
         print()
-    if len(mass_flights) > number_forward_flights:
+    if len(mass_flights) == 2:
         print(sep * (len(header) + len(exclusive_keys)))
         for flight in back_flights:
             print("{:^20}".format('Back'), end='|')
@@ -191,7 +196,7 @@ def print_flights(mass_flights, number_forward_flights):
                 if ex_key in flight.keys():
                     print("{:^20}".format(flight[ex_key]), end='|')
                 else:
-                    print(' '*20,end='+')
+                    print(' '*20,end='|')
             print()
 
 
@@ -226,9 +231,9 @@ if __name__ == '__main__':
 
     forward_flights = get_info_from_doc(doc, depart_date, False)
     number_forward_flights = len(forward_flights)
-    all_flights = forward_flights
+    all_flights = [forward_flights]
     if back_date_flag:
         back_flights = get_info_from_doc(doc, back_date, True)
         all_flights.append(back_flights)
 
-    print_flights(all_flights, number_forward_flights)
+    print_flights(all_flights)
