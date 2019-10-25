@@ -29,12 +29,12 @@ def input_date(prompt):
 
 
 def airport_input(prompt):
-    airports = {'AUH':'Abu Dhabi', 'DXB':'Dubai', 'DMM':'Dammam',
-                'ISB':'Islmabad', 'JED':'Jeddah', 'KHI':'Karachi',
-                'LHE':'Lahore', 'MED':'Medina', 'MUX':'Multan',
-                'MCT':'Muscat', 'PEW':'Peshawar', 'RYK':'Rahim Yar Khan',
-                'UET':'Quetta', 'RUH':'Riyadh', 'SHJ':'Sharjah',
-                'SKT':'Sialkot'}
+    airports = {'AUH': 'Abu Dhabi', 'DXB': 'Dubai', 'DMM': 'Dammam',
+                'ISB': 'Islmabad', 'JED': 'Jeddah', 'KHI': 'Karachi',
+                'LHE': 'Lahore', 'MED': 'Medina', 'MUX': 'Multan',
+                'MCT': 'Muscat', 'PEW': 'Peshawar', 'RYK': 'Rahim Yar Khan',
+                'UET': 'Quetta', 'RUH': 'Riyadh', 'SHJ': 'Sharjah',
+                'SKT': 'Sialkot'}
     print('Input airport (AUH,DXB,...) or help')
     while True:
         airport = input(prompt)
@@ -43,7 +43,7 @@ def airport_input(prompt):
                 return ap
         if airport.lower() == 'help':
             for ap in airports:
-                print(ap,':',airports[ap])
+                print(ap, ':', airports[ap])
                 continue
         print("Airport is invalid.")
 
@@ -183,7 +183,7 @@ def print_flights(mass_flights):
             if ex_key in fl.keys():
                 print("{:^20}".format(fl[ex_key]), end='|')
             else:
-                print(' '*20,end='|')
+                print(' ' * 20, end='|')
         print()
     if len(mass_flights) == 2:
         print(sep * (len(header) + len(exclusive_keys)))
@@ -196,7 +196,7 @@ def print_flights(mass_flights):
                 if ex_key in flight.keys():
                     print("{:^20}".format(flight[ex_key]), end='|')
                 else:
-                    print(' '*20,end='|')
+                    print(' ' * 20, end='|')
             print()
 
 
