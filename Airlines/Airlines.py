@@ -73,6 +73,10 @@ def get_document_from_site(my_params):
     answer = request.urlopen(req)
     answer = answer.read().decode('UTF-8')
     document = lxml.html.document_fromstring(answer)
+
+    with open('Answer.html','w') as file:
+        file.write(answer)
+
     return document
 
 
@@ -204,10 +208,10 @@ if __name__ == '__main__':
             print("Back date can't be before depart date.")
         back_date_flag = False
         back_date = depart_date
-    my_params = {'AM': '{}-{}'.format(depart_date.year, depart_date.month),
-                 'AD': '{}'.format(depart_date.day),
-                 'RM': '{}-{}'.format(back_date.year, back_date.month),
-                 'RD': '{}'.format(back_date.day),
+    my_params = {'AM': '{:0>4}-{:0>2}'.format(depart_date.year, depart_date.month),
+                 'AD': '{:0>2}'.format(depart_date.day),
+                 'RM': '{:0>4}-{:0>2}'.format(back_date.year, back_date.month),
+                 'RD': '{:0>2}'.format(back_date.day),
                  'DC': departure,
                  'AC': arrive}
     try:
@@ -216,11 +220,11 @@ if __name__ == '__main__':
         print('Some problems with site...')
         print(sys.exc_info()[1])
         exit(-1)
-    forward_flights = get_info_from_doc(doc, '{}_{}_{}'.format(
+    forward_flights = get_info_from_doc(doc, '{:0>4}_{:0>2}_{:0>2}'.format(
         depart_date.year, depart_date.month, depart_date.day), False)
     all_flights = [forward_flights]
     if back_date_flag:
-        back_flights = get_info_from_doc(doc, '{}_{}_{}'.format(
+        back_flights = get_info_from_doc(doc, '{:0>4}_{:0>2}_{:0>2}'.format(
             back_date.year, back_date.month, back_date.day), True)
         all_flights.append(back_flights)
     print_flights(all_flights)
