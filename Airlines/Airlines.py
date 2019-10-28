@@ -74,9 +74,7 @@ def get_document_from_site(my_params):
     answer = answer.read().decode('UTF-8')
     document = lxml.html.document_fromstring(answer)
 
-    with open('Answer.html','w') as file:
-        file.write(answer)
-
+    
     return document
 
 
