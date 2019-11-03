@@ -82,7 +82,7 @@ def get_info_from_req(req, depart_date, roundtrip):
         rtrp = '2'
     else:
         rtrp = '1'
-    soup = BeautifulSoup(req.content, 'html.parser')
+    soup = BeautifulSoup(req.content, 'lxml')
     tables = soup.find('table', attrs={'id': 'trip_{}_date_{}'.format(rtrp, depart_date)})
     tbodyes = tables.find_all('tbody')
 
