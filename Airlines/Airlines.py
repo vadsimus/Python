@@ -1,8 +1,9 @@
 from urllib import request, parse
+import requests
 import sys
 import re
-import lxml.html
 from datetime import datetime
+from bs4 import BeautifulSoup
 
 
 def create_date(string):
@@ -69,74 +70,48 @@ def get_document_from_site(my_params):
              'AC': my_params['AC']}
     mydata = parse.urlencode(value)
     myUrl = myUrl + mydata
-    req = request.Request(myUrl)
-    answer = request.urlopen(req)
-    answer = answer.read().decode('UTF-8')
-    document = lxml.html.document_fromstring(answer)
-
-    with open('Answer.html','w') as file:
-        file.write(answer)
-
-    return document
+    session = requests.Session()
+    req = session.get(myUrl)
+    print(req.status_code)
+    return req
 
 
-def get_info_from_doc(doc, depart_date, roundtrip):
+def get_info_from_req(req, depart_date, roundtrip):
     flights = []
     if roundtrip:
         rtrp = '2'
     else:
         rtrp = '1'
-    flights_counter = 1
-    while True:
-        flight_info = {}
-        try:
-            xpath_base = '//*[@id="trip_{}_date_{}"]/tbody[{}]/tr/td'
-            xpath_base = xpath_base.format(rtrp, depart_date, flights_counter)
-            flight = doc.xpath('{}[1]/text()'.format(xpath_base))[0].strip()
-            depart = doc.xpath('{}[2]/text()'.format(xpath_base))[0]
-            arrive = doc.xpath('{}[4]/text()'.format(xpath_base))[0]
-            k = 5
-            flight_type = {}
-            while True:
-                try:
-                    flight_class = doc.xpath(
-                        '//*[@id="trip_{}_date_{}"]/thead/tr[2]/th[{}]/span/text()'.format(
-                            rtrp, depart_date, k))[0]
-                    coast = \
-                        doc.xpath('{}[{}]/label/span/text()'.format(xpath_base,
-                                                                    k + 1))[0]
-                    currency = doc.xpath(
-                        '{}[{}]/label/span/b/text()'.format(
-                            xpath_base, k + 1))[0]
-                    flight_type[flight_class] = str(coast + " " + currency)
-                    k += 1
-                except IndexError:
-                    break
-            flight_info["depart_date"] = (depart_date)
-            flight_info['flight'] = (flight)
-            depart_time = datetime.strptime(depart.lower(), '%I:%M %p')
-            flight_info['depart_time'] = (
-                datetime.strftime(depart_time, '%H:%M'))
-            arrive_time = datetime.strptime(arrive.lower(), '%I:%M %p')
-            flight_info['arrive_time'] = (
-                datetime.strftime(arrive_time, '%H:%M'))
-            time_in_flight = arrive_time - depart_time
-            h_in_flight = time_in_flight.seconds // 3600
-            m_in_flight = (time_in_flight.seconds // 60) % 60
-            flight_info['time_in_flight'] = '{}h {}m'.format(
-                h_in_flight, m_in_flight)
-            for ft in flight_type:
-                flight_info[ft] = (flight_type[ft])
-            flights_counter += 1
-            flights.append(flight_info)
-        except IndexError:
-            try:
-                err = doc.xpath('//*[@id="content"]/div/div[2]/div/text()')
-                if err:
-                    print(err)
-            except Exception:
-                break
-            break
+    soup = BeautifulSoup(req.content, 'html.parser')
+    tables = soup.find('table', attrs={'id': 'trip_{}_date_{}'.format(rtrp, depart_date)})
+    tbodyes = tables.find_all('tbody')
+
+    for tbody in tbodyes:
+        flight = {}
+        flight['depart_date'] = depart_date
+        flight['flight'] = tbody.find('td', {'class': 'flight'}).text.strip()
+        depart = tbody.find('td', {'class': 'time leaving'}).text
+        arr = tbody.find('td', {'class': 'time landing'}).text
+        coasts_table = tbody.find_all('td', {'rowspan': '1'})
+        depart_time = datetime.strptime(depart.lower(), '%I:%M %p')
+        flight['depart_time'] = (
+            datetime.strftime(depart_time, '%H:%M'))
+        arrive_time = datetime.strptime(arr.lower(), '%I:%M %p')
+        flight['arrive_time'] = (
+            datetime.strftime(arrive_time, '%H:%M'))
+        time_in_flight = arrive_time - depart_time
+        h_in_flight = time_in_flight.seconds // 3600
+        m_in_flight = (time_in_flight.seconds // 60) % 60
+        flight['time_in_flight'] = '{}h {}m'.format(
+            h_in_flight, m_in_flight)
+        for coast in coasts_table:
+            price = coast.find('span').text[4:]
+            capacity = coast.find('b').text.strip()
+            cls = ' '.join(coast.get('class'))
+            th = tables.find('th', {'class': cls}).text.strip()
+            flight[th] = str(price + ' ' + capacity)
+
+        flights.append(flight)
     return flights
 
 
@@ -215,16 +190,17 @@ if __name__ == '__main__':
                  'DC': departure,
                  'AC': arrive}
     try:
-        doc = get_document_from_site(my_params)
-    except Exception:
+        req = get_document_from_site(my_params)
+    except Exception as ex:
         print('Some problems with site...')
         print(sys.exc_info()[1])
+        print(ex)
         exit(-1)
-    forward_flights = get_info_from_doc(doc, '{:0>4}_{:0>2}_{:0>2}'.format(
+    forward_flights = get_info_from_req(req, '{:0>4}_{:0>2}_{:0>2}'.format(
         depart_date.year, depart_date.month, depart_date.day), False)
     all_flights = [forward_flights]
     if back_date_flag:
-        back_flights = get_info_from_doc(doc, '{:0>4}_{:0>2}_{:0>2}'.format(
+        back_flights = get_info_from_req(req, '{:0>4}_{:0>2}_{:0>2}'.format(
             back_date.year, back_date.month, back_date.day), True)
         all_flights.append(back_flights)
     print_flights(all_flights)
