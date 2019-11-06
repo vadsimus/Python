@@ -143,7 +143,7 @@ def get_info_from_doc(doc, depart_date, roundtrip):
 
 def print_flights(mass_flights):
     max_len = 0
-    sep = str('-' * 20) + '+'
+    sep = str('─' * 20) + '┼'
     exclusive_keys = []
     forward_flights = mass_flights[0]
     if len(mass_flights) == 2:
@@ -166,13 +166,17 @@ def print_flights(mass_flights):
         for key in flight:
             if key not in sequence and key not in exclusive_keys:
                 exclusive_keys.append(key)
+    print('┌' + ('─'*20+'┬') * (len(header) +
+                                len(exclusive_keys)-1)+ ('─'*20+'┐'))
+    print('│',end='')
     for i in header:
-        print("{:^20}".format(i), end='|')
+        print("{:^20}".format(i), end='│')
     for i in exclusive_keys:
-        print("{:^20}".format(i), end='|')
+        print("{:^20}".format(i), end='│')
     print()
-    print(sep * (len(header) + len(exclusive_keys)))
+    print('├' + sep * (len(header) + len(exclusive_keys)-1)+ ('─'*20+'┤'))
     for fl in forward_flights:
+        print('│', end='')
         print("{:^20}".format('Forward'), end='|')
         for key in fl:
             if key in sequence:
@@ -184,8 +188,9 @@ def print_flights(mass_flights):
                 print(' ' * 20, end='|')
         print()
     if len(mass_flights) == 2:
-        print(sep * (len(header) + len(exclusive_keys)))
+        print('├'+sep * (len(header) + len(exclusive_keys)-1)+('─'*20+'┤'))
         for flight in back_flights:
+            print('│', end='')
             print("{:^20}".format('Back'), end='|')
             for key in flight:
                 if key in sequence:
@@ -196,6 +201,8 @@ def print_flights(mass_flights):
                 else:
                     print(' ' * 20, end='|')
             print()
+    print('└' + ('─' * 20 + '┴') * (len(header) +
+                                    len(exclusive_keys)-1)+('─'*20+'┘'))
 
 
 if __name__ == '__main__':
@@ -214,7 +221,7 @@ if __name__ == '__main__':
         'AM': '{:0>4}-{:0>2}'.format(depart_date.year, depart_date.month),
         'AD': '{:0>2}'.format(depart_date.day),
         'DC': departure, 'AC': arrive
-        }
+    }
     if back_flag:
         my_params['RM'] = '{:0>4}-{:0>2}'.format(back_date.year,
                                                  back_date.month)
@@ -237,5 +244,4 @@ if __name__ == '__main__':
         forward_flights = get_info_from_doc(doc, '{:0>4}_{:0>2}_{:0>2}'.format(
             depart_date.year, depart_date.month, depart_date.day), False)
         all_flights = [forward_flights]
-
     print_flights(all_flights)
