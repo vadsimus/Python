@@ -15,22 +15,22 @@ def create_date(string):
 
 def input_date(direction):
     if direction == "Forward":
-        prompt = 'Date of flight out {DD MM YY} or today:'
+        prompt = 'Date of flight out {DD MM YY}:'
     elif direction == "Back":
         prompt = 'Date to return back {DD MM YY} or empty:'
     today = datetime.now()
     while True:
         date = list(re.split('[ \-_]', input(prompt)))
-        if date[0] == 'today':
-            return today
-        elif date[0].strip() == '' and direction == 'Back':
+        if date[0].strip() == '' and direction == 'Back':
             return None
         elif date[0].strip() == '' and direction == 'Forward':
             print("Depart date can't be empty!")
             continue
         elif create_date('-'.join(date)):
             d = create_date('-'.join(date))
-            if d < today:
+            if d.year == today.year and d.month == today.month and d.day == today.day:
+                return d
+            elif d < today:
                 print("Date can't be in past. Today is {}-{}-{}".format(
                     today.day, today.month, today.year))
                 continue
@@ -48,12 +48,11 @@ def airport_input(prompt):
                 'SKT': 'Sialkot'}
     print('Input airport (AUH,DXB,...) or help')
     while True:
-        airport = input(prompt)
-        for ap in airports:
-            if airport.upper().strip() == ap:
-                print(airports[ap])
-                return ap
-        if airport.lower() == 'help':
+        airport = input(prompt).upper().strip()
+        if airport in airports.keys():
+            print(airports[airport])
+            return airport
+        if airport == 'HELP':
             for ap in airports:
                 print(ap, ':', airports[ap])
                 continue
@@ -73,8 +72,6 @@ def get_document_from_site(my_params):
     answer = request.urlopen(req)
     answer = answer.read().decode('UTF-8')
     document = lxml.html.document_fromstring(answer)
-
-    
     return document
 
 
