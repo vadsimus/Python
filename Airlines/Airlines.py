@@ -3,6 +3,7 @@ import sys
 import re
 import lxml.html
 from datetime import datetime
+from itertools import product
 
 
 def create_date(string):
@@ -30,6 +31,7 @@ def input_date(direction):
             d = create_date('-'.join(date))
             if d.year == today.year and d.month == today.month and d.day == today.day:
                 return d
+            # If compare entered datetime and today, entered date will be in past
             elif d < today:
                 print("Date can't be in past. Today is {}-{}-{}".format(
                     today.day, today.month, today.year))
@@ -83,6 +85,8 @@ def get_document_from_site(my_params, b_flag):
 
 def get_info_from_doc(doc, depart_date, roundtrip):
     flights = []
+    depart_date = '{:0>4}_{:0>2}_{:0>2}'.format(
+        depart_date.year, depart_date.month, depart_date.day)
     if roundtrip:
         rtrp = '2'
     else:
@@ -96,9 +100,8 @@ def get_info_from_doc(doc, depart_date, roundtrip):
             flight = doc.xpath('{}[1]/text()'.format(xpath_base))[0].strip()
             depart = doc.xpath('{}[2]/text()'.format(xpath_base))[0]
             arrive = doc.xpath('{}[4]/text()'.format(xpath_base))[0]
-            k = 5
             flight_type = {}
-            while True:
+            for k in range(5, 7):
                 try:
                     flight_class = doc.xpath(
                         '//*[@id="trip_{}_date_{}"]/thead/tr[2]/th[{}]/span/text()'.format(
@@ -110,9 +113,9 @@ def get_info_from_doc(doc, depart_date, roundtrip):
                         '{}[{}]/label/span/b/text()'.format(
                             xpath_base, k + 1))[0]
                     flight_type[flight_class] = str(cost + " " + currency)
-                    k += 1
                 except IndexError:
-                    break
+                    pass
+
             flight_info["depart_date"] = (depart_date)
             flight_info['flight'] = (flight)
             depart_time = datetime.strptime(depart.lower(), '%I:%M %p')
@@ -136,48 +139,32 @@ def get_info_from_doc(doc, depart_date, roundtrip):
                 if err:
                     print(err)
             except Exception:
-                break
+                pass
             break
     return flights
 
 
 def print_flights(mass_flights):
-    max_len = 0
-    sep = str('─' * 20) + '┼'
-    exclusive_keys = []
-    forward_flights = mass_flights[0]
-    if len(mass_flights) == 2:
-        back_flights = mass_flights[1]
-    else:
-        back_flights = []
-    for k in mass_flights:
-        for i in k:
-            if len(i) >= max_len:
-                max_len = len(i)
-    header = ['Direction', 'Date', 'Flight', 'Depart Time', 'Arrive Time',
-              'Time in air']
-    sequence = ["depart_date", 'flight', 'depart_time', 'arrive_time',
-                'time_in_flight']
-    for i in forward_flights:
-        for key in i:
-            if key not in sequence and key not in exclusive_keys:
-                exclusive_keys.append(key)
-    for flight in back_flights:
-        for key in flight:
-            if key not in sequence and key not in exclusive_keys:
-                exclusive_keys.append(key)
-    print('┌' + ('─'*20+'┬') * (len(header) +
-                                len(exclusive_keys)-1)+ ('─'*20+'┐'))
-    print('│',end='')
-    for i in header:
-        print("{:^20}".format(i), end='│')
-    for i in exclusive_keys:
-        print("{:^20}".format(i), end='│')
-    print()
-    print('├' + sep * (len(header) + len(exclusive_keys)-1)+ ('─'*20+'┤'))
-    for fl in forward_flights:
+    def print_headers(header, exclusive):
+        print('┌' + ('─' * 20 + '┬') * (len(header) +
+                                        len(exclusive) - 1) + (
+                      '─' * 20 + '┐'))
         print('│', end='')
-        print("{:^20}".format('Forward'), end='|')
+        for i in header:
+            print("{:^20}".format(i), end='│')
+        for i in exclusive:
+            print("{:^20}".format(i), end='│')
+        print()
+
+    def print_separator(len_table):
+        sep = str('─' * 20) + '┼'
+        print(
+            '├' + sep * (len_table - 1) + (
+                    '─' * 20 + '┤'))
+
+    def print_flights_to_table(fl, direction, sequence, exclusive_keys):
+        print('│', end='')
+        print("{:^20}".format(direction), end='|')
         for key in fl:
             if key in sequence:
                 print("{:^20}".format(fl[key]), end='|')
@@ -187,22 +174,100 @@ def print_flights(mass_flights):
             else:
                 print(' ' * 20, end='|')
         print()
+
+    def print_end_table(len_table):
+        print('└' + ('─' * 20 + '┴') * (len_table - 1) + (
+                '─' * 20 + '┘'))
+
+    def sum_flight_cost(cost1, cost2):
+        fl1_cost, fl1_cur = cost1.split()
+        fl1_cost = int(''.join(fl1_cost.split(',')))
+        fl2_cost, fl2_cur = cost2.split()
+        fl2_cost = int(''.join(fl2_cost.split(',')))
+        trip_cost = (fl1_cost + fl2_cost)
+        if len(str(trip_cost)) > 3:
+            s_trip_cost = '{:,}'.format(trip_cost)
+        else:
+            s_trip_cost = str(trip_cost)
+        return s_trip_cost + ' ' + fl1_cur
+
+    exclusive_keys = []
+    forward_flights = mass_flights[0]
     if len(mass_flights) == 2:
-        print('├'+sep * (len(header) + len(exclusive_keys)-1)+('─'*20+'┤'))
-        for flight in back_flights:
-            print('│', end='')
-            print("{:^20}".format('Back'), end='|')
-            for key in flight:
-                if key in sequence:
-                    print("{:^20}".format(flight[key]), end='|')
-            for ex_key in exclusive_keys:
-                if ex_key in flight.keys():
-                    print("{:^20}".format(flight[ex_key]), end='|')
-                else:
-                    print(' ' * 20, end='|')
-            print()
-    print('└' + ('─' * 20 + '┴') * (len(header) +
-                                    len(exclusive_keys)-1)+('─'*20+'┘'))
+        back_flights = mass_flights[1]
+    else:
+        back_flights = []
+    header = ['Direction', 'Date', 'Flight', 'Depart Time', 'Arrive Time',
+              'Time in air']
+    sequence = ["depart_date", 'flight', 'depart_time', 'arrive_time',
+                'time_in_flight']
+    for flight in forward_flights:
+        for key in flight:
+            if key not in sequence and key not in exclusive_keys:
+                exclusive_keys.append(key)
+    for flight in back_flights:
+        for key in flight:
+            if key not in sequence and key not in exclusive_keys:
+                exclusive_keys.append(key)
+    if len(mass_flights) == 2:
+        if 'Discount (No Bags)' in exclusive_keys or \
+                'Standard (1 Bag)' in exclusive_keys:
+            exclusive_keys.append('Round Trip Cost')
+        if 'Discount (No Bags)' in exclusive_keys and \
+                'Standard (1 Bag)' in exclusive_keys:
+            exclusive_keys.append('Trip Combinations')
+    len_table = len(header) + len(exclusive_keys)
+    if len(mass_flights) == 1:
+        print_headers(header, exclusive_keys)
+        print_separator(len_table)
+        for flight in forward_flights:
+            print_flights_to_table(flight, 'Forward', sequence,
+                                   exclusive_keys)
+        print_end_table(len_table)
+    else:
+        comb = list(product(forward_flights, back_flights))
+        print_headers(header, exclusive_keys)
+        for i in comb:
+            if i[0]['depart_date'] != i[1]['depart_date'] or \
+                    i[0]['arrive_time'] < i[1]['depart_time']:
+                print_separator(len_table)
+                if 'Standard (1 Bag)' in exclusive_keys:
+                    try:
+                        i[0]['Round Trip Cost'] = 'St: ' + sum_flight_cost(
+                            i[0]['Standard (1 Bag)'],
+                            i[1]['Standard (1 Bag)']
+                        )
+                    except Exception:
+                        pass
+                if 'Discount (No Bags)' in exclusive_keys:
+                    try:
+                        i[1]['Round Trip Cost'] = 'Dis: ' + sum_flight_cost(
+                            i[0]['Discount (No Bags)'],
+                            i[1]['Discount (No Bags)']
+                        )
+                    except Exception:
+                        pass
+                if 'Standard (1 Bag)' in exclusive_keys and \
+                        'Discount (No Bags)' in exclusive_keys:
+                    try:
+                        i[0]['Trip Combinations'] = 'St-Dis:' + sum_flight_cost(
+                            i[0]['Standard (1 Bag)'],
+                            i[1]['Discount (No Bags)']
+                        )
+                    except Exception:
+                        pass
+                    try:
+                        i[1]['Trip Combinations'] = 'Dis-St:' + sum_flight_cost(
+                            i[0]['Discount (No Bags)'],
+                            i[1]['Standard (1 Bag)']
+                        )
+                    except Exception:
+                        pass
+                print_flights_to_table(i[0], 'Forward', sequence,
+                                       exclusive_keys)
+                print_flights_to_table(i[1], 'Back', sequence,
+                                       exclusive_keys)
+        print_end_table(len_table)
 
 
 if __name__ == '__main__':
@@ -210,18 +275,17 @@ if __name__ == '__main__':
     arrive = airport_input('Destination:')
     depart_date = input_date('Forward')
     back_date = input_date('Back')
-    back_flag = True
     if back_date is None or back_date < depart_date:
         if back_date:
-            print("Back date can't be before depart date.")
+            print(
+                "Back date can't be before forward depart date. One way trip is shown.")
         back_flag = False
-        back_date = depart_date
-
+    else:
+        back_flag = True
     my_params = {
         'AM': '{:0>4}-{:0>2}'.format(depart_date.year, depart_date.month),
         'AD': '{:0>2}'.format(depart_date.day),
-        'DC': departure, 'AC': arrive
-    }
+        'DC': departure, 'AC': arrive}
     if back_flag:
         my_params['RM'] = '{:0>4}-{:0>2}'.format(back_date.year,
                                                  back_date.month)
@@ -229,19 +293,16 @@ if __name__ == '__main__':
     try:
         doc = get_document_from_site(my_params, back_flag)
     except Exception as ex:
-        print('Some problems with site...')
+        print('Some problems with website...')
         print(sys.exc_info()[1])
         exit(-1)
-
     if back_flag:
-        forward_flights = get_info_from_doc(doc, '{:0>4}_{:0>2}_{:0>2}'.format(
-            depart_date.year, depart_date.month, depart_date.day), False)
+        forward_flights = get_info_from_doc(doc, depart_date, False)
         all_flights = [forward_flights]
-        back_flights = get_info_from_doc(doc, '{:0>4}_{:0>2}_{:0>2}'.format(
-            back_date.year, back_date.month, back_date.day), True)
+        back_flights = get_info_from_doc(doc, back_date, True)
         all_flights.append(back_flights)
     else:
-        forward_flights = get_info_from_doc(doc, '{:0>4}_{:0>2}_{:0>2}'.format(
-            depart_date.year, depart_date.month, depart_date.day), False)
+        forward_flights = get_info_from_doc(doc, depart_date, False)
         all_flights = [forward_flights]
+
     print_flights(all_flights)
