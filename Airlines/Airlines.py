@@ -116,8 +116,8 @@ def get_info_from_doc(doc, depart_date, roundtrip):
                 except IndexError:
                     pass
 
-            flight_info["depart_date"] = (depart_date)
-            flight_info['flight'] = (flight)
+            flight_info["depart_date"] = depart_date
+            flight_info['flight'] = flight
             depart_time = datetime.strptime(depart.lower(), '%I:%M %p')
             flight_info['depart_time'] = (
                 datetime.strftime(depart_time, '%H:%M'))
@@ -180,16 +180,16 @@ def print_flights(mass_flights):
                 '─' * 20 + '┘'))
 
     def sum_flight_cost(cost1, cost2):
-        fl1_cost, fl1_cur = cost1.split()
+        fl1_cost, fl1_currency = cost1.split()
         fl1_cost = int(''.join(fl1_cost.split(',')))
-        fl2_cost, fl2_cur = cost2.split()
+        fl2_cost, fl2_currency = cost2.split()
         fl2_cost = int(''.join(fl2_cost.split(',')))
         trip_cost = (fl1_cost + fl2_cost)
         if len(str(trip_cost)) > 3:
             s_trip_cost = '{:,}'.format(trip_cost)
         else:
             s_trip_cost = str(trip_cost)
-        return s_trip_cost + ' ' + fl1_cur
+        return s_trip_cost + ' ' + fl1_currency
 
     exclusive_keys = []
     forward_flights = mass_flights[0]
@@ -201,14 +201,11 @@ def print_flights(mass_flights):
               'Time in air']
     sequence = ["depart_date", 'flight', 'depart_time', 'arrive_time',
                 'time_in_flight']
-    for flight in forward_flights:
-        for key in flight:
-            if key not in sequence and key not in exclusive_keys:
-                exclusive_keys.append(key)
-    for flight in back_flights:
-        for key in flight:
-            if key not in sequence and key not in exclusive_keys:
-                exclusive_keys.append(key)
+    for flights in forward_flights, back_flights:
+        for flight in flights:
+            for key in flight:
+                if key not in sequence and key not in exclusive_keys:
+                    exclusive_keys.append(key)
     if len(mass_flights) == 2:
         if 'Discount (No Bags)' in exclusive_keys or \
                 'Standard (1 Bag)' in exclusive_keys:
@@ -217,16 +214,14 @@ def print_flights(mass_flights):
                 'Standard (1 Bag)' in exclusive_keys:
             exclusive_keys.append('Trip Combinations')
     len_table = len(header) + len(exclusive_keys)
+    print_headers(header, exclusive_keys)
     if len(mass_flights) == 1:
-        print_headers(header, exclusive_keys)
         print_separator(len_table)
         for flight in forward_flights:
             print_flights_to_table(flight, 'Forward', sequence,
                                    exclusive_keys)
-        print_end_table(len_table)
     else:
         comb = list(product(forward_flights, back_flights))
-        print_headers(header, exclusive_keys)
         for i in comb:
             if i[0]['depart_date'] != i[1]['depart_date'] or \
                     i[0]['arrive_time'] < i[1]['depart_time']:
@@ -237,7 +232,7 @@ def print_flights(mass_flights):
                             i[0]['Standard (1 Bag)'],
                             i[1]['Standard (1 Bag)']
                         )
-                    except Exception:
+                    except IndexError:
                         pass
                 if 'Discount (No Bags)' in exclusive_keys:
                     try:
@@ -245,29 +240,29 @@ def print_flights(mass_flights):
                             i[0]['Discount (No Bags)'],
                             i[1]['Discount (No Bags)']
                         )
-                    except Exception:
+                    except IndexError:
                         pass
                 if 'Standard (1 Bag)' in exclusive_keys and \
                         'Discount (No Bags)' in exclusive_keys:
                     try:
-                        i[0]['Trip Combinations'] = 'St-Dis:' + sum_flight_cost(
+                        i[0]['Trip Combinations'] = 'St-Dis: ' + sum_flight_cost(
                             i[0]['Standard (1 Bag)'],
                             i[1]['Discount (No Bags)']
                         )
-                    except Exception:
+                    except IndexError:
                         pass
                     try:
-                        i[1]['Trip Combinations'] = 'Dis-St:' + sum_flight_cost(
+                        i[1]['Trip Combinations'] = 'Dis-St: ' + sum_flight_cost(
                             i[0]['Discount (No Bags)'],
                             i[1]['Standard (1 Bag)']
                         )
-                    except Exception:
+                    except IndexError:
                         pass
                 print_flights_to_table(i[0], 'Forward', sequence,
                                        exclusive_keys)
                 print_flights_to_table(i[1], 'Back', sequence,
                                        exclusive_keys)
-        print_end_table(len_table)
+    print_end_table(len_table)
 
 
 if __name__ == '__main__':
