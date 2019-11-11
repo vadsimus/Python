@@ -15,3 +15,10 @@ for _ in range(n):
             break
         j = k
     print(k)
+
+
+# Another solution
+
+n = int(input())
+for _ in range(n):
+    print (re.sub(r'(?<= )(&&|\|\|)(?= )', lambda x: 'and' if x.group() == '&&' else 'or', input()))
