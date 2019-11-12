@@ -29,9 +29,10 @@ def input_date(direction):
             continue
         elif create_date('-'.join(date)):
             d = create_date('-'.join(date))
-            if d.year == today.year and d.month == today.month and d.day == today.day:
+            if d.year == today.year and d.month == today.month and \
+                    d.day == today.day:
                 return d
-            # If compare entered datetime and today, entered date will be in past
+            # If compare entered date and today, entered date will be in past
             elif d < today:
                 print("Date can't be in past. Today is {}-{}-{}".format(
                     today.day, today.month, today.year))
@@ -115,7 +116,6 @@ def get_info_from_doc(doc, depart_date, roundtrip):
                     flight_type[flight_class] = str(cost + " " + currency)
                 except IndexError:
                     pass
-
             flight_info["depart_date"] = depart_date
             flight_info['flight'] = flight
             depart_time = datetime.strptime(depart.lower(), '%I:%M %p')
@@ -146,38 +146,66 @@ def get_info_from_doc(doc, depart_date, roundtrip):
 
 def print_flights(mass_flights):
     def print_headers(header, exclusive):
-        print('┌' + ('─' * 20 + '┬') * (len(header) +
-                                        len(exclusive) - 1) + (
-                      '─' * 20 + '┐'))
-        print('│', end='')
+        for i in header, exclusive_keys:
+            for k in i:
+                if k == 'Direction':
+                    print('┌', end='')
+                elif k == 'Round Trip Cost':
+                    print('╥', end='')
+                else:
+                    print('┬', end='')
+                print('─' * 20, end='')
+        print('┐')
         for i in header:
-            print("{:^20}".format(i), end='│')
+            print('|' + "{:^20}".format(i), end='')
         for i in exclusive:
-            print("{:^20}".format(i), end='│')
-        print()
+            if i == 'Round Trip Cost':
+                print('║' + "{:^20}".format(i), end='')
+            else:
+                print('|' + "{:^20}".format(i), end='')
+        print('│')
 
-    def print_separator(len_table):
-        sep = str('─' * 20) + '┼'
-        print(
-            '├' + sep * (len_table - 1) + (
-                    '─' * 20 + '┤'))
+    def print_separator(header, exclusive_keys):
+        for i in header, exclusive_keys:
+            for k in i:
+                if k == 'Round Trip Cost':
+                    print('╫', end='')
+                elif k == 'Direction':
+                    print('├', end='')
+                else:
+                    print('┼', end='')
+                print('─' * 20, end='')
+        print('┤')
 
     def print_flights_to_table(fl, direction, sequence, exclusive_keys):
-        print('│', end='')
-        print("{:^20}".format(direction), end='|')
+        print('|' + "{:^20}".format(direction), end='')
         for key in fl:
             if key in sequence:
-                print("{:^20}".format(fl[key]), end='|')
+                print('|' + "{:^20}".format(fl[key]), end='')
         for ex_key in exclusive_keys:
             if ex_key in fl.keys():
-                print("{:^20}".format(fl[ex_key]), end='|')
+                if ex_key == 'Round Trip Cost':
+                    print('║' + "{:^20}".format(fl[ex_key]), end='')
+                else:
+                    print('|' + "{:^20}".format(fl[ex_key]), end='')
             else:
-                print(' ' * 20, end='|')
-        print()
+                if ex_key == 'Round Trip Cost':
+                    print('║' + ' ' * 20, end='')
+                else:
+                    print('|' + ' ' * 20, end='')
+        print('│')
 
-    def print_end_table(len_table):
-        print('└' + ('─' * 20 + '┴') * (len_table - 1) + (
-                '─' * 20 + '┘'))
+    def print_end_table(header, exclusive_keys):
+        for i in header, exclusive_keys:
+            for k in i:
+                if k == 'Round Trip Cost':
+                    print('╨', end='')
+                elif k == 'Direction':
+                    print('└', end='')
+                else:
+                    print('┴', end='')
+                print('─' * 20, end='')
+        print('┘')
 
     def sum_flight_cost(cost1, cost2):
         fl1_cost, fl1_currency = cost1.split()
@@ -213,10 +241,9 @@ def print_flights(mass_flights):
         if 'Discount (No Bags)' in exclusive_keys and \
                 'Standard (1 Bag)' in exclusive_keys:
             exclusive_keys.append('Trip Combinations')
-    len_table = len(header) + len(exclusive_keys)
     print_headers(header, exclusive_keys)
     if len(mass_flights) == 1:
-        print_separator(len_table)
+        print_separator(header, exclusive_keys)
         for flight in forward_flights:
             print_flights_to_table(flight, 'Forward', sequence,
                                    exclusive_keys)
@@ -225,7 +252,7 @@ def print_flights(mass_flights):
         for i in comb:
             if i[0]['depart_date'] != i[1]['depart_date'] or \
                     i[0]['arrive_time'] < i[1]['depart_time']:
-                print_separator(len_table)
+                print_separator(header, exclusive_keys)
                 if 'Standard (1 Bag)' in exclusive_keys:
                     try:
                         i[0]['Round Trip Cost'] = 'St: ' + sum_flight_cost(
@@ -245,14 +272,16 @@ def print_flights(mass_flights):
                 if 'Standard (1 Bag)' in exclusive_keys and \
                         'Discount (No Bags)' in exclusive_keys:
                     try:
-                        i[0]['Trip Combinations'] = 'St-Dis: ' + sum_flight_cost(
+                        i[0][
+                            'Trip Combinations'] = 'St-Dis: ' + sum_flight_cost(
                             i[0]['Standard (1 Bag)'],
                             i[1]['Discount (No Bags)']
                         )
                     except KeyError:
                         pass
                     try:
-                        i[1]['Trip Combinations'] = 'Dis-St: ' + sum_flight_cost(
+                        i[1][
+                            'Trip Combinations'] = 'Dis-St: ' + sum_flight_cost(
                             i[0]['Discount (No Bags)'],
                             i[1]['Standard (1 Bag)']
                         )
@@ -262,7 +291,7 @@ def print_flights(mass_flights):
                                        exclusive_keys)
                 print_flights_to_table(i[1], 'Back', sequence,
                                        exclusive_keys)
-    print_end_table(len_table)
+    print_end_table(header, exclusive_keys)
 
 
 if __name__ == '__main__':
