@@ -232,7 +232,7 @@ def print_flights(mass_flights):
                             i[0]['Standard (1 Bag)'],
                             i[1]['Standard (1 Bag)']
                         )
-                    except IndexError:
+                    except KeyError:
                         pass
                 if 'Discount (No Bags)' in exclusive_keys:
                     try:
@@ -240,7 +240,7 @@ def print_flights(mass_flights):
                             i[0]['Discount (No Bags)'],
                             i[1]['Discount (No Bags)']
                         )
-                    except IndexError:
+                    except KeyError:
                         pass
                 if 'Standard (1 Bag)' in exclusive_keys and \
                         'Discount (No Bags)' in exclusive_keys:
@@ -249,14 +249,14 @@ def print_flights(mass_flights):
                             i[0]['Standard (1 Bag)'],
                             i[1]['Discount (No Bags)']
                         )
-                    except IndexError:
+                    except KeyError:
                         pass
                     try:
                         i[1]['Trip Combinations'] = 'Dis-St: ' + sum_flight_cost(
                             i[0]['Discount (No Bags)'],
                             i[1]['Standard (1 Bag)']
                         )
-                    except IndexError:
+                    except KeyError:
                         pass
                 print_flights_to_table(i[0], 'Forward', sequence,
                                        exclusive_keys)
