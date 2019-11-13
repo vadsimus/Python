@@ -2,44 +2,36 @@ from urllib import request, parse
 import sys
 import re
 import lxml.html
-from datetime import datetime
+from datetime import datetime, timedelta
 from itertools import product
-
-
-def create_date(string):
-    try:
-        dt = datetime.strptime(string, '%d-%m-%y')
-        return dt
-    except ValueError or TypeError:
-        return None
 
 
 def input_date(direction):
     if direction == "Forward":
-        prompt = 'Date of flight out {DD MM YY}:'
+        prompt = 'Date of flight out {DD-MM-YY}:'
     elif direction == "Back":
-        prompt = 'Date to return back {DD MM YY} or empty:'
+        prompt = 'Date to return back {DD-MM-YY} or empty:'
     today = datetime.now()
     while True:
-        date = list(re.split('[ \-_]', input(prompt)))
-        if date[0].strip() == '' and direction == 'Back':
+        inp = input(prompt)
+        if inp == '' and direction == 'Back':
             return None
-        elif date[0].strip() == '' and direction == 'Forward':
+        elif inp == '' and direction == 'Forward':
             print("Depart date can't be empty!")
             continue
-        elif create_date('-'.join(date)):
-            d = create_date('-'.join(date))
-            if d.year == today.year and d.month == today.month and \
-                    d.day == today.day:
-                return d
-            # If compare entered date and today, entered date will be in past
-            elif d < today:
-                print("Date can't be in past. Today is {}-{}-{}".format(
-                    today.day, today.month, today.year))
-                continue
-            return d
+        try:
+            date = datetime.strptime(inp, '%d-%m-%y')
+        except Exception:
+            print('Wrong format, try once else..')
+            continue
+        date = date + timedelta(hours=23, minutes=59, seconds=59)
+        if date < today:
+            print("Date can't be in past. Today is {}".format(
+                today.strftime('%d-%m-%y')
+            ))
+            continue
         else:
-            print('Wrong!!!')
+            return date
 
 
 def airport_input(prompt):
@@ -238,9 +230,6 @@ def print_flights(mass_flights):
         if 'Discount (No Bags)' in exclusive_keys or \
                 'Standard (1 Bag)' in exclusive_keys:
             exclusive_keys.append('Round Trip Cost')
-        if 'Discount (No Bags)' in exclusive_keys and \
-                'Standard (1 Bag)' in exclusive_keys:
-            exclusive_keys.append('Trip Combinations')
     print_headers(header, exclusive_keys)
     if len(mass_flights) == 1:
         print_separator(header, exclusive_keys)
@@ -252,45 +241,64 @@ def print_flights(mass_flights):
         for i in comb:
             if i[0]['depart_date'] != i[1]['depart_date'] or \
                     i[0]['arrive_time'] < i[1]['depart_time']:
-                print_separator(header, exclusive_keys)
                 if 'Standard (1 Bag)' in exclusive_keys:
                     try:
-                        i[0]['Round Trip Cost'] = 'St: ' + sum_flight_cost(
+                        i[0]['Round Trip Cost'] = 'Standard Round Trip'
+                        i[1]['Round Trip Cost'] = sum_flight_cost(
                             i[0]['Standard (1 Bag)'],
                             i[1]['Standard (1 Bag)']
                         )
+                        print_separator(header, exclusive_keys)
+                        print_flights_to_table(i[0], 'Forward', sequence,
+                                               exclusive_keys)
+                        print_flights_to_table(i[1], 'Back', sequence,
+                                               exclusive_keys)
                     except KeyError:
                         pass
                 if 'Discount (No Bags)' in exclusive_keys:
                     try:
+                        i[0]['Round Trip Cost'] = 'Discount Round Trip'
                         i[1]['Round Trip Cost'] = 'Dis: ' + sum_flight_cost(
                             i[0]['Discount (No Bags)'],
                             i[1]['Discount (No Bags)']
                         )
+                        print_separator(header, exclusive_keys)
+                        print_flights_to_table(i[0], 'Forward', sequence,
+                                               exclusive_keys)
+                        print_flights_to_table(i[1], 'Back', sequence,
+                                               exclusive_keys)
                     except KeyError:
                         pass
                 if 'Standard (1 Bag)' in exclusive_keys and \
                         'Discount (No Bags)' in exclusive_keys:
                     try:
-                        i[0][
-                            'Trip Combinations'] = 'St-Dis: ' + sum_flight_cost(
+                        i[0]['Round Trip Cost'] = 'Standard - Discount'
+                        i[1][
+                            'Round Trip Cost'] = sum_flight_cost(
                             i[0]['Standard (1 Bag)'],
                             i[1]['Discount (No Bags)']
                         )
+                        print_separator(header, exclusive_keys)
+                        print_flights_to_table(i[0], 'Forward', sequence,
+                                               exclusive_keys)
+                        print_flights_to_table(i[1], 'Back', sequence,
+                                               exclusive_keys)
                     except KeyError:
                         pass
                     try:
+                        i[0]['Round Trip Cost'] = 'Discount - Standart'
                         i[1][
-                            'Trip Combinations'] = 'Dis-St: ' + sum_flight_cost(
+                            'Round Trip Cost'] = sum_flight_cost(
                             i[0]['Discount (No Bags)'],
                             i[1]['Standard (1 Bag)']
                         )
+                        print_separator(header, exclusive_keys)
+                        print_flights_to_table(i[0], 'Forward', sequence,
+                                               exclusive_keys)
+                        print_flights_to_table(i[1], 'Back', sequence,
+                                               exclusive_keys)
                     except KeyError:
                         pass
-                print_flights_to_table(i[0], 'Forward', sequence,
-                                       exclusive_keys)
-                print_flights_to_table(i[1], 'Back', sequence,
-                                       exclusive_keys)
     print_end_table(header, exclusive_keys)
 
 
