@@ -258,7 +258,7 @@ def print_flights(mass_flights):
                 if 'Discount (No Bags)' in exclusive_keys:
                     try:
                         i[0]['Round Trip Cost'] = 'Discount Round Trip'
-                        i[1]['Round Trip Cost'] = 'Dis: ' + sum_flight_cost(
+                        i[1]['Round Trip Cost'] = sum_flight_cost(
                             i[0]['Discount (No Bags)'],
                             i[1]['Discount (No Bags)']
                         )
