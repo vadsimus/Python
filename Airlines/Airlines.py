@@ -169,13 +169,14 @@ def print_flights(mass_flights):
                 print('─' * 20, end='')
         print('┤')
 
-    def print_flights_to_table(fl, direction, sequence, exclusive_keys):
+    def print_flights_to_table(fl, direction, sequence, exclusive_keys,
+                               hide_key=None):
         print('|' + "{:^20}".format(direction), end='')
         for key in fl:
             if key in sequence:
                 print('|' + "{:^20}".format(fl[key]), end='')
         for ex_key in exclusive_keys:
-            if ex_key in fl.keys():
+            if ex_key in fl.keys() and ex_key != hide_key:
                 if ex_key == 'Round Trip Cost':
                     print('║' + "{:^20}".format(fl[ex_key]), end='')
                 else:
@@ -248,11 +249,13 @@ def print_flights(mass_flights):
                             i[0]['Standard (1 Bag)'],
                             i[1]['Standard (1 Bag)']
                         )
+
                         print_separator(header, exclusive_keys)
                         print_flights_to_table(i[0], 'Forward', sequence,
-                                               exclusive_keys)
+                                               exclusive_keys, 'Discount (No Bags)')
                         print_flights_to_table(i[1], 'Back', sequence,
-                                               exclusive_keys)
+                                               exclusive_keys, 'Discount (No Bags)')
+
                     except KeyError:
                         pass
                 if 'Discount (No Bags)' in exclusive_keys:
@@ -262,11 +265,13 @@ def print_flights(mass_flights):
                             i[0]['Discount (No Bags)'],
                             i[1]['Discount (No Bags)']
                         )
+
                         print_separator(header, exclusive_keys)
                         print_flights_to_table(i[0], 'Forward', sequence,
-                                               exclusive_keys)
+                                               exclusive_keys, 'Standard (1 Bag)')
                         print_flights_to_table(i[1], 'Back', sequence,
-                                               exclusive_keys)
+                                               exclusive_keys, 'Standard (1 Bag)')
+
                     except KeyError:
                         pass
                 if 'Standard (1 Bag)' in exclusive_keys and \
@@ -280,9 +285,9 @@ def print_flights(mass_flights):
                         )
                         print_separator(header, exclusive_keys)
                         print_flights_to_table(i[0], 'Forward', sequence,
-                                               exclusive_keys)
+                                               exclusive_keys, 'Discount (No Bags)')
                         print_flights_to_table(i[1], 'Back', sequence,
-                                               exclusive_keys)
+                                               exclusive_keys, 'Standard (1 Bag)')
                     except KeyError:
                         pass
                     try:
@@ -294,9 +299,9 @@ def print_flights(mass_flights):
                         )
                         print_separator(header, exclusive_keys)
                         print_flights_to_table(i[0], 'Forward', sequence,
-                                               exclusive_keys)
+                                               exclusive_keys, 'Standard (1 Bag)')
                         print_flights_to_table(i[1], 'Back', sequence,
-                                               exclusive_keys)
+                                               exclusive_keys, 'Discount (No Bags)')
                     except KeyError:
                         pass
     print_end_table(header, exclusive_keys)
