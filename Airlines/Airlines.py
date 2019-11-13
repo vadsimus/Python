@@ -24,8 +24,7 @@ def input_date(direction):
         except Exception:
             print('Wrong format, try once else..')
             continue
-        date = date + timedelta(hours=23, minutes=59, seconds=59)
-        if date < today:
+        if date + timedelta(hours=23, minutes=59, seconds=59) < today:
             print("Date can't be in past. Today is {}".format(
                 today.strftime('%d-%m-%y')
             ))
