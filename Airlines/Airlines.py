@@ -106,12 +106,14 @@ def get_info_from_doc(doc, depart_date, roundtrip):
                     pass
             flight_info["depart_date"] = depart_date
             flight_info['flight'] = flight
-            depart_time = datetime.strptime(depart.lower(), '%I:%M %p')
-            flight_info['depart_time'] = (
-                datetime.strftime(depart_time, '%H:%M'))
-            arrive_time = datetime.strptime(arrive.lower(), '%I:%M %p')
-            flight_info['arrive_time'] = (
-                datetime.strftime(arrive_time, '%H:%M'))
+            depart_time = datetime.strptime('{}-{}'.format(
+                depart_date, depart.lower()), '%Y_%m_%d-%I:%M %p')
+            flight_info['depart_time'] = depart_time
+            arrive_time = datetime.strptime('{}-{}'.format(
+                depart_date, arrive.lower()), '%Y_%m_%d-%I:%M %p')
+            if arrive_time<depart_time:
+                arrive_time = arrive_time + timedelta(days=1)
+            flight_info['arrive_time'] = arrive_time
             time_in_flight = arrive_time - depart_time
             h_in_flight = time_in_flight.seconds // 3600
             m_in_flight = (time_in_flight.seconds // 60) % 60
@@ -170,7 +172,11 @@ def print_flights(mass_flights):
         print('|' + "{:^20}".format(direction), end='')
         for key in fl:
             if key in sequence:
-                print('|' + "{:^20}".format(fl[key]), end='')
+                if key == 'depart_time' or key == 'arrive_time':
+                    time_string = datetime.strftime(fl[key], '%H:%M')
+                    print('|' + "{:^20}".format(time_string), end='')
+                else:
+                    print('|' + "{:^20}".format(fl[key]), end='')
         for ex_key in exclusive_keys:
             if ex_key in fl.keys() and ex_key != hide_key:
                 if ex_key == 'Round Trip Cost':
@@ -235,7 +241,7 @@ def print_flights(mass_flights):
         comb = list(product(forward_flights, back_flights))
         for i in comb:
             if i[0]['depart_date'] != i[1]['depart_date'] or \
-                    i[0]['arrive_time'] < i[1]['depart_time']:
+                    i[0]['arrive_time']<i[1]['depart_time']:
                 if 'Standard (1 Bag)' in exclusive_keys:
                     try:
                         i[0]['Round Trip Cost'] = 'Standard Round Trip'
