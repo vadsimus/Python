@@ -335,13 +335,8 @@ if __name__ == '__main__':
         print('Some problems with website...')
         print(sys.exc_info()[1])
         exit(-1)
+    all_flights = [get_info_from_doc(doc, depart_date, False)]
     if back_flag:
-        forward_flights = get_info_from_doc(doc, depart_date, False)
-        all_flights = [forward_flights]
-        back_flights = get_info_from_doc(doc, back_date, True)
-        all_flights.append(back_flights)
-    else:
-        forward_flights = get_info_from_doc(doc, depart_date, False)
-        all_flights = [forward_flights]
+        all_flights.append(get_info_from_doc(doc, back_date, True))
 
     print_flights(all_flights)
