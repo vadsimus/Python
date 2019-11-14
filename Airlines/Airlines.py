@@ -236,7 +236,7 @@ def print_flights(mass_flights):
             print_separator(header, ex_keys)
             print_flights_to_table(fl1, 'Forward', exclusive_keys,
                                    hide_key=hkey1)
-            print_flights_to_table(i[1], 'Back', exclusive_keys,
+            print_flights_to_table(fl2, 'Back', exclusive_keys,
                                    hide_key=hkey2)
         except KeyError:
             pass
