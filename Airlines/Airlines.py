@@ -135,6 +135,9 @@ def get_info_from_doc(doc, depart_date, roundtrip):
 
 
 def print_flights(mass_flights):
+    SEQUENCE = ["depart_date", 'flight', 'depart_time', 'arrive_time',
+                'time_in_flight']
+
     def print_headers(header, exclusive):
         for i in header, exclusive_keys:
             for k in i:
@@ -167,11 +170,11 @@ def print_flights(mass_flights):
                 print('─' * 20, end='')
         print('┤')
 
-    def print_flights_to_table(fl, direction, sequence, exclusive_keys,
+    def print_flights_to_table(fl, direction, exclusive_keys,
                                hide_key=None):
         print('|' + "{:^20}".format(direction), end='')
         for key in fl:
-            if key in sequence:
+            if key in SEQUENCE:
                 if key == 'depart_time' or key == 'arrive_time':
                     time_string = datetime.strftime(fl[key], '%H:%M')
                     print('|' + "{:^20}".format(time_string), end='')
@@ -214,6 +217,30 @@ def print_flights(mass_flights):
             s_trip_cost = str(trip_cost)
         return s_trip_cost + ' ' + fl1_currency
 
+    def print_combination(fl1, fl2, header, ex_keys, prompt):
+        if prompt == 'Standard Round Trip':
+            key1 = key2 = 'Standard (1 Bag)'
+            hkey1 = hkey2 = 'Discount (No Bags)'
+        elif prompt == 'Discount Round Trip':
+            key1 = key2 = 'Discount (No Bags)'
+            hkey1 = hkey2 = 'Standard (1 Bag)'
+        elif prompt == 'Standard - Discount':
+            key1 = hkey2 = 'Standard (1 Bag)'
+            key2 = hkey1 = 'Discount (No Bags)'
+        elif prompt == 'Discount - Standart':
+            key1 = hkey2 = 'Discount (No Bags)'
+            key2 = hkey1 = 'Standard (1 Bag)'
+        try:
+            fl1['Round Trip Cost'] = prompt
+            fl2['Round Trip Cost'] = sum_flight_cost(fl1[key1], fl2[key2])
+            print_separator(header, ex_keys)
+            print_flights_to_table(fl1, 'Forward', exclusive_keys,
+                                   hide_key=hkey1)
+            print_flights_to_table(i[1], 'Back', exclusive_keys,
+                                   hide_key=hkey2)
+        except KeyError:
+            pass
+
     exclusive_keys = []
     forward_flights = mass_flights[0]
     if len(mass_flights) == 2:
@@ -222,12 +249,10 @@ def print_flights(mass_flights):
         back_flights = []
     header = ['Direction', 'Date', 'Flight', 'Depart Time', 'Arrive Time',
               'Time in air']
-    sequence = ["depart_date", 'flight', 'depart_time', 'arrive_time',
-                'time_in_flight']
     for flights in forward_flights, back_flights:
         for flight in flights:
             for key in flight:
-                if key not in sequence and key not in exclusive_keys:
+                if key not in SEQUENCE and key not in exclusive_keys:
                     exclusive_keys.append(key)
     if len(mass_flights) == 2:
         exclusive_keys.append('Round Trip Cost')
@@ -235,77 +260,16 @@ def print_flights(mass_flights):
     if len(mass_flights) == 1:
         print_separator(header, exclusive_keys)
         for flight in forward_flights:
-            print_flights_to_table(flight, 'Forward', sequence,
-                                   exclusive_keys)
+            print_flights_to_table(flight, 'Forward', exclusive_keys)
     else:
         comb = list(product(forward_flights, back_flights))
         for i in comb:
             if i[0]['depart_date'] != i[1]['depart_date'] or \
                     i[0]['arrive_time'] < i[1]['depart_time']:
-                if 'Standard (1 Bag)' in exclusive_keys:
-                    try:
-                        i[0]['Round Trip Cost'] = 'Standard Round Trip'
-                        i[1]['Round Trip Cost'] = sum_flight_cost(
-                            i[0]['Standard (1 Bag)'],
-                            i[1]['Standard (1 Bag)']
-                        )
-                        print_separator(header, exclusive_keys)
-                        print_flights_to_table(i[0], 'Forward', sequence,
-                                               exclusive_keys,
-                                               hide_key='Discount (No Bags)')
-                        print_flights_to_table(i[1], 'Back', sequence,
-                                               exclusive_keys,
-                                               hide_key='Discount (No Bags)')
-                    except KeyError:
-                        pass
-                if 'Discount (No Bags)' in exclusive_keys:
-                    try:
-                        i[0]['Round Trip Cost'] = 'Discount Round Trip'
-                        i[1]['Round Trip Cost'] = sum_flight_cost(
-                            i[0]['Discount (No Bags)'],
-                            i[1]['Discount (No Bags)']
-                        )
-                        print_separator(header, exclusive_keys)
-                        print_flights_to_table(i[0], 'Forward', sequence,
-                                               exclusive_keys,
-                                               hide_key='Standard (1 Bag)')
-                        print_flights_to_table(i[1], 'Back', sequence,
-                                               exclusive_keys,
-                                               hide_key='Standard (1 Bag)')
-                    except KeyError:
-                        pass
-                if 'Standard (1 Bag)' in exclusive_keys and \
-                        'Discount (No Bags)' in exclusive_keys:
-                    try:
-                        i[0]['Round Trip Cost'] = 'Standard - Discount'
-                        i[1]['Round Trip Cost'] = sum_flight_cost(
-                            i[0]['Standard (1 Bag)'],
-                            i[1]['Discount (No Bags)']
-                        )
-                        print_separator(header, exclusive_keys)
-                        print_flights_to_table(i[0], 'Forward', sequence,
-                                               exclusive_keys,
-                                               hide_key='Discount (No Bags)')
-                        print_flights_to_table(i[1], 'Back', sequence,
-                                               exclusive_keys,
-                                               hide_key='Standard (1 Bag)')
-                    except KeyError:
-                        pass
-                    try:
-                        i[0]['Round Trip Cost'] = 'Discount - Standart'
-                        i[1]['Round Trip Cost'] = sum_flight_cost(
-                            i[0]['Discount (No Bags)'],
-                            i[1]['Standard (1 Bag)']
-                        )
-                        print_separator(header, exclusive_keys)
-                        print_flights_to_table(i[0], 'Forward', sequence,
-                                               exclusive_keys,
-                                               hide_key='Standard (1 Bag)')
-                        print_flights_to_table(i[1], 'Back', sequence,
-                                               exclusive_keys,
-                                               hide_key='Discount (No Bags)')
-                    except KeyError:
-                        pass
+                lst = ['Standard Round Trip', 'Discount Round Trip',
+                        'Standard - Discount', 'Discount - Standart']
+                for k in lst:
+                    print_combination(i[0], i[1], header, exclusive_keys, k)
     print_end_table(header, exclusive_keys)
 
 
