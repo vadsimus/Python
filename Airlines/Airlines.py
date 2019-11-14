@@ -63,9 +63,9 @@ def get_document_from_site(my_params, b_flag):
              'AC': my_params['AC']
              }
     if b_flag:
-        value['TT'] = 'RT'
-        value['RD'] = my_params['RD']
-        value['RM'] = my_params['RM']
+        value.update({'TT': 'RT',
+                      'RD': my_params['RD'],
+                      'RM': my_params['RM']})
     mydata = parse.urlencode(value)
     myUrl = myUrl + mydata
     req = request.Request(myUrl)
@@ -111,7 +111,7 @@ def get_info_from_doc(doc, depart_date, roundtrip):
             flight_info['depart_time'] = depart_time
             arrive_time = datetime.strptime('{}-{}'.format(
                 depart_date, arrive.lower()), '%Y_%m_%d-%I:%M %p')
-            if arrive_time<depart_time:
+            if arrive_time < depart_time:
                 arrive_time = arrive_time + timedelta(days=1)
             flight_info['arrive_time'] = arrive_time
             time_in_flight = arrive_time - depart_time
@@ -241,7 +241,7 @@ def print_flights(mass_flights):
         comb = list(product(forward_flights, back_flights))
         for i in comb:
             if i[0]['depart_date'] != i[1]['depart_date'] or \
-                    i[0]['arrive_time']<i[1]['depart_time']:
+                    i[0]['arrive_time'] < i[1]['depart_time']:
                 if 'Standard (1 Bag)' in exclusive_keys:
                     try:
                         i[0]['Round Trip Cost'] = 'Standard Round Trip'
