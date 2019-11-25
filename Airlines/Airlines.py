@@ -34,6 +34,28 @@ class Flight:
                f'{self.type_flight} : {self.cost} {self.currency}'
 
 
+def get_params_commandline():
+    if 3 > len(sys.argv) > 5 or \
+            sys.argv[1].upper() not in airports or \
+            sys.argv[2].upper() not in airports:
+        raise IndexError
+    departure = sys.argv[1].upper()
+    arrive = sys.argv[2].upper()
+    if departure == arrive:
+        print('Departure airport and arrival airport cannot be the same')
+        raise IndexError
+    depart_date = date.fromisoformat(sys.argv[3])
+    try:
+        back_date = date.fromisoformat(sys.argv[4])
+        if back_date < depart_date:
+            print('Back date can\'t be before depart date')
+            print('One way search:')
+            raise IndexError
+    except IndexError:
+        back_date = None
+    return departure, arrive, depart_date, back_date
+
+
 def input_dates():
     while True:
         f_out = input('Date of flight out {YYYY-MM-DD}:')
@@ -158,21 +180,14 @@ def get_info_from_doc(answer, depart_date, back_date, departure_airport,
 
 if __name__ == "__main__":
     try:
-        if 3 > len(sys.argv) > 5 or \
-                sys.argv[1].upper() not in airports or \
-                sys.argv[2].upper() not in airports:
-            raise ValueError
-        departure = sys.argv[1].upper()
-        arrive = sys.argv[2].upper()
-        depart_date = date.fromisoformat(sys.argv[3])
-        try:
-            back_date = date.fromisoformat(sys.argv[4])
-        except IndexError:
-            back_date = None
-    except Exception:
+        departure, arrive, depart_date, back_date = get_params_commandline()
+    except (IndexError, ValueError):
         print('Params are not valid')
         departure = airport_input('Departure:')
         arrive = airport_input('Destination:')
+        if departure == arrive:
+            print('Departure airport and arrival airport cannot be the same')
+            exit(-1)
         depart_date, back_date = input_dates()
 
     my_params = {
@@ -192,8 +207,13 @@ if __name__ == "__main__":
         print(sys.exc_info()[1])
         exit(-1)
     else:
-        all_flights = get_info_from_doc(answer, depart_date, back_date, departure,
-                                    arrive)
+        try:
+            all_flights = get_info_from_doc(answer, depart_date, back_date,
+                                            departure,
+                                            arrive)
+        except IndexError:
+            print('Some problems with parsing.')
+            exit(-1)
         print('The following flights were found:')
         if not back_date:
             all_flights.sort(key=lambda fl: fl.cost)
@@ -210,9 +230,12 @@ if __name__ == "__main__":
                     back_flights.append(i)
             comb = list(product(foward_flights, back_flights))
             comb.sort(key=lambda x: x[0].cost + x[1].cost)
-            for index, i in enumerate(comb):
+            index = 1
+            for i in comb:
                 if i[0].arrive_datetime < i[1].depart_datetime:
-                    print(f'{index + 1})', end='')
+                    print(f'{index})', end='')
+                    index += 1
                     print(i[0])
                     print(' ', i[1])
-                    print(f'Total price: {i[0].cost+ i[1].cost} {i[0].currency}')
+                    print(
+                        f'  Total price: {i[0].cost + i[1].cost} {i[0].currency}')
