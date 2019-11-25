@@ -213,13 +213,6 @@ if __name__ == "__main__":
             for index, i in enumerate(comb):
                 if i[0].arrive_datetime < i[1].depart_datetime:
                     print(f'{index + 1})', end='')
-                    print(f'{i[0].depart_airport} - {i[0].arrirve_airport},'
-                          f'{i[1].depart_airport} - {i[1].arrirve_airport}:\n'
-                          f'-{i[0].depart_datetime} - {i[0].arrive_datetime} '
-                          f'({i[0].time_in_flight}) {i[0].flight} '
-                          f'{i[0].type_flight}\n'
-                          f'-{i[1].depart_datetime} - {i[1].arrive_datetime} '
-                          f'({i[1].time_in_flight}) {i[1].flight} '
-                          f'{i[1].type_flight}\n'
-                          f'Total price {i[0].cost + i[1].cost} {i[0].currency}'
-                          )
+                    print(i[0])
+                    print(' ', i[1])
+                    print(f'Total price: {i[0].cost+ i[1].cost} {i[0].currency}')
