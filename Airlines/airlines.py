@@ -141,26 +141,17 @@ def get_info_from_doc(answer, depart_date, back_date, departure_airport,
                     if key in flight_type:
                         fl_cost, fl_currency = flight_type[key].split()
                         fl_cost = int(''.join(fl_cost.split(',')))
-                        Flight = namedtuple('Flight', ['depart_datetime',
-                                                       'arrive_datetime',
-                                                       'departure_airport',
-                                                       'arrive_airport',
-                                                       'time_in_flight',
-                                                       'flight',
-                                                       'type_flight',
-                                                       'cost',
-                                                       'currency'])
-                        flight_instance = Flight(depart_time,
-                                                 arrive_time,
-                                                 departure_airport if rtrp == 0 else arrive_airport,
-                                                 arrive_airport if rtrp == 0 else departure_airport,
-                                                 '{}h {}m'.format(h_in_flight,
-                                                                  m_in_flight),
-                                                 flight,
-                                                 key,
-                                                 fl_cost,
-                                                 fl_currency
-                                                 )
+                        Flight = namedtuple(
+                            'Flight', ['depart_datetime', 'arrive_datetime',
+                                       'departure_airport', 'arrive_airport',
+                                       'time_in_flight', 'flight',
+                                       'type_flight', 'cost', 'currency'])
+                        flight_instance = Flight(
+                            depart_time, arrive_time,
+                            departure_airport if rtrp == 0 else arrive_airport,
+                            arrive_airport if rtrp == 0 else departure_airport,
+                            '{}h {}m'.format(h_in_flight, m_in_flight),
+                            flight, key, fl_cost, fl_currency)
                         flights.append(flight_instance)
             except IndexError:
                 break
@@ -168,8 +159,11 @@ def get_info_from_doc(answer, depart_date, back_date, departure_airport,
 
 def print_flight(flight):
     """print all info from flight"""
+    format_dt = '%Y-%m-%d %H:%M'
     print(f'{flight.departure_airport}-{flight.arrive_airport}:'
-          f'{flight.depart_datetime} - {flight.arrive_datetime} '
+          f'{flight.flight} '
+          f'{flight.depart_datetime.strftime(format_dt)} - '
+          f'{flight.arrive_datetime.strftime(format_dt)} '
           f'({flight.time_in_flight}) {flight.type_flight} '
           f'{flight.cost} {flight.currency}')
 
@@ -211,7 +205,7 @@ def main():
         all_flights.sort(key=lambda fl: fl.cost)
         for index, flight in enumerate(all_flights):
             print(f'{index + 1}) ', end='')
-            print(flight)
+            print_flight(flight)
     else:
         foward_flights = []
         back_flights = []
