@@ -1,11 +1,14 @@
-from urllib import request, parse
+"""
+This module gets information about flights from www.airblue.com
+"""
 import sys
-import requests
-from datetime import datetime, date, time, timedelta
-import lxml.html
+from datetime import datetime, date, timedelta
 from itertools import product
+from collections import namedtuple
+import lxml.html
+import requests
 
-airports = {'AUH': 'Abu Dhabi', 'DXB': 'Dubai', 'DMM': 'Dammam',
+AIRPORTS = {'AUH': 'Abu Dhabi', 'DXB': 'Dubai', 'DMM': 'Dammam',
             'ISB': 'Islmabad', 'JED': 'Jeddah', 'KHI': 'Karachi',
             'LHE': 'Lahore', 'MED': 'Medina', 'MUX': 'Multan',
             'MCT': 'Muscat', 'PEW': 'Peshawar', 'RYK': 'Rahim Yar Khan',
@@ -13,31 +16,11 @@ airports = {'AUH': 'Abu Dhabi', 'DXB': 'Dubai', 'DMM': 'Dammam',
             'SKT': 'Sialkot'}
 
 
-class Flight:
-    def __init__(self, depart_datetime,
-                 arrive_datetime, depart_airport, arrirve_airport,
-                 time_in_flight, flight, type_flight, cost, currency):
-        self.depart_datetime = depart_datetime
-        self.arrive_datetime = arrive_datetime
-        self.depart_airport = depart_airport
-        self.arrirve_airport = arrirve_airport
-        self.flight = flight
-        self.type_flight = type_flight
-        self.cost = cost
-        self.currency = currency
-        self.time_in_flight = time_in_flight
-
-    def __str__(self):
-        return f'{self.depart_airport}-{self.arrirve_airport}: ' \
-               f'{self.depart_datetime} - {self.arrive_datetime} ' \
-               f'({self.time_in_flight}) {self.flight} ' \
-               f'{self.type_flight} : {self.cost} {self.currency}'
-
-
 def get_params_commandline():
+    """returns data from command line if exists"""
     if 3 > len(sys.argv) > 5 or \
-            sys.argv[1].upper() not in airports or \
-            sys.argv[2].upper() not in airports:
+            sys.argv[1].upper() not in AIRPORTS or \
+            sys.argv[2].upper() not in AIRPORTS:
         raise IndexError
     departure = sys.argv[1].upper()
     arrive = sys.argv[2].upper()
@@ -57,6 +40,7 @@ def get_params_commandline():
 
 
 def input_dates():
+    """returns dates inputed by user"""
     while True:
         f_out = input('Date of flight out {YYYY-MM-DD}:')
         f_back = input('Date to return back {YYYY-MM-DD} or empty:')
@@ -76,37 +60,39 @@ def input_dates():
             print(
                 f'Date can\'t be in past. Today is {date.today().isoformat()}')
             continue
-        elif dt_f_back and dt_f_back < dt_f_out:
+        if dt_f_back and dt_f_back < dt_f_out:
             print('Back date can\'t be before depart date')
             continue
-        else:
-            return dt_f_out, dt_f_back
+        return dt_f_out, dt_f_back
 
 
 def airport_input(prompt):
+    """returns irport inputed by user"""
     print('Input airport (AUH,DXB,...) or help')
     while True:
         airport = input(prompt).upper().strip()
-        if airport in airports:
-            print(airports[airport])
+        if airport in AIRPORTS:
+            print(AIRPORTS[airport])
             return airport
-        elif airport == 'HELP':
-            for code, name in airports.items():
+        if airport == 'HELP':
+            for code, name in AIRPORTS.items():
                 print(code, ':', name)
         else:
             print("Airport input is invalid.")
 
 
 def get_document_from_site(my_params):
-    myUrl = "https://www.airblue.com/bookings/flight_selection.aspx?"
+    """returns answer from website"""
+    my_url = "https://www.airblue.com/bookings/flight_selection.aspx?"
     my_params.update({'FL': 'on', 'CC': 'Y', 'CD': '',
                       'PA': '1', 'PC': '', 'PI': '', 'x': '40', 'y': '20', })
-    answer = requests.get(myUrl, params=my_params)
+    answer = requests.get(my_url, params=my_params)
     return answer
 
 
 def get_info_from_doc(answer, depart_date, back_date, departure_airport,
                       arrive_airport):
+    """parsing answer from website"""
     flights = []
     htmltree = lxml.html.document_fromstring(answer.content)
     dates = [depart_date]
@@ -115,9 +101,9 @@ def get_info_from_doc(answer, depart_date, back_date, departure_airport,
     for rtrp, search_date in enumerate(dates):
         search_date = '{:0>4}_{:0>2}_{:0>2}'.format(
             search_date.year, search_date.month, search_date.day)
-        x = htmltree.xpath('//*[@id="trip_{}_date_{}"]'.format(
+        table = htmltree.xpath('//*[@id="trip_{}_date_{}"]'.format(
             rtrp + 1, search_date))
-        for flights_counter in range(1, len(x[0].getchildren()) - 1):
+        for flights_counter in range(1, len(table[0].getchildren()) - 1):
             try:
                 xpath_base = '//*[@id="trip_{}_date_{}"]/tbody[{}]/tr/td'
                 xpath_base = xpath_base.format(rtrp + 1, search_date,
@@ -155,30 +141,41 @@ def get_info_from_doc(answer, depart_date, back_date, departure_airport,
                     if key in flight_type:
                         fl_cost, fl_currency = flight_type[key].split()
                         fl_cost = int(''.join(fl_cost.split(',')))
-                        f = Flight(depart_time,
-                                   arrive_time,
-                                   departure_airport if rtrp == 0 else arrive_airport,
-                                   arrive_airport if rtrp == 0 else departure_airport,
-                                   '{}h {}m'.format(h_in_flight, m_in_flight),
-                                   flight,
-                                   key,
-                                   fl_cost,
-                                   fl_currency
-                                   )
-                        flights.append(f)
+                        Flight = namedtuple('Flight', ['depart_datetime',
+                                                       'arrive_datetime',
+                                                       'departure_airport',
+                                                       'arrive_airport',
+                                                       'time_in_flight',
+                                                       'flight',
+                                                       'type_flight',
+                                                       'cost',
+                                                       'currency'])
+                        flight_instance = Flight(depart_time,
+                                                 arrive_time,
+                                                 departure_airport if rtrp == 0 else arrive_airport,
+                                                 arrive_airport if rtrp == 0 else departure_airport,
+                                                 '{}h {}m'.format(h_in_flight,
+                                                                  m_in_flight),
+                                                 flight,
+                                                 key,
+                                                 fl_cost,
+                                                 fl_currency
+                                                 )
+                        flights.append(flight_instance)
             except IndexError:
-                try:
-                    err = htmltree.xpath(
-                        '//*[@id="content"]/div/div[2]/div/text()')
-                    if err:
-                        print(err)
-                except Exception:
-                    pass
                 break
     return flights
 
+def print_flight(flight):
+    """print all info from flight"""
+    print(f'{flight.departure_airport}-{flight.arrive_airport}:'
+          f'{flight.depart_datetime} - {flight.arrive_datetime} '
+          f'({flight.time_in_flight}) {flight.type_flight} '
+          f'{flight.cost} {flight.currency}')
 
-if __name__ == "__main__":
+
+def main():
+    """Main function"""
     try:
         departure, arrive, depart_date, back_date = get_params_commandline()
     except (IndexError, ValueError):
@@ -187,7 +184,7 @@ if __name__ == "__main__":
         arrive = airport_input('Destination:')
         if departure == arrive:
             print('Departure airport and arrival airport cannot be the same')
-            exit(-1)
+            sys.exit(-1)
         depart_date, back_date = input_dates()
 
     my_params = {
@@ -200,42 +197,43 @@ if __name__ == "__main__":
             'RD': '{:0>2}'.format(back_date.day),
             'TT': 'RT'
         })
+
+    answer = get_document_from_site(my_params)
     try:
-        answer = get_document_from_site(my_params)
-    except Exception as ex:
-        print('Some problems with website...')
-        print(sys.exc_info()[1])
-        exit(-1)
+        all_flights = get_info_from_doc(answer, depart_date, back_date,
+                                        departure,
+                                        arrive)
+    except IndexError:
+        print('Some problems with parsing.')
+        sys.exit(-1)
+    print('The following flights were found:')
+    if not back_date:
+        all_flights.sort(key=lambda fl: fl.cost)
+        for index, flight in enumerate(all_flights):
+            print(f'{index + 1}) ', end='')
+            print(flight)
     else:
-        try:
-            all_flights = get_info_from_doc(answer, depart_date, back_date,
-                                            departure,
-                                            arrive)
-        except IndexError:
-            print('Some problems with parsing.')
-            exit(-1)
-        print('The following flights were found:')
-        if not back_date:
-            all_flights.sort(key=lambda fl: fl.cost)
-            for index, fl in enumerate(all_flights):
-                print(f'{index + 1}) ', end='')
-                print(fl)
-        else:
-            foward_flights = []
-            back_flights = []
-            for i in all_flights:
-                if i.depart_airport == departure:
-                    foward_flights.append(i)
-                else:
-                    back_flights.append(i)
-            comb = list(product(foward_flights, back_flights))
-            comb.sort(key=lambda x: x[0].cost + x[1].cost)
-            index = 1
-            for i in comb:
-                if i[0].arrive_datetime < i[1].depart_datetime:
-                    print(f'{index})', end='')
-                    index += 1
-                    print(i[0])
-                    print(' ', i[1])
-                    print(
-                        f'  Total price: {i[0].cost + i[1].cost} {i[0].currency}')
+        foward_flights = []
+        back_flights = []
+        for i in all_flights:
+            if i.departure_airport == departure:
+                foward_flights.append(i)
+            else:
+                back_flights.append(i)
+        comb = list(product(foward_flights, back_flights))
+        comb.sort(key=lambda x: x[0].cost + x[1].cost)
+        index = 1
+        for i in comb:
+            if i[0].arrive_datetime < i[1].depart_datetime:
+                print(f'{index})', end='')
+                index += 1
+                print_flight(i[0])
+                print('  ', end='')
+                print_flight(i[1])
+                print(
+                    f'  Total price: {i[0].cost + i[1].cost} '
+                    f'{i[0].currency}')
+
+
+if __name__ == "__main__":
+    main()
