@@ -191,34 +191,35 @@ if __name__ == "__main__":
         print('Some problems with website...')
         print(sys.exc_info()[1])
         exit(-1)
-    all_flights = get_info_from_doc(answer, depart_date, back_date, departure,
-                                    arrive)
-    print('The following flights were found:')
-    if not back_date:
-        all_flights.sort(key=lambda fl: fl.cost)
-        for index, fl in enumerate(all_flights):
-            print(f'{index + 1}) ', end='')
-            print(fl)
     else:
-        foward_flights = []
-        back_flights = []
-        for i in all_flights:
-            if i.depart_airport == departure:
-                foward_flights.append(i)
-            else:
-                back_flights.append(i)
-        comb = list(product(foward_flights, back_flights))
-        comb.sort(key=lambda x: x[0].cost + x[1].cost)
-        for index, i in enumerate(comb):
-            if i[0].arrive_datetime < i[1].depart_datetime:
-                print(f'{index + 1})', end='')
-                print(f'{i[0].depart_airport} - {i[0].arrirve_airport},'
-                      f'{i[1].depart_airport} - {i[1].arrirve_airport}:\n'
-                      f'-{i[0].depart_datetime} - {i[0].arrive_datetime} '
-                      f'({i[0].time_in_flight}) {i[0].flight} '
-                      f'{i[0].type_flight}\n'
-                      f'-{i[1].depart_datetime} - {i[1].arrive_datetime} '
-                      f'({i[1].time_in_flight}) {i[1].flight} '
-                      f'{i[1].type_flight}\n'
-                      f'Total price {i[0].cost + i[1].cost} {i[0].currency}'
-                      )
+        all_flights = get_info_from_doc(answer, depart_date, back_date, departure,
+                                    arrive)
+        print('The following flights were found:')
+        if not back_date:
+            all_flights.sort(key=lambda fl: fl.cost)
+            for index, fl in enumerate(all_flights):
+                print(f'{index + 1}) ', end='')
+                print(fl)
+        else:
+            foward_flights = []
+            back_flights = []
+            for i in all_flights:
+                if i.depart_airport == departure:
+                    foward_flights.append(i)
+                else:
+                    back_flights.append(i)
+            comb = list(product(foward_flights, back_flights))
+            comb.sort(key=lambda x: x[0].cost + x[1].cost)
+            for index, i in enumerate(comb):
+                if i[0].arrive_datetime < i[1].depart_datetime:
+                    print(f'{index + 1})', end='')
+                    print(f'{i[0].depart_airport} - {i[0].arrirve_airport},'
+                          f'{i[1].depart_airport} - {i[1].arrirve_airport}:\n'
+                          f'-{i[0].depart_datetime} - {i[0].arrive_datetime} '
+                          f'({i[0].time_in_flight}) {i[0].flight} '
+                          f'{i[0].type_flight}\n'
+                          f'-{i[1].depart_datetime} - {i[1].arrive_datetime} '
+                          f'({i[1].time_in_flight}) {i[1].flight} '
+                          f'{i[1].type_flight}\n'
+                          f'Total price {i[0].cost + i[1].cost} {i[0].currency}'
+                          )
