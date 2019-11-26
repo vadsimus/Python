@@ -127,10 +127,13 @@ def get_info_from_doc(answer, depart_date, back_date, departure_airport,
                         pass
             except IndexError:
                 break
-            depart_time = datetime.strptime('{}-{}'.format(
-                search_date, depart.lower()), '%Y_%m_%d-%I:%M %p')
-            arrive_time = datetime.strptime('{}-{}'.format(
-                search_date, arrive.lower()), '%Y_%m_%d-%I:%M %p')
+            try:
+                depart_time = datetime.strptime('{}-{}'.format(
+                    search_date, depart.lower()), '%Y_%m_%d-%I:%M %p')
+                arrive_time = datetime.strptime('{}-{}'.format(
+                    search_date, arrive.lower()), '%Y_%m_%d-%I:%M %p')
+            except ValueError:
+                break
             if arrive_time < depart_time:
                 arrive_time = arrive_time + timedelta(days=1)
             time_in_flight = arrive_time - depart_time
