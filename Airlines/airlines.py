@@ -53,7 +53,7 @@ def input_dates():
         except ValueError:
             print('Wrong format, try once else..')
             continue
-        if dt_f_out < date.today() or dt_f_back and dt_f_back < date.today():
+        if dt_f_out < date.today():
             print(
                 f'Date can\'t be in past. Today is {date.today().isoformat()}')
             continue
@@ -78,17 +78,34 @@ def airport_input(prompt):
             print("Airport input is invalid.")
 
 
-def get_document_from_site(my_params):
+def get_document_from_site(departure, arrive, depart_date, back_date=None):
     """returns answer from website"""
     my_url = "https://www.airblue.com/bookings/flight_selection.aspx?"
-    my_params.update({'FL': 'on', 'CC': 'Y', 'CD': '',
-                      'PA': '1', 'PC': '', 'PI': '', 'x': '40', 'y': '20', })
-    answer = requests.get(my_url, params=my_params)
+    my_params = {'FL': 'on', 'CC': 'Y', 'CD': '',
+                 'PA': '1', 'PC': '', 'PI': '', 'x': '40', 'y': '20',
+                 'AM': '{:0>4}-{:0>2}'.format(depart_date.year,
+                                              depart_date.month),
+                 'AD': '{:0>2}'.format(depart_date.day),
+                 'DC': departure, 'AC': arrive, 'TT': 'OW'}
+    if back_date:
+        my_params.update({
+            'RM': '{:0>4}-{:0>2}'.format(back_date.year, back_date.month),
+            'RD': '{:0>2}'.format(back_date.day),
+            'TT': 'RT'
+        })
+    try:
+        answer = requests.get(my_url, params=my_params)
+    except requests.exceptions.RequestException:
+        print('Some problems with network or website')
+        sys.exit(-1)
+    if answer.status_code != 200:
+        print(f'Some problems with site, code:{answer.status_code}')
+        sys.exit(-1)
     return answer
 
 
-def get_info_from_doc(answer, depart_date, back_date, departure_airport,
-                      arrive_airport):
+def get_info_from_doc(answer, departure_airport, arrive_airport,
+                      depart_date, back_date):
     """parsing answer from website"""
     result = []
     htmltree = lxml.html.document_fromstring(answer.content)
@@ -211,31 +228,9 @@ def main():
         departure = airport_input('Departure:')
         arrive = airport_input('Destination:')
         depart_date, back_date = input_dates()
-    if departure == arrive:
-        print('Departure airport and arrival airport cannot be the same')
-        sys.exit(-1)
-    my_params = {
-        'AM': '{:0>4}-{:0>2}'.format(depart_date.year, depart_date.month),
-        'AD': '{:0>2}'.format(depart_date.day),
-        'DC': departure, 'AC': arrive, 'TT': 'OW'}
-    if back_date:
-        my_params.update({
-            'RM': '{:0>4}-{:0>2}'.format(back_date.year, back_date.month),
-            'RD': '{:0>2}'.format(back_date.day),
-            'TT': 'RT'
-        })
-    try:
-        answer = get_document_from_site(my_params)
-    except ConnectionError:
-        print('Some problems with network or website')
-        sys.exit(-1)
-    try:
-        all_flights = get_info_from_doc(answer, depart_date, back_date,
-                                        departure,
-                                        arrive)
-    except IndexError:
-        print('Some problems with parsing.')
-        sys.exit(-1)
+    answer = get_document_from_site(departure, arrive, depart_date, back_date)
+    all_flights = get_info_from_doc(answer, departure, arrive,
+                                    depart_date, back_date, )
     print_all_flights(all_flights, departure, back_date)
 
 
