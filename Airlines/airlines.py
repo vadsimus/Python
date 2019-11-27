@@ -104,8 +104,6 @@ def get_document_from_site(departure, arrive, depart_date, back_date=None):
     return answer
 
 
-
-
 def get_info_from_doc(answer, departure_airport, arrive_airport,
                       depart_date, back_date):
     """parsing answer from website"""
