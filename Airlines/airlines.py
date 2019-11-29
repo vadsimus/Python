@@ -154,10 +154,16 @@ def get_info_from_doc(answer, departure_airport, arrive_airport,
     for i, search_date in enumerate(dates):
         search_date = '{:0>4}_{:0>2}_{:0>2}'.format(
             search_date.year, search_date.month, search_date.day)
-        table = lxml.html.fromstring(answer).get_element_by_id(
-            f'trip_{i + 1}_date_{search_date}')
+        try:
+            table = lxml.html.fromstring(answer).get_element_by_id(
+                f'trip_{i + 1}_date_{search_date}')
+        except KeyError:
+            continue
         for tbody in table.findall('tbody'):
-            base_data = get_base_flight_data(tbody, search_date)
+            try:
+                base_data = get_base_flight_data(tbody, search_date)
+            except IndexError:
+                continue
             cost_data = get_cost(tbody)
             for cost in cost_data:
                 result.append(Flight(
@@ -186,8 +192,11 @@ def print_flight(flight):
 
 def print_all_flights(all_flights, departure, back_date):
     """print all flights sorted by cost"""
-    print('The following flights were found:')
     if not back_date:
+        if not all_flights:
+            print('No fights found.')
+        else:
+            print('The following flights were found:')
         all_flights.sort(key=lambda fl: fl.cost)
         for index, flight in enumerate(all_flights):
             print(f'{index + 1}) ', end='')
@@ -200,10 +209,18 @@ def print_all_flights(all_flights, departure, back_date):
                 forward_flights.append(i)
             else:
                 back_flights.append(i)
-        comb = list(product(forward_flights, back_flights))
-        comb.sort(key=lambda x: x[0].cost + x[1].cost)
+
+        combinations = []
+        for comb in product(forward_flights, back_flights):
+            if comb[0].arrive_datetime < comb[1].depart_datetime:
+                combinations.append(comb)
+        combinations.sort(key=lambda x: x[0].cost + x[1].cost)
+        if combinations:
+            print('The following flights combinations found:')
+        else:
+            print('No flight combinations found.')
         index = 1
-        for i in comb:
+        for i in combinations:
             if i[0].arrive_datetime < i[1].depart_datetime:
                 print(f'{index})', end='')
                 index += 1
@@ -227,7 +244,6 @@ def main():
     answer = get_document_from_site(departure, arrive, depart_date, back_date)
     all_flights = get_info_from_doc(answer.content, departure, arrive,
                                     depart_date, back_date, )
-
     print_all_flights(all_flights, departure, back_date)
 
 
