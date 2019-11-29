@@ -122,6 +122,23 @@ def get_base_flight_data(tbody, search_date):
     return (flight, depart_time, arrive_time, time_in_flight)
 
 
+def get_cost(tbody):
+    """get flight_type, cost and currency from tbody"""
+    result = []
+    for flight_type in ['family-ED', 'family-ES']:
+        try:
+            cost = tbody[0].find_class(flight_type)[0].xpath(
+                'label/span/text()')[0]
+            cost = int(''.join(cost.split(',')))
+            currency = tbody[0].find_class(flight_type)[0].xpath(
+                'label/span/b/text()')[0]
+            Costs = namedtuple('Costs', ['flight_type', 'cost', 'currency'])
+            result.append(Costs(flight_type, cost, currency))
+        except IndexError:
+            pass
+    return result
+
+
 def get_info_from_doc(answer, departure_airport, arrive_airport,
                       depart_date, back_date):
     """parsing answer from website"""
@@ -131,36 +148,28 @@ def get_info_from_doc(answer, departure_airport, arrive_airport,
                    'time_in_flight', 'flight',
                    'type_flight', 'cost', 'currency'])
     result = []
-    parsed_body = lxml.html.fromstring(answer)
     dates = [depart_date]
     if back_date:
         dates.append(back_date)
     for i, search_date in enumerate(dates):
         search_date = '{:0>4}_{:0>2}_{:0>2}'.format(
             search_date.year, search_date.month, search_date.day)
-        table = parsed_body.get_element_by_id(
+        table = lxml.html.fromstring(answer).get_element_by_id(
             f'trip_{i + 1}_date_{search_date}')
-        tbodyes = table.findall('tbody')
-        for tbody in tbodyes:
+        for tbody in table.findall('tbody'):
             base_data = get_base_flight_data(tbody, search_date)
-            for flight_type in ['family-ED', 'family-ES']:
-                try:
-                    cost = tbody[0].find_class(flight_type)[0].xpath(
-                        'label/span/text()')[0]
-                    cost = int(''.join(cost.split(',')))
-                    currency = tbody[0].find_class(flight_type)[0].xpath(
-                        'label/span/b/text()')[0]
-                    result.append(Flight(
-                        base_data[1], base_data[2],
-                        departure_airport if i == 0 else arrive_airport,
-                        arrive_airport if i == 0 else departure_airport,
-                        base_data[3], base_data[0],
-                        'Standard (1 Bag)' if flight_type == 'family-ES' else
-                        'Discount (No Bags)',
-                        cost, currency
-                    ))
-                except IndexError:
-                    pass
+            cost_data = get_cost(tbody)
+            for cost in cost_data:
+                result.append(Flight(
+                    base_data[1], base_data[2],
+                    departure_airport if i == 0 else arrive_airport,
+                    arrive_airport if i == 0 else departure_airport,
+                    base_data[3], base_data[0],
+                    'Standard (1 Bag)' if cost.flight_type == 'family-ES'
+                    else 'Discount (No Bags)',
+                    cost.cost, cost.currency
+                ))
+
     return result
 
 
