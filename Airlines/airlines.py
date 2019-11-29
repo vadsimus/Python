@@ -104,76 +104,63 @@ def get_document_from_site(departure, arrive, depart_date, back_date=None):
     return answer
 
 
+def get_base_flight_data(tbody, search_date):
+    "gettig base data from tbody"
+    flight = tbody[0].find_class('flight')[0].text.strip()
+    depart_time = tbody[0].find_class('time leaving')[0].text
+    depart_time = datetime.strptime('{}-{}'.format(
+        search_date, depart_time.lower()), '%Y_%m_%d-%I:%M %p')
+    arrive_time = tbody[0].find_class('time landing')[0].text
+    arrive_time = datetime.strptime('{}-{}'.format(
+        search_date, arrive_time.lower()), '%Y_%m_%d-%I:%M %p')
+    if arrive_time < depart_time:
+        arrive_time = arrive_time + timedelta(days=1)
+    time_in_flight = arrive_time - depart_time
+    h_in_flight = time_in_flight.seconds // 3600
+    m_in_flight = (time_in_flight.seconds // 60) % 60
+    time_in_flight = '{}h {}m'.format(h_in_flight, m_in_flight)
+    return (flight, depart_time, arrive_time, time_in_flight)
+
+
 def get_info_from_doc(answer, departure_airport, arrive_airport,
                       depart_date, back_date):
     """parsing answer from website"""
+    Flight = namedtuple(
+        'Flight', ['depart_datetime', 'arrive_datetime',
+                   'departure_airport', 'arrive_airport',
+                   'time_in_flight', 'flight',
+                   'type_flight', 'cost', 'currency'])
     result = []
-    htmltree = lxml.html.document_fromstring(answer.content)
+    parsed_body = lxml.html.fromstring(answer)
     dates = [depart_date]
     if back_date:
         dates.append(back_date)
     for i, search_date in enumerate(dates):
         search_date = '{:0>4}_{:0>2}_{:0>2}'.format(
             search_date.year, search_date.month, search_date.day)
-        xpath_table = '//*[@id="trip_{}_date_{}"]'.format(
-            i + 1, search_date)
-        for flights_counter in range(
-                1, len(htmltree.xpath(xpath_table)[0].getchildren()) - 1):
-            xpath_base = '//*[@id="trip_{}_date_{}"]/tbody[{}]/tr/td'
-            xpath_base = xpath_base.format(i + 1, search_date,
-                                           flights_counter)
-            flight_type = {}
-            try:
-                flight = htmltree.xpath('{}[1]/text()'.format(xpath_base))[
-                    0].strip()
-                depart = htmltree.xpath('{}[2]/text()'.format(xpath_base))[0]
-                arrive = htmltree.xpath('{}[4]/text()'.format(xpath_base))[0]
-                for k in range(5, 7):
-                    try:
-                        flight_class = htmltree.xpath(
-                            xpath_table +
-                            '/thead/tr[2]/th[{}]/span/text()'.format(k))[0]
-                        cost = htmltree.xpath(
-                            '{}[{}]/label/span/text()'.format(xpath_base,
-                                                              k + 1))[0]
-                        currency = htmltree.xpath(
-                            '{}[{}]/label/span/b/text()'.format(
-                                xpath_base, k + 1))[0]
-                        flight_type[flight_class] = str(cost + " " + currency)
-                    except IndexError:
-                        pass
-            except IndexError:
-                break
-            try:
-                depart_time = datetime.strptime('{}-{}'.format(
-                    search_date, depart.lower()), '%Y_%m_%d-%I:%M %p')
-                arrive_time = datetime.strptime('{}-{}'.format(
-                    search_date, arrive.lower()), '%Y_%m_%d-%I:%M %p')
-            except ValueError:
-                break
-            if arrive_time < depart_time:
-                arrive_time = arrive_time + timedelta(days=1)
-            time_in_flight = arrive_time - depart_time
-            h_in_flight = time_in_flight.seconds // 3600
-            m_in_flight = (time_in_flight.seconds // 60) % 60
-
-            for key in ['Standard (1 Bag)', 'Discount (No Bags)']:
-                if key in flight_type:
-                    fl_cost, fl_currency = flight_type[key].split()
-                    fl_cost = int(''.join(fl_cost.split(',')))
-                    Flight = namedtuple(
-                        'Flight', ['depart_datetime', 'arrive_datetime',
-                                   'departure_airport', 'arrive_airport',
-                                   'time_in_flight', 'flight',
-                                   'type_flight', 'cost', 'currency'])
-                    flight_instance = Flight(
-                        depart_time, arrive_time,
+        table = parsed_body.get_element_by_id(
+            f'trip_{i + 1}_date_{search_date}')
+        tbodyes = table.findall('tbody')
+        for tbody in tbodyes:
+            base_data = get_base_flight_data(tbody, search_date)
+            for flight_type in ['family-ED', 'family-ES']:
+                try:
+                    cost = tbody[0].find_class(flight_type)[0].xpath(
+                        'label/span/text()')[0]
+                    cost = int(''.join(cost.split(',')))
+                    currency = tbody[0].find_class(flight_type)[0].xpath(
+                        'label/span/b/text()')[0]
+                    result.append(Flight(
+                        base_data[1], base_data[2],
                         departure_airport if i == 0 else arrive_airport,
                         arrive_airport if i == 0 else departure_airport,
-                        '{}h {}m'.format(h_in_flight, m_in_flight),
-                        flight, key, fl_cost, fl_currency)
-                    result.append(flight_instance)
-
+                        base_data[3], base_data[0],
+                        'Standard (1 Bag)' if flight_type == 'family-ES' else
+                        'Discount (No Bags)',
+                        cost, currency
+                    ))
+                except IndexError:
+                    pass
     return result
 
 
@@ -229,8 +216,9 @@ def main():
         arrive = airport_input('Destination:')
         depart_date, back_date = input_dates()
     answer = get_document_from_site(departure, arrive, depart_date, back_date)
-    all_flights = get_info_from_doc(answer, departure, arrive,
+    all_flights = get_info_from_doc(answer.content, departure, arrive,
                                     depart_date, back_date, )
+
     print_all_flights(all_flights, departure, back_date)
 
 
