@@ -193,10 +193,8 @@ def print_flight(flight):
 def print_all_flights(all_flights, departure, back_date):
     """print all flights sorted by cost"""
     if not back_date:
-        if not all_flights:
-            print('No fights found.')
-        else:
-            print('The following flights were found:')
+        print('The following flights were found:' if all_flights
+              else 'No fights found.')
         all_flights.sort(key=lambda fl: fl.cost)
         for index, flight in enumerate(all_flights):
             print(f'{index + 1}) ', end='')
@@ -209,21 +207,16 @@ def print_all_flights(all_flights, departure, back_date):
                 forward_flights.append(i)
             else:
                 back_flights.append(i)
-
         combinations = []
         for comb in product(forward_flights, back_flights):
             if comb[0].arrive_datetime < comb[1].depart_datetime:
                 combinations.append(comb)
         combinations.sort(key=lambda x: x[0].cost + x[1].cost)
-        if combinations:
-            print('The following flights combinations found:')
-        else:
-            print('No flight combinations found.')
-        index = 1
-        for i in combinations:
+        print('The following flight combinations were found:' if combinations
+              else 'No flight combinations found.')
+        for index, i in enumerate(combinations):
             if i[0].arrive_datetime < i[1].depart_datetime:
-                print(f'{index})', end='')
-                index += 1
+                print(f'{index + 1})', end='')
                 print_flight(i[0])
                 print('  ', end='')
                 print_flight(i[1])
