@@ -1,6 +1,6 @@
 import os
 from datetime import datetime
-from Airlines.airlines import *
+from airlines import *
 
 FRMT = '%Y-%m-%d'
 path = './/Answers'
@@ -11,11 +11,14 @@ for root, dirs, files in os.walk(path, topdown=False):
         with open(file_path, 'r') as file:
             answer = file.read()
         data = name.split()
-        all_flights = get_info_from_doc(answer,
+        if data[4].split('.')[0] == 'None':
+            bkd = None
+        else:
+            bkd = datetime.strptime(data[4].split('.')[0], FRMT)
+        all_flights = get_info_from_doc(answer,data[1], data[2],
                                         datetime.strptime(data[3], FRMT),
-                                        datetime.strptime(
-                                            data[4].split('.')[0], FRMT),
-                                        data[1], data[2])
+                                        bkd
+                                        )
 
         for f in all_flights:
             file = open('flights.txt', 'a')

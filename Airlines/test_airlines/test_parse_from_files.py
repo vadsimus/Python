@@ -1,5 +1,6 @@
-from Airlines.airlines import get_info_from_doc
+from airlines import get_info_from_doc, print_all_flights
 import os
+import sys
 from datetime import datetime
 
 FRMT = '%Y-%m-%d'
@@ -20,11 +21,16 @@ for root, dirs, files in os.walk(path, topdown=False):
         with open(file_path, 'r') as file:
             answer = file.read()
         data = name.split()
-        all_flights = get_info_from_doc(answer,
+        if data[4].split('.')[0] == 'None':
+            bkd = None
+        else:
+            bkd = datetime.strptime(data[4].split('.')[0], FRMT)
+
+
+        all_flights = get_info_from_doc(answer,data[1], data[2],
                                         datetime.strptime(data[3], FRMT),
-                                        datetime.strptime(
-                                            data[4].split('.')[0], FRMT),
-                                        data[1], data[2])
+                                        bkd)
+
 
         format_dt = '%Y-%m-%d %H:%M'
         for flight in all_flights:
@@ -35,5 +41,6 @@ for root, dirs, files in os.walk(path, topdown=False):
                   f'({flight.time_in_flight}) {flight.type_flight} '
                   f'{flight.cost} {flight.currency}')
             print(name, flight.flight, flight.depart_datetime, end='...')
-            print('OK' if fl.strip() == str(next(reference)).strip()
-                  else 'Fail')
+            expected = str(next(reference))
+            print(f'OK\ngot:     {fl.strip()} \nexpected:{expected}' if fl.strip() == expected.strip()
+        else f'Fail\ngot:     {fl.strip()} \nexpected:{expected}')
