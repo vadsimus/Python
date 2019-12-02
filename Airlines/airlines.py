@@ -111,10 +111,11 @@ def get_base_flight_data(tbody, search_date):
     flight = tbody[0].find_class('flight')[0].text.strip()
     depart_time = tbody[0].find_class('time leaving')[0].text
     depart_time = datetime.strptime('{}-{}'.format(
-        search_date, depart_time.lower()), '%Y_%m_%d-%I:%M %p')
+        search_date.date(), depart_time.lower()), '%Y-%m-%d-%I:%M %p')
     arrive_time = tbody[0].find_class('time landing')[0].text
     arrive_time = datetime.strptime('{}-{}'.format(
-        search_date, arrive_time.lower()), '%Y_%m_%d-%I:%M %p')
+        search_date.date(), arrive_time.lower()), '%Y-%m-%d-%I:%M %p')
+
     if arrive_time < depart_time:
         arrive_time = arrive_time + timedelta(days=1)
     time_in_flight = arrive_time - depart_time
@@ -141,8 +142,7 @@ def get_cost(tbody):
     return result
 
 
-def get_info_from_doc(answer, departure_airport, arrive_airport,
-                      depart_date, back_date):
+def get_info_from_doc(answer, departure_airport, arrive_airport):
     """parsing answer from website"""
     Flight = namedtuple(
         'Flight', ['depart_datetime', 'arrive_datetime',
@@ -150,28 +150,30 @@ def get_info_from_doc(answer, departure_airport, arrive_airport,
                    'time_in_flight', 'flight',
                    'type_flight', 'cost', 'currency'])
     result = []
-    dates = [depart_date]
-    if back_date:
-        dates.append(back_date)
-    for i, search_date in enumerate(dates):
-        search_date = '{:0>4}_{:0>2}_{:0>2}'.format(
-            search_date.year, search_date.month, search_date.day)
+    # dates = [depart_date]
+    # if back_date:
+    #     dates.append(back_date)
+
+    for table in lxml.html.fromstring(answer).xpath(
+            "//table[contains(@class,'requested-date')]"):
         try:
-            table = lxml.html.fromstring(answer).get_element_by_id(
-                f'trip_{i + 1}_date_{search_date}')
-        except KeyError:
+            table_id = table.xpath('@id')[0].split('_')
+        except IndexError:
             continue
+        table_date = datetime(int(table_id[3]), int(table_id[4]),
+                              int(table_id[5]))
+        table_trip = table_id[1]
         for tbody in table.findall('tbody'):
             try:
-                base_data = get_base_flight_data(tbody, search_date)
+                base_data = get_base_flight_data(tbody, table_date)
             except IndexError:
                 continue
             cost_data = get_cost(tbody)
             for cost in cost_data:
                 result.append(Flight(
                     base_data.depart_time, base_data.arrive_time,
-                    departure_airport if i == 0 else arrive_airport,
-                    arrive_airport if i == 0 else departure_airport,
+                    departure_airport if table_trip == '1' else arrive_airport,
+                    arrive_airport if table_trip == '1' else departure_airport,
                     base_data.time_in_flight, base_data.flight,
                     'Standard (1 Bag)' if cost.flight_type == 'family-ES'
                     else 'Discount (No Bags)',
@@ -237,8 +239,7 @@ def main():
         arrive = airport_input('Destination:')
         depart_date, back_date = input_dates()
     answer = get_document_from_site(departure, arrive, depart_date, back_date)
-    all_flights = get_info_from_doc(answer.content, departure, arrive,
-                                    depart_date, back_date, )
+    all_flights = get_info_from_doc(answer.content, departure, arrive)
     print_all_flights(all_flights, departure, back_date)
 
 

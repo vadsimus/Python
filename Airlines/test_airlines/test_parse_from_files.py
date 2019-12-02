@@ -27,9 +27,7 @@ for root, dirs, files in os.walk(path, topdown=False):
             bkd = datetime.strptime(data[4].split('.')[0], FRMT)
 
 
-        all_flights = get_info_from_doc(answer,data[1], data[2],
-                                        datetime.strptime(data[3], FRMT),
-                                        bkd)
+        all_flights = get_info_from_doc(answer,data[1], data[2])
 
 
         format_dt = '%Y-%m-%d %H:%M'
