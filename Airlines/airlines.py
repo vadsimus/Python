@@ -115,7 +115,6 @@ def get_base_flight_data(tbody, search_date):
     arrive_time = tbody[0].find_class('time landing')[0].text
     arrive_time = datetime.strptime('{}-{}'.format(
         search_date.date(), arrive_time.lower()), '%Y-%m-%d-%I:%M %p')
-
     if arrive_time < depart_time:
         arrive_time = arrive_time + timedelta(days=1)
     time_in_flight = arrive_time - depart_time
@@ -150,10 +149,6 @@ def get_info_from_doc(answer, departure_airport, arrive_airport):
                    'time_in_flight', 'flight',
                    'type_flight', 'cost', 'currency'])
     result = []
-    # dates = [depart_date]
-    # if back_date:
-    #     dates.append(back_date)
-
     for table in lxml.html.fromstring(answer).xpath(
             "//table[contains(@class,'requested-date')]"):
         try:
