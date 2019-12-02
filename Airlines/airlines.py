@@ -105,7 +105,7 @@ def get_document_from_site(departure, arrive, depart_date, back_date=None):
 
 
 def get_base_flight_data(tbody, search_date):
-    "gettig base data from tbody"
+    """gettig base data from tbody"""
     Base_info = namedtuple('Base_info', ['flight', 'depart_time',
                                          'arrive_time', 'time_in_flight'])
     flight = tbody[0].find_class('flight')[0].text.strip()
@@ -174,7 +174,6 @@ def get_info_from_doc(answer, departure_airport, arrive_airport):
                     else 'Discount (No Bags)',
                     cost.cost, cost.currency
                 ))
-
     return result
 
 

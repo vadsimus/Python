@@ -1,0 +1,1147 @@
+
+<!DOCTYPE html>
+<html data-avg="847">
+<head>    <script>
+        var framesRemaining = 0;
+        function checkDocReady(frame) {
+            if (!--framesRemaining)
+                setTimeout(function () { document.body.className += " loaded"; });
+            if (window.$ !== undefined)
+                $(frame).trigger('loaded');
+        }
+    </script>
+ <script type="text/javascript" src="static/code/clickables.js?8jgwoB"></script>  <link rel="stylesheet" type="text/css" href="static/site.css?7lbvPP" />  <link rel="stylesheet" type="text/css" href="static/common.css?6idwuo" />         <link rel="stylesheet" type="text/css" href="../shell.asp?get=bookings.css" />
+    <style>
+        body { visibility: hidden !important } 
+        body.loaded  { visibility: visible !important } 
+    </style>
+
+    <title>Flight Selection</title>
+     <link rel="stylesheet" type="text/css" href="static/theme/jquery-ui.min.css?3iddvW" />  <link rel="stylesheet" type="text/css" href="static/searching.css?3jwwME" />  <link rel="stylesheet" type="text/css" href="static/wizard_bar.css?3kybu2" />  <link rel="stylesheet" type="text/css" href="static/clickables.css?8k7wjB" />  <link rel="stylesheet" type="text/css" href="static/flight_search.css?4bruDh" />  <link rel="stylesheet" type="text/css" href="static/flight_selection.css?8jgwoB" />  <script type="text/javascript" src="static/code/jquery-1.9.0.min.js?3iddvW"></script>  <script type="text/javascript" src="static/code/jquery-ui.min.js?3iddvW"></script>  <script type="text/javascript" src="static/code/site.js?5gqxXK"></script>         <!--[if lt IE 9]> <script type="text/javascript" src="static/code/site_ie.js?3kfa6O"></script> <![endif]-->
+ <script type="text/javascript" src="static/code/moment.min.js?5gqxXK"></script>  <script type="text/javascript" src="static/code/datepick.js?7kdxLq"></script>  <script type="text/javascript" src="static/code/flight_selection.js?8jgwoB"></script>  <script type="text/javascript" src="static/code/custom_tooltips.js?3iddvW"></script> 
+    
+    <style> input[type="text"].date { margin: -1px; width: 10em; } </style>
+</head>
+<body>    <script>framesRemaining += 1;</script>
+    <iframe id="header_frame" onload="checkDocReady(this)" src="../shell.asp?section=header&amp;pageIndex=9999" frameborder="0" scrolling="no" allowTransparency="true"></iframe>
+    <script>framesRemaining += 1;</script>
+    <iframe id="menu_frame" onload="checkDocReady(this)" src="../shell.asp?section=menu&amp;pageIndex=9999" frameborder="0" scrolling="no" allowTransparency="true"></iframe>
+<div id='content' class='page_content'><div class='page_content_border'>
+    <div id="current_step">
+        <h1>
+            Search for Flights 
+            <a id='flight_schedule' target='_blank' href='static/flight_schedule.htm'>View Flight Schedule</a>
+        </h1>
+        <ol class="reservation-step">
+            <li>Find Flights</li>
+            <li class="selected">Choose Flights</li>
+            <li>Travellers</li>
+            <li>Additional Items</li>
+            <li>Finished Booking</li>
+        </ol>
+    </div>
+    <form method="get" action="" target="_top" class="flight_search TT_RT-checked " onsubmit="document.getElementById('content').className+=' searching';">
+        <input type="radio" id="TT_RT" name="TT" value="RT" checked /> <label onclick=";" for="TT_RT">Round Trip</label>
+        <input type="radio" id="TT_OW" name="TT" value="OW"  /> <label onclick=";" for="TT_OW">One Way</label>
+        <input type="radio" id="TT_MC" name="TT" value="MC"  /> <label onclick=";" for="TT_MC">Multi-City</label>
+        <br />
+        <input type="hidden" name="SS" value="" />
+        <input type="hidden" name="RT" value="" />
+        <table class="search ">
+            <thead>
+                <tr>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>
+                        <select name="FL">
+                            <option value="">Fixed Dates</option>
+                            <option value="on" selected>Flexible Dates</option>
+                        </select>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="oneway">
+                    <td>
+                        <select name="DC" >
+                            <option />                            <option value="AUH"  data-targets="ISB,LHE,PEW">Abu Dhabi</option>                            <option value="DXB"  data-targets="ISB,KHI,LHE,MUX,PEW">Dubai</option>                            <option value="ISB"  data-targets="AUH,DXB,JED,KHI,MED,PEW,RUH,SHJ">Islamabad</option>                            <option value="JED"  data-targets="ISB,KHI,LHE,MUX,PEW">Jeddah</option>                            <option value="KHI" selected data-targets="ISB,JED,KHI,LHE,MED,PEW,RYK,SHJ">Karachi</option>                            <option value="LHE"  data-targets="AUH,DMM,DXB,ISB,JED,KHI,MCT,MED,RUH,SHJ,SKT">Lahore</option>                            <option value="MED"  data-targets="ISB,KHI,LHE,MUX,PEW">Medina</option>                            <option value="MUX"  data-targets="DXB,JED,MED,SHJ">Multan</option>                            <option value="PEW"  data-targets="AUH,DXB,ISB,JED,MED,RUH,SHJ">Peshawar</option>                            <option value="UET"  data-targets="MUX">Quetta</option>                            <option value="RUH"  data-targets="ISB,LHE,PEW">Riyadh</option>                            <option value="SHJ"  data-targets="ISB,LHE,MUX,PEW">Sharjah</option>                        </select>
+                    </td>
+                    <td>
+                        <select name="AC" >
+                            <option />                            <option value="AUH"  data-targets="ISB,LHE,PEW">Abu Dhabi</option>                            <option value="DMM"  data-targets="LHE">Dammam</option>                            <option value="DXB"  data-targets="ISB,LHE,MUX,PEW">Dubai</option>                            <option value="ISB" selected data-targets="AUH,DXB,JED,KHI,LHE,MED,PEW,RUH,SHJ">Islamabad</option>                            <option value="JED"  data-targets="ISB,KHI,LHE,MUX,PEW">Jeddah</option>                            <option value="KHI"  data-targets="DXB,ISB,JED,KHI,LHE,MED">Karachi</option>                            <option value="LHE"  data-targets="AUH,DXB,JED,KHI,MED,RUH,SHJ">Lahore</option>                            <option value="MED"  data-targets="ISB,KHI,LHE,MUX,PEW">Medina</option>                            <option value="MUX"  data-targets="DXB,JED,MED,SHJ,UET">Multan</option>                            <option value="MCT"  data-targets="LHE">Muscat</option>                            <option value="PEW"  data-targets="AUH,DXB,ISB,JED,KHI,MED,RUH,SHJ">Peshawar</option>                            <option value="RYK"  data-targets="KHI">Rahim Yar Khan</option>                            <option value="RUH"  data-targets="ISB,LHE,PEW">Riyadh</option>                            <option value="SHJ"  data-targets="ISB,KHI,LHE,MUX,PEW">Sharjah</option>                            <option value="SKT"  data-targets="LHE">Sialkot</option>                        </select>
+                    </td>
+                    <td class="flight_date">
+                        <strong>On&nbsp;</strong><select name="AM"  min="-1">
+                            <option />                            <option value="2019-11" >November</option>                            <option value="2019-12" selected>December</option>                            <option value="2020-01" >2020 Jan</option>                            <option value="2020-02" >2020 Feb</option>                            <option value="2020-03" >2020 Mar</option>                            <option value="2020-04" >2020 Apr</option>                            <option value="2020-05" >2020 May</option>                            <option value="2020-06" >2020 Jun</option>                            <option value="2020-07" >2020 Jul</option>                            <option value="2020-08" >2020 Aug</option>                            <option value="2020-09" >2020 Sep</option>                            <option value="2020-10" >2020 Oct</option>                        </select><select name="AD" >
+                            <option></option>                            <option >01</option>                            <option selected>02</option>                            <option >03</option>                            <option >04</option>                            <option >05</option>                            <option >06</option>                            <option >07</option>                            <option >08</option>                            <option >09</option>                            <option >10</option>                            <option >11</option>                            <option >12</option>                            <option >13</option>                            <option >14</option>                            <option >15</option>                            <option >16</option>                            <option >17</option>                            <option >18</option>                            <option >19</option>                            <option >20</option>                            <option >21</option>                            <option >22</option>                            <option >23</option>                            <option >24</option>                            <option >25</option>                            <option >26</option>                            <option >27</option>                            <option >28</option>                            <option >29</option>                            <option >30</option>                            <option >31</option>                        </select>
+                    </td>
+                </tr>
+                <tr class="multicity">
+                    <td>
+                        <select name="DC" >
+                            <option />                            <option value="AUH"  data-targets="ISB,LHE,PEW">Abu Dhabi</option>                            <option value="DXB"  data-targets="ISB,KHI,LHE,MUX,PEW">Dubai</option>                            <option value="ISB"  data-targets="AUH,DXB,JED,KHI,MED,PEW,RUH,SHJ">Islamabad</option>                            <option value="JED"  data-targets="ISB,KHI,LHE,MUX,PEW">Jeddah</option>                            <option value="KHI"  data-targets="ISB,JED,KHI,LHE,MED,PEW,RYK,SHJ">Karachi</option>                            <option value="LHE"  data-targets="AUH,DMM,DXB,ISB,JED,KHI,MCT,MED,RUH,SHJ,SKT">Lahore</option>                            <option value="MED"  data-targets="ISB,KHI,LHE,MUX,PEW">Medina</option>                            <option value="MUX"  data-targets="DXB,JED,MED,SHJ">Multan</option>                            <option value="PEW"  data-targets="AUH,DXB,ISB,JED,MED,RUH,SHJ">Peshawar</option>                            <option value="UET"  data-targets="MUX">Quetta</option>                            <option value="RUH"  data-targets="ISB,LHE,PEW">Riyadh</option>                            <option value="SHJ"  data-targets="ISB,LHE,MUX,PEW">Sharjah</option>                        </select>
+                    </td>
+                    <td>
+                        <select name="AC" >
+                            <option />                            <option value="AUH"  data-targets="ISB,LHE,PEW">Abu Dhabi</option>                            <option value="DMM"  data-targets="LHE">Dammam</option>                            <option value="DXB"  data-targets="ISB,LHE,MUX,PEW">Dubai</option>                            <option value="ISB"  data-targets="AUH,DXB,JED,KHI,LHE,MED,PEW,RUH,SHJ">Islamabad</option>                            <option value="JED"  data-targets="ISB,KHI,LHE,MUX,PEW">Jeddah</option>                            <option value="KHI"  data-targets="DXB,ISB,JED,KHI,LHE,MED">Karachi</option>                            <option value="LHE"  data-targets="AUH,DXB,JED,KHI,MED,RUH,SHJ">Lahore</option>                            <option value="MED"  data-targets="ISB,KHI,LHE,MUX,PEW">Medina</option>                            <option value="MUX"  data-targets="DXB,JED,MED,SHJ,UET">Multan</option>                            <option value="MCT"  data-targets="LHE">Muscat</option>                            <option value="PEW"  data-targets="AUH,DXB,ISB,JED,KHI,MED,RUH,SHJ">Peshawar</option>                            <option value="RYK"  data-targets="KHI">Rahim Yar Khan</option>                            <option value="RUH"  data-targets="ISB,LHE,PEW">Riyadh</option>                            <option value="SHJ"  data-targets="ISB,KHI,LHE,MUX,PEW">Sharjah</option>                            <option value="SKT"  data-targets="LHE">Sialkot</option>                        </select>
+                    </td>
+                    <td class="flight_date">
+                        <strong>On&nbsp;</strong><select name="AM"  min="-1">
+                            <option />                            <option value="2019-11" >November</option>                            <option value="2019-12" >December</option>                            <option value="2020-01" >2020 Jan</option>                            <option value="2020-02" >2020 Feb</option>                            <option value="2020-03" >2020 Mar</option>                            <option value="2020-04" >2020 Apr</option>                            <option value="2020-05" >2020 May</option>                            <option value="2020-06" >2020 Jun</option>                            <option value="2020-07" >2020 Jul</option>                            <option value="2020-08" >2020 Aug</option>                            <option value="2020-09" >2020 Sep</option>                            <option value="2020-10" >2020 Oct</option>                        </select><select name="AD" >
+                            <option></option>                            <option >01</option>                            <option >02</option>                            <option >03</option>                            <option >04</option>                            <option >05</option>                            <option >06</option>                            <option >07</option>                            <option >08</option>                            <option >09</option>                            <option >10</option>                            <option >11</option>                            <option >12</option>                            <option >13</option>                            <option >14</option>                            <option >15</option>                            <option >16</option>                            <option >17</option>                            <option >18</option>                            <option >19</option>                            <option >20</option>                            <option >21</option>                            <option >22</option>                            <option >23</option>                            <option >24</option>                            <option >25</option>                            <option >26</option>                            <option >27</option>                            <option >28</option>                            <option >29</option>                            <option >30</option>                            <option >31</option>                        </select>
+                    </td>
+                </tr>
+                <tr class="multicity">
+                    <td>
+                        <select name="DC" >
+                            <option />                            <option value="AUH"  data-targets="ISB,LHE,PEW">Abu Dhabi</option>                            <option value="DXB"  data-targets="ISB,KHI,LHE,MUX,PEW">Dubai</option>                            <option value="ISB"  data-targets="AUH,DXB,JED,KHI,MED,PEW,RUH,SHJ">Islamabad</option>                            <option value="JED"  data-targets="ISB,KHI,LHE,MUX,PEW">Jeddah</option>                            <option value="KHI"  data-targets="ISB,JED,KHI,LHE,MED,PEW,RYK,SHJ">Karachi</option>                            <option value="LHE"  data-targets="AUH,DMM,DXB,ISB,JED,KHI,MCT,MED,RUH,SHJ,SKT">Lahore</option>                            <option value="MED"  data-targets="ISB,KHI,LHE,MUX,PEW">Medina</option>                            <option value="MUX"  data-targets="DXB,JED,MED,SHJ">Multan</option>                            <option value="PEW"  data-targets="AUH,DXB,ISB,JED,MED,RUH,SHJ">Peshawar</option>                            <option value="UET"  data-targets="MUX">Quetta</option>                            <option value="RUH"  data-targets="ISB,LHE,PEW">Riyadh</option>                            <option value="SHJ"  data-targets="ISB,LHE,MUX,PEW">Sharjah</option>                        </select>
+                    </td>
+                    <td>
+                        <select name="AC" >
+                            <option />                            <option value="AUH"  data-targets="ISB,LHE,PEW">Abu Dhabi</option>                            <option value="DMM"  data-targets="LHE">Dammam</option>                            <option value="DXB"  data-targets="ISB,LHE,MUX,PEW">Dubai</option>                            <option value="ISB"  data-targets="AUH,DXB,JED,KHI,LHE,MED,PEW,RUH,SHJ">Islamabad</option>                            <option value="JED"  data-targets="ISB,KHI,LHE,MUX,PEW">Jeddah</option>                            <option value="KHI"  data-targets="DXB,ISB,JED,KHI,LHE,MED">Karachi</option>                            <option value="LHE"  data-targets="AUH,DXB,JED,KHI,MED,RUH,SHJ">Lahore</option>                            <option value="MED"  data-targets="ISB,KHI,LHE,MUX,PEW">Medina</option>                            <option value="MUX"  data-targets="DXB,JED,MED,SHJ,UET">Multan</option>                            <option value="MCT"  data-targets="LHE">Muscat</option>                            <option value="PEW"  data-targets="AUH,DXB,ISB,JED,KHI,MED,RUH,SHJ">Peshawar</option>                            <option value="RYK"  data-targets="KHI">Rahim Yar Khan</option>                            <option value="RUH"  data-targets="ISB,LHE,PEW">Riyadh</option>                            <option value="SHJ"  data-targets="ISB,KHI,LHE,MUX,PEW">Sharjah</option>                            <option value="SKT"  data-targets="LHE">Sialkot</option>                        </select>
+                    </td>
+                    <td class="flight_date">
+                        <strong>On&nbsp;</strong><select name="AM"  min="-1">
+                            <option />                            <option value="2019-11" >November</option>                            <option value="2019-12" >December</option>                            <option value="2020-01" >2020 Jan</option>                            <option value="2020-02" >2020 Feb</option>                            <option value="2020-03" >2020 Mar</option>                            <option value="2020-04" >2020 Apr</option>                            <option value="2020-05" >2020 May</option>                            <option value="2020-06" >2020 Jun</option>                            <option value="2020-07" >2020 Jul</option>                            <option value="2020-08" >2020 Aug</option>                            <option value="2020-09" >2020 Sep</option>                            <option value="2020-10" >2020 Oct</option>                        </select><select name="AD" >
+                            <option></option>                            <option >01</option>                            <option >02</option>                            <option >03</option>                            <option >04</option>                            <option >05</option>                            <option >06</option>                            <option >07</option>                            <option >08</option>                            <option >09</option>                            <option >10</option>                            <option >11</option>                            <option >12</option>                            <option >13</option>                            <option >14</option>                            <option >15</option>                            <option >16</option>                            <option >17</option>                            <option >18</option>                            <option >19</option>                            <option >20</option>                            <option >21</option>                            <option >22</option>                            <option >23</option>                            <option >24</option>                            <option >25</option>                            <option >26</option>                            <option >27</option>                            <option >28</option>                            <option >29</option>                            <option >30</option>                            <option >31</option>                        </select>
+                    </td>
+                </tr>
+                <tr class="multicity">
+                    <td>
+                        <select name="DC" >
+                            <option />                            <option value="AUH"  data-targets="ISB,LHE,PEW">Abu Dhabi</option>                            <option value="DXB"  data-targets="ISB,KHI,LHE,MUX,PEW">Dubai</option>                            <option value="ISB"  data-targets="AUH,DXB,JED,KHI,MED,PEW,RUH,SHJ">Islamabad</option>                            <option value="JED"  data-targets="ISB,KHI,LHE,MUX,PEW">Jeddah</option>                            <option value="KHI"  data-targets="ISB,JED,KHI,LHE,MED,PEW,RYK,SHJ">Karachi</option>                            <option value="LHE"  data-targets="AUH,DMM,DXB,ISB,JED,KHI,MCT,MED,RUH,SHJ,SKT">Lahore</option>                            <option value="MED"  data-targets="ISB,KHI,LHE,MUX,PEW">Medina</option>                            <option value="MUX"  data-targets="DXB,JED,MED,SHJ">Multan</option>                            <option value="PEW"  data-targets="AUH,DXB,ISB,JED,MED,RUH,SHJ">Peshawar</option>                            <option value="UET"  data-targets="MUX">Quetta</option>                            <option value="RUH"  data-targets="ISB,LHE,PEW">Riyadh</option>                            <option value="SHJ"  data-targets="ISB,LHE,MUX,PEW">Sharjah</option>                        </select>
+                    </td>
+                    <td>
+                        <select name="AC" >
+                            <option />                            <option value="AUH"  data-targets="ISB,LHE,PEW">Abu Dhabi</option>                            <option value="DMM"  data-targets="LHE">Dammam</option>                            <option value="DXB"  data-targets="ISB,LHE,MUX,PEW">Dubai</option>                            <option value="ISB"  data-targets="AUH,DXB,JED,KHI,LHE,MED,PEW,RUH,SHJ">Islamabad</option>                            <option value="JED"  data-targets="ISB,KHI,LHE,MUX,PEW">Jeddah</option>                            <option value="KHI"  data-targets="DXB,ISB,JED,KHI,LHE,MED">Karachi</option>                            <option value="LHE"  data-targets="AUH,DXB,JED,KHI,MED,RUH,SHJ">Lahore</option>                            <option value="MED"  data-targets="ISB,KHI,LHE,MUX,PEW">Medina</option>                            <option value="MUX"  data-targets="DXB,JED,MED,SHJ,UET">Multan</option>                            <option value="MCT"  data-targets="LHE">Muscat</option>                            <option value="PEW"  data-targets="AUH,DXB,ISB,JED,KHI,MED,RUH,SHJ">Peshawar</option>                            <option value="RYK"  data-targets="KHI">Rahim Yar Khan</option>                            <option value="RUH"  data-targets="ISB,LHE,PEW">Riyadh</option>                            <option value="SHJ"  data-targets="ISB,KHI,LHE,MUX,PEW">Sharjah</option>                            <option value="SKT"  data-targets="LHE">Sialkot</option>                        </select>
+                    </td>
+                    <td class="flight_date">
+                        <strong>On&nbsp;</strong><select name="AM"  min="-1">
+                            <option />                            <option value="2019-11" >November</option>                            <option value="2019-12" >December</option>                            <option value="2020-01" >2020 Jan</option>                            <option value="2020-02" >2020 Feb</option>                            <option value="2020-03" >2020 Mar</option>                            <option value="2020-04" >2020 Apr</option>                            <option value="2020-05" >2020 May</option>                            <option value="2020-06" >2020 Jun</option>                            <option value="2020-07" >2020 Jul</option>                            <option value="2020-08" >2020 Aug</option>                            <option value="2020-09" >2020 Sep</option>                            <option value="2020-10" >2020 Oct</option>                        </select><select name="AD" >
+                            <option></option>                            <option >01</option>                            <option >02</option>                            <option >03</option>                            <option >04</option>                            <option >05</option>                            <option >06</option>                            <option >07</option>                            <option >08</option>                            <option >09</option>                            <option >10</option>                            <option >11</option>                            <option >12</option>                            <option >13</option>                            <option >14</option>                            <option >15</option>                            <option >16</option>                            <option >17</option>                            <option >18</option>                            <option >19</option>                            <option >20</option>                            <option >21</option>                            <option >22</option>                            <option >23</option>                            <option >24</option>                            <option >25</option>                            <option >26</option>                            <option >27</option>                            <option >28</option>                            <option >29</option>                            <option >30</option>                            <option >31</option>                        </select>
+                    </td>
+                </tr>
+                <tr class="roundtrip">
+                    <td colspan="2" class="flight-options">
+                    </td>
+                    <td class="flight_date">
+                        <strong><b>Return&nbsp;</b>On&nbsp;</strong><select name="RM"  min="-1">
+                            <option />                            <option value="2019-11" >November</option>                            <option value="2019-12" selected>December</option>                            <option value="2020-01" >2020 Jan</option>                            <option value="2020-02" >2020 Feb</option>                            <option value="2020-03" >2020 Mar</option>                            <option value="2020-04" >2020 Apr</option>                            <option value="2020-05" >2020 May</option>                            <option value="2020-06" >2020 Jun</option>                            <option value="2020-07" >2020 Jul</option>                            <option value="2020-08" >2020 Aug</option>                            <option value="2020-09" >2020 Sep</option>                            <option value="2020-10" >2020 Oct</option>                        </select><select name="RD" >
+                            <option />                            <option >01</option>                            <option selected>02</option>                            <option >03</option>                            <option >04</option>                            <option >05</option>                            <option >06</option>                            <option >07</option>                            <option >08</option>                            <option >09</option>                            <option >10</option>                            <option >11</option>                            <option >12</option>                            <option >13</option>                            <option >14</option>                            <option >15</option>                            <option >16</option>                            <option >17</option>                            <option >18</option>                            <option >19</option>                            <option >20</option>                            <option >21</option>                            <option >22</option>                            <option >23</option>                            <option >24</option>                            <option >25</option>                            <option >26</option>                            <option >27</option>                            <option >28</option>                            <option >29</option>                            <option >30</option>                            <option >31</option>                        </select>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="search ">
+            <thead>
+                <tr>
+                    <th class="passengers">Travellers</th>
+                    <th class="options">Options</th>
+                    <th class="search">Promo Code</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="passengers" data-max-passengers="6">
+                        <select id="PA" name="PA" >
+        <option value="1" selected>Adults: 1</option>        <option value="2" >Adults: 2</option>        <option value="3" >Adults: 3</option>        <option value="4" >Adults: 4</option>        <option value="5" >Adults: 5</option>        <option value="6" >Adults: 6</option></select><br />
+    <select id="PC" name="PC" >
+        <option value="">Children (2-12)</option>        <option value="1" >Children: 1</option>        <option value="2" >Children: 2</option>        <option value="3" >Children: 3</option>        <option value="4" >Children: 4</option>        <option value="5" >Children: 5</option>        <option value="6" >Children: 6</option>    </select><br />
+    <select id="PI" name="PI" >
+        <option value="">Infants</option>        <option value="1" >Infants: 1</option>        <option value="2" >Infants: 2</option>        <option value="3" >Infants: 3</option>        <option value="4" >Infants: 4</option>        <option value="5" >Infants: 5</option>        <option value="6" >Infants: 6</option>    </select>
+
+                    </td>
+                    <td class="options">
+                        <select name="CC">
+                            <option value="">Any Cabin</option>
+                            <option value="Y" selected>Economy</option>                        </select>
+                        <br />
+                        <select name="NS">
+                            <option value="">Show all flights</option>
+                            <option value="on" >Direct flights only</option>
+                        </select>
+                    </td>
+                    <td class="search">
+                        <input type="text" name="CD" id="CD" value="" /><br /><br />
+                        <span class="button"><label onclick=";" class="action" data-text="Search Again"><input type="submit" value="Search Again" /></label></span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+
+    <form method="post" class="search_results "
+        
+        >
+        <input type="hidden" name="ssp" value="NIL" />
+        <input type="hidden" name="fsc" value="wg2GBBq76Ao19j33KZ01M8NG4kWRpsrYIF7lR9dwd2152HZbQpbPGNFewgqXHJ0AH8Q9JODgRvorhJNAuq05y6yTrWKGM/A0ojzfGVIEVaFYl83c5hbLCsngjW64mrSXWm/25AWdui8=" />
+        <div id="trip_1" class="trip_segment_block flexible-dates">
+        <h2 class="trip_segment_header ">
+            <label class="city"><span>From</span> Karachi <strong class="city-code">(KHI)</strong> <b></b></label>
+            <label class="city"><span>  To</span> Islamabad <strong class="city-code">(ISB)</strong> <b></b></label>
+                <ul class="flight-date-search" data-search-date-selector="table.search tr.oneway :input.flightDate">
+        <li class="navigate navigate-last not-allowed">
+            <label data-date="2019-11-25" title="Search one week earlier">Last Week</label>
+        </li>
+        <li class="flight-date  fares-available">
+            <label for="trip_1_date_2019_11_29" data-date="2019-11-29" class="">
+                <strong>29-Nov</strong>
+                <em></em>
+                    <span data-family-group="Y" class="lowest-fare" data-availability=""><b>PKR</b> 25,241</span>
+            </label>
+        </li>
+        <li class="flight-date  ">
+            <label for="trip_1_date_2019_11_30" data-date="2019-11-30" class="">
+                <strong>30-Nov</strong>
+                <em>-----</em>
+            </label>
+        </li>
+        <li class="flight-date  ">
+            <label for="trip_1_date_2019_12_01" data-date="2019-12-01" class="">
+                <strong>01-Dec</strong>
+                <em>-----</em>
+            </label>
+        </li>
+        <li class="flight-date requested-date current-date fares-available">
+            <label for="trip_1_date_2019_12_02" data-date="2019-12-02" class="">
+                <strong>02-Dec</strong>
+                <em></em>
+                    <span data-family-group="Y" class="lowest-fare" data-availability=""><b>PKR</b> 13,907</span>
+            </label>
+        </li>
+        <li class="flight-date  ">
+            <label for="trip_1_date_2019_12_03" data-date="2019-12-03" class="not-allowed">
+                <strong>03-Dec</strong>
+                <em>-----</em>
+            </label>
+        </li>
+        <li class="flight-date  fares-available">
+            <label for="trip_1_date_2019_12_04" data-date="2019-12-04" class="not-allowed">
+                <strong>04-Dec</strong>
+                <em></em>
+                    <span data-family-group="Y" class="lowest-fare" data-availability=""><b>PKR</b> 13,907</span>
+            </label>
+        </li>
+        <li class="flight-date  fares-available">
+            <label for="trip_1_date_2019_12_05" data-date="2019-12-05" class="not-allowed">
+                <strong>05-Dec</strong>
+                <em></em>
+                    <span data-family-group="Y" class="lowest-fare" data-availability=""><b>PKR</b> 13,907</span>
+            </label>
+        </li>
+        <li class="navigate navigate-next not-allowed">
+            <label data-date="2019-12-09" title="Search one week later">Next Week</label>
+        </li>
+    </ul>
+
+        </h2>
+
+        <table id="trip_1_date_2019_11_29" class="flight_selection column-count-1 ">
+            
+            <caption style="position: absolute;background: #FFF;border: 1px solid #CCC;margin: 0 -1px;padding: 0 2px;font-size: 10px;">
+                Friday, November 29, 2019
+            </caption>
+            <thead>
+                <tr>
+                    <th colspan="4"></th>
+                    <td>&nbsp;</td>
+                    <td colspan="1">
+                        <table class="family-group">
+                            <thead>
+                                <tr>
+                                    <th class="family-group-tab " data-family-group="Y">
+                                        <label>
+                                            <strong>Economy</strong>
+                                            <em>from</em>
+<span><b>PKR</b> 25,241</span>                                        </label>
+                                    </th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="flight">Flight(s)</th>
+                    <th class="time departing">Depart</th>
+                    <th class="route">Route</th>
+                    <th class="time arriving">Arrive</th>
+                    <td>&nbsp;</td>
+                    <th class="family family-ES family-group-Y " >
+                        <span class="data-title" title="1 Checked Bags Allowed.
+Refunds and Exchanges allowed with standard fee.
+See ticket terms and conditions for details.
+100% BlueMiles Reward">Standard (1 Bag)</span>
+                    </th>
+                </tr>
+            </thead>
+        <tbody>
+            <tr class="flight-status-ontime">
+                    <td class="flight">PA-204
+        
+    </td>
+    <td class="time leaving">6:00 PM</td>
+    <td class="route" >
+        <span>Nonstop</span>
+ <br /><span>A320</span>    </td>
+    <td class="time landing">8:10 PM</td>
+    <td class="spacer">&nbsp;</td>
+
+            <td class="family family-ES family-group-Y " rowspan="1">
+                <label data-title="All Travellers:
+PKR 25,241
+5 XBAG Available" 
+                    >
+                    <input type="radio"  name="trip_1" value="RbqVZkVbFRBwtRCe4woialWaBXatCeYXssHeDdQIwRuknRd6mlmclxG6ijbsWNqOAKLiLS1nosuBZwBsHTv3ZMzRs8itQGXSCI03zVzcZZMOgdOfOvnU/wPqMe2VQT/oiPCqwff9sxV824eofR/X3HLyXFxcpRO8IF7lR9dwd2152HZbQpbPGNFewgqXHJ0AH8Q9JODgRvorhJNAuq05y6yTrWKGM/A0ojzfGVIEVaFYl83c5hbLClkPODruUCizedh2W0KWzxjRXsIKlxydAB/EPSTg4Eb6IRB99/dx6B2C+zKSMKwlRBLHJ1XB6oKzL3fRqm02dbNcgGt2pHS1XHhX0vto/D3KlX0uRPaCP/Fv4/0jUQRpvjgre0DzNvl2XmySmL5ysiroiBFbgoi6/D23lmAoVVNBgnCsRSRfR/1llmmguf8P29cxA8MQ+Fa89k5B7tJgaAkuQgER0/dmVhTNDzpoNgqjVhgfCTx6AofbVfp2iuH0ps1xap2ohWJIUlTv3ZoRhlKklOXfUr6f0DPtPALBss9Jedh2W0KWzxjRXsIKlxydAB/EPSTg4Eb6gKyockDekLSC+zKSMKwlRBLHJ1XB6oKzL3fRqm02dbNcgGt2pHS1XBbWE6ot49DWlX0uRPaCP/E8XhdOQzjdd4Q4rhyxsUjrOl2ksIprQUS9GpTcb9vTcQfbuySNC05XT17MQ2gqxhZ/xUsMLmsFTm2/y0usYvNk7oMQJiAzSfVPSvWYaMw6P12+fd1EvFt/iLse2td83mUn6CzatlIPqY+dc+hn6B3wriqnDInczX6DgIWgvuSXXXirzdNnipwkRUapb3yuqldimuZEMpL5ysQE7h4AiX+0wb7x2e3C0+SPnXPoZ+gd8K4qpwyJ3M1+MvkQlpbOXoF4q83TZ4qcJEVGqW98rqpXYprmRDKS+crEBO4eAIl/tL7Ts4IDo8eej51z6GfoHfCuKqcMidzNfoMA6fUK2xPkeKvN02eKnCSdsXa9r3X9j2Tkdb/edV1kxATuHgCJf7QnG4u5R/TQwICQpgRn6/SYVXYsnFIbk7jEOqPnnWNqo2EsbYZacSrx4rW/SYHrAARsDUIDDk+j9of3aNgHf8hXj51z6GfoHfCuKqcMidzNfsDVOsRwsspqeKvN02eKnCSUA9nUmvlSzIMqzRnGTGMDxATuHgCJf7QwV1+SFYMitc2RnRfhQN43oOs7xJe4Eq3dvvf+sFrSFtiAmvAcDQ0Nd9wmoScj20OX67apJN5SMUeviXMGY7QLjumCGoecgMcsktKaZT0CizNSdcf2h5BduO9xghHFsFhoge2CJ3hEwjNJAISUxHcKySBJojQwKcKv6UHGf8ygZQtemT0K/Mjh1t7nSBXVAjzkalRaLfTy8AbEf4iKgf1fPppagdHusry+fPCOf9/ik2pLG+zvmF5Ww8SxBndU9zto4+UaxEX1tm4IHTNbWmdpccj5Rx1VcGqRu58Rm7psx+gqSRm/oRkaUfW3jcbpYKu0HvP2FmakpgRYxa6kE/R4,NORMAL" /><span><b>PKR</b> 25,241</span>
+                    
+                </label>
+            </td>
+            </tr>
+        </tbody>
+        </table>
+        <div class="optional_services_available">
+            <a href="static/flight_services.htm" target='_blank'>Optional Fees and Services</a>
+        </div>
+        <table id="trip_1_date_2019_11_30" class="flight_selection column-count-1 ">
+            
+            <caption style="position: absolute;background: #FFF;border: 1px solid #CCC;margin: 0 -1px;padding: 0 2px;font-size: 10px;">
+                Saturday, November 30, 2019
+            </caption>
+            <thead>
+                <tr>
+                    <th colspan="4"></th>
+                    <td>&nbsp;</td>
+                    <td colspan="1">
+                        <table class="family-group">
+                            <thead>
+                                <tr>
+                                </tr>
+                            </thead>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="flight">Flight(s)</th>
+                    <th class="time departing">Depart</th>
+                    <th class="route">Route</th>
+                    <th class="time arriving">Arrive</th>
+                    <td>&nbsp;</td>
+                    <th class="family family-ES family-group-Y " >
+                        <span class="data-title" title="1 Checked Bags Allowed.
+Refunds and Exchanges allowed with standard fee.
+See ticket terms and conditions for details.
+100% BlueMiles Reward">Standard (1 Bag)</span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="no_flights_found">
+                    <td colspan="6" class="">
+                        Flights are not available on Saturday, November 30, 2019
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="optional_services_available">
+            <a href="static/flight_services.htm" target='_blank'>Optional Fees and Services</a>
+        </div>
+        <table id="trip_1_date_2019_12_01" class="flight_selection column-count-1 ">
+            
+            <caption style="position: absolute;background: #FFF;border: 1px solid #CCC;margin: 0 -1px;padding: 0 2px;font-size: 10px;">
+                Sunday, December 01, 2019
+            </caption>
+            <thead>
+                <tr>
+                    <th colspan="4"></th>
+                    <td>&nbsp;</td>
+                    <td colspan="1">
+                        <table class="family-group">
+                            <thead>
+                                <tr>
+                                </tr>
+                            </thead>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="flight">Flight(s)</th>
+                    <th class="time departing">Depart</th>
+                    <th class="route">Route</th>
+                    <th class="time arriving">Arrive</th>
+                    <td>&nbsp;</td>
+                    <th class="family family-ES family-group-Y " >
+                        <span class="data-title" title="1 Checked Bags Allowed.
+Refunds and Exchanges allowed with standard fee.
+See ticket terms and conditions for details.
+100% BlueMiles Reward">Standard (1 Bag)</span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="no_flights_found">
+                    <td colspan="6" class="">
+                        Flights are not available on Sunday, December 01, 2019
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="optional_services_available">
+            <a href="static/flight_services.htm" target='_blank'>Optional Fees and Services</a>
+        </div>
+        <table id="trip_1_date_2019_12_02" class="flight_selection column-count-1 requested-date current-date">
+            
+            <caption style="position: absolute;background: #FFF;border: 1px solid #CCC;margin: 0 -1px;padding: 0 2px;font-size: 10px;">
+                Monday, December 02, 2019
+            </caption>
+            <thead>
+                <tr>
+                    <th colspan="4"></th>
+                    <td>&nbsp;</td>
+                    <td colspan="1">
+                        <table class="family-group">
+                            <thead>
+                                <tr>
+                                    <th class="family-group-tab " data-family-group="Y">
+                                        <label>
+                                            <strong>Economy</strong>
+                                            <em>from</em>
+<span><b>PKR</b> 13,907</span>                                        </label>
+                                    </th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="flight">Flight(s)</th>
+                    <th class="time departing">Depart</th>
+                    <th class="route">Route</th>
+                    <th class="time arriving">Arrive</th>
+                    <td>&nbsp;</td>
+                    <th class="family family-ES family-group-Y " >
+                        <span class="data-title" title="1 Checked Bags Allowed.
+Refunds and Exchanges allowed with standard fee.
+See ticket terms and conditions for details.
+100% BlueMiles Reward">Standard (1 Bag)</span>
+                    </th>
+                </tr>
+            </thead>
+        <tbody>
+            <tr class="flight-status-ontime">
+                    <td class="flight">PA-200
+        
+    </td>
+    <td class="time leaving">7:30 AM</td>
+    <td class="route" >
+        <span>Nonstop</span>
+ <br /><span>A320</span>    </td>
+    <td class="time landing">9:40 AM</td>
+    <td class="spacer">&nbsp;</td>
+
+            <td class="family family-ES family-group-Y " rowspan="1">
+                <label data-title="All Travellers:
+PKR 13,907
+0 XBAG Available" 
+                    >
+                    <input type="radio"  name="trip_1" value="RbqVZkVbFRBwtRCe4woialWaBXatCeYXssHeDdQIwRuknRd6mlmclxG6ijbsWNqOAKLiLS1nosuBZwBsHTv3ZMzRs8itQGXSCI03zVzcZZNdOwhC8IXfcQPqMe2VQT/o28gM9EsYrWiv5b3r2xbzlHLyXFxcpRO8IF7lR9dwd2152HZbQpbPGNFewgqXHJ0AH8Q9JODgRvorhJNAuq05y6yTrWKGM/A0ojzfGVIEVaFYl83c5hbLClkPODruUCizedh2W0KWzxjRXsIKlxydAB/EPSTg4Eb6hHn2YzMY33QKpruUD6JYfRLHJ1XB6oKzL3fRqm02dbNcgGt2pHS1XHhX0vto/D3KlX0uRPaCP/Fv4/0jUQRpvjgre0DzNvl2XmySmL5ysiroiBFbgoi6/D23lmAoVVNBgnCsRSRfR/3zIdXbzoTlIewX+XGx22Nu9k5B7tJgaAkuQgER0/dmVhTNDzpoNgqjVhgfCTx6AofbVfp2iuH0pqRjmwjSUJXGUlTv3ZoRhlKklOXfUr6f0DPtPALBss9Jedh2W0KWzxjRXsIKlxydAB/EPSTg4Eb6tg13TCOd3LQKpruUD6JYfRLHJ1XB6oKzL3fRqm02dbNcgGt2pHS1XBbWE6ot49DWlX0uRPaCP/E8XhdOQzjdd4Q4rhyxsUjrOl2ksIprQUS9GpTcb9vTcQfbuySNC05XT17MQ2gqxhZ/xUsMLmsFTm2/y0usYvNk7oMQJiAzSfVPSvWYaMw6P12+fd1EvFt/mS6x/iZN/f9nFoZnuwfqiUjuKxd6kGS1f8VLDC5rBU5/lJi2VzSqQe6DECYgM0n1Ps+xA6KT9nRdvn3dRLxbf4i7HtrXfN5lfnky5rxZpxdI7isXepBktX/FSwwuawVO1RmJoZtlHpDugxAmIDNJ9T7PsQOik/Z0Xb593US8W3+PeFf/DkHtPni1XxGwe8KpgJCmBGfr9JjnJ6izrLEhEzNJAISUxHcKYSxthlpxKvHitb9JgesABGwNQgMOT6P2ZZCKQSfEkV2PnXPoZ+gd8K4qpwyJ3M1++dbT6Qi97pN4q83TZ4qcJJ2xdr2vdf2PZOR1v951XWTEBO4eAIl/tCmrQ7sDz9ixgJCmBGfr9Ji+k1VUhzs/Pk2VK7XkS42jYSxthlpxKvEqEyEs0Pz47WwNQgMOT6P2FNuC0AW4V+k6dr2ysjOINzWvqJQPjuLdF391VweQyL4Z7CPkWz0Bu22gjc8aycF5azSnMyvtunkvTS+xwht5rRQITsO9dm8U8Enh0GFQmbNDhm7vpC/yaZeEBbfmJ7sjRpCwbm6iiDJtpV4Sxvms9qpzJbV5QuuyYRIsO1H+d13R3h9E32cxtHPtlwrKAwrK5/ck+VBS3ohqSxvs75heVuARjMPe7fH21t7nSBXVAjyQF4/gYOT77uXcGY8SuAZwBadV/dvz1s9IPjKnfC5ffHHpnrgJ7vdwiwW85Z2XbPO0/J95IEfJp/THbZwTrADcwVzVfrWtuyD9M5HzNIVIGjtSpNK33FGn,NORMAL" /><span><b>PKR</b> 13,907</span>
+                    
+                </label>
+            </td>
+            </tr>
+        </tbody>
+        <tbody>
+            <tr class="flight-status-delayed">
+                    <td class="flight">PA-204
+        
+    </td>
+    <td class="time leaving">8:30 PM</td>
+    <td class="route" >
+        <span>Nonstop</span>
+<sup>1</sup> <br /><span>A321</span>    </td>
+    <td class="time landing">10:40 PM</td>
+    <td class="spacer">&nbsp;</td>
+
+            <td class="family family-ES family-group-Y " rowspan="1">
+                <label data-title="All Travellers:
+PKR 13,907
+5 XBAG Available" 
+                    >
+                    <input type="radio"  name="trip_1" value="RbqVZkVbFRBwtRCe4woialWaBXatCeYXssHeDdQIwRuknRd6mlmclxG6ijbsWNqOAKLiLS1nosuBZwBsHTv3ZMzRs8itQGXSCI03zVzcZZNdOwhC8IXfcQPqMe2VQT/o28gM9EsYrWiv5b3r2xbzlHLyXFxcpRO8IF7lR9dwd2152HZbQpbPGNFewgqXHJ0AH8Q9JODgRvorhJNAuq05y6yTrWKGM/A0ojzfGVIEVaFYl83c5hbLClkPODruUCizedh2W0KWzxjRXsIKlxydAB/EPSTg4Eb6W7vsAwpUPQhdxp0YUgE36BLHJ1XB6oKzL3fRqm02dbNcgGt2pHS1XHhX0vto/D3KlX0uRPaCP/Fv4/0jUQRpvjgre0DzNvl2XmySmL5ysiroiBFbgoi6/D23lmAoVVNBgnCsRSRfR/3zIdXbzoTlIVUdr7uBU2g79k5B7tJgaAkuQgER0/dmVhTNDzpoNgqjVhgfCTx6AofbVfp2iuH0pqRjmwjSUJXGUlTv3ZoRhlKklOXfUr6f0DPtPALBss9Jedh2W0KWzxjRXsIKlxydAB/EPSTg4Eb6RrO7/jooO4tdxp0YUgE36BLHJ1XB6oKzL3fRqm02dbNcgGt2pHS1XBbWE6ot49DWlX0uRPaCP/E8XhdOQzjdd4Q4rhyxsUjrOl2ksIprQUS9GpTcb9vTcQfbuySNC05XT17MQ2gqxhZ/xUsMLmsFTm2/y0usYvNk7oMQJiAzSfVPSvWYaMw6P12+fd1EvFt/mS6x/iZN/f9nFoZnuwfqiUjuKxd6kGS1f8VLDC5rBU5/lJi2VzSqQe6DECYgM0n1Ps+xA6KT9nRdvn3dRLxbf4i7HtrXfN5lfnky5rxZpxdI7isXepBktX/FSwwuawVO1RmJoZtlHpDugxAmIDNJ9T7PsQOik/Z0Xb593US8W3+PeFf/DkHtPni1XxGwe8KpgJCmBGfr9JjnJ6izrLEhEzNJAISUxHcKYSxthlpxKvHitb9JgesABGwNQgMOT6P2ZZCKQSfEkV2PnXPoZ+gd8K4qpwyJ3M1++dbT6Qi97pN4q83TZ4qcJJ2xdr2vdf2PZOR1v951XWTEBO4eAIl/tCmrQ7sDz9ixgJCmBGfr9Ji+k1VUhzs/Pk2VK7XkS42jYSxthlpxKvEqEyEs0Pz47WwNQgMOT6P2FNuC0AW4V+k6dr2ysjOINzWvqJQPjuLdF391VweQyL4Z7CPkWz0Bu22gjc8aycF5azSnMyvtunkx+jh/Tcx9jxQITsO9dm8U8Enh0GFQmbMeDHYpFbkqHJeEBbfmJ7sjRpCwbm6iiDJtpV4Sxvms9qpzJbV5QuuyYRIsO1H+d13R3h9E32cxtDjk6p3qVS1m5/ck+VBS3ohqSxvs75heVuARjMPe7fH21t7nSBXVAjyQF4/gYOT77uXcGY8SuAZwBadV/dvz1s9IPjKnfC5ffHHpnrgJ7vdwiwW85Z2XbPO0/J95IEfJp/THbZwTrADcwVzVfrWtuyD9M5HzNIVIGmZSplYHO0yv,NORMAL" /><span><b>PKR</b> 13,907</span>
+                    
+                </label>
+            </td>
+            </tr>
+            <tr class="flight-status-delayed"><td colspan="6" class="flight-status">
+                <sup>1</sup> Flight has been delayed</td>
+            </tr>
+        </tbody>
+        </table>
+        <div class="optional_services_available">
+            <a href="static/flight_services.htm" target='_blank'>Optional Fees and Services</a>
+        </div>
+        <table id="trip_1_date_2019_12_03" class="flight_selection column-count-1 ">
+            
+            <caption style="position: absolute;background: #FFF;border: 1px solid #CCC;margin: 0 -1px;padding: 0 2px;font-size: 10px;">
+                Tuesday, December 03, 2019
+            </caption>
+            <thead>
+                <tr>
+                    <th colspan="4"></th>
+                    <td>&nbsp;</td>
+                    <td colspan="1">
+                        <table class="family-group">
+                            <thead>
+                                <tr>
+                                </tr>
+                            </thead>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="flight">Flight(s)</th>
+                    <th class="time departing">Depart</th>
+                    <th class="route">Route</th>
+                    <th class="time arriving">Arrive</th>
+                    <td>&nbsp;</td>
+                    <th class="family family-ES family-group-Y " >
+                        <span class="data-title" title="1 Checked Bags Allowed.
+Refunds and Exchanges allowed with standard fee.
+See ticket terms and conditions for details.
+100% BlueMiles Reward">Standard (1 Bag)</span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="no_flights_found">
+                    <td colspan="6" class="not-allowed">
+                        Flights on Tuesday, December 03, 2019 cannot be used due to the other dates of travel you have selected
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="optional_services_available">
+            <a href="static/flight_services.htm" target='_blank'>Optional Fees and Services</a>
+        </div>
+        <table id="trip_1_date_2019_12_04" class="flight_selection column-count-1 ">
+            
+            <caption style="position: absolute;background: #FFF;border: 1px solid #CCC;margin: 0 -1px;padding: 0 2px;font-size: 10px;">
+                Wednesday, December 04, 2019
+            </caption>
+            <thead>
+                <tr>
+                    <th colspan="4"></th>
+                    <td>&nbsp;</td>
+                    <td colspan="1">
+                        <table class="family-group">
+                            <thead>
+                                <tr>
+                                    <th class="family-group-tab " data-family-group="Y">
+                                        <label>
+                                            <strong>Economy</strong>
+                                            <em>from</em>
+<span><b>PKR</b> 13,907</span>                                        </label>
+                                    </th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="flight">Flight(s)</th>
+                    <th class="time departing">Depart</th>
+                    <th class="route">Route</th>
+                    <th class="time arriving">Arrive</th>
+                    <td>&nbsp;</td>
+                    <th class="family family-ES family-group-Y " >
+                        <span class="data-title" title="1 Checked Bags Allowed.
+Refunds and Exchanges allowed with standard fee.
+See ticket terms and conditions for details.
+100% BlueMiles Reward">Standard (1 Bag)</span>
+                    </th>
+                </tr>
+            </thead>
+        <tbody>
+            <tr class="flight-status-ontime">
+                    <td class="flight">PA-200
+        
+    </td>
+    <td class="time leaving">7:30 AM</td>
+    <td class="route" >
+        <span>Nonstop</span>
+ <br /><span>A320</span>    </td>
+    <td class="time landing">9:40 AM</td>
+    <td class="spacer">&nbsp;</td>
+
+            <td class="family family-ES family-group-Y " rowspan="1">
+                <label data-title="All Travellers:
+PKR 13,907" 
+                    >
+                    <input type="radio"  name="trip_1" value="RbqVZkVbFRBwtRCe4woialWaBXatCeYXssHeDdQIwRuknRd6mlmclxG6ijbsWNqOAKLiLS1nosuBZwBsHTv3ZMzRs8itQGXSCI03zVzcZZNdOwhC8IXfcQPqMe2VQT/o28gM9EsYrWiv5b3r2xbzlHLyXFxcpRO8IF7lR9dwd2152HZbQpbPGNFewgqXHJ0AH8Q9JODgRvorhJNAuq05y6yTrWKGM/A0ojzfGVIEVaFYl83c5hbLClkPODruUCizedh2W0KWzxjRXsIKlxydAB/EPSTg4Eb6OnRHeh9n7nldxp0YUgE36BLHJ1XB6oKzL3fRqm02dbNcgGt2pHS1XHhX0vto/D3KlX0uRPaCP/Fv4/0jUQRpvjgre0DzNvl2XmySmL5ysiroiBFbgoi6/D23lmAoVVNBgnCsRSRfR/2eislEhdQwcuLUMCcCZsGj9k5B7tJgaAkuQgER0/dmVhTNDzpoNgqjVhgfCTx6AofbVfp2iuH0pqRjmwjSUJXGUlTv3ZoRhlKklOXfUr6f0DPtPALBss9Jedh2W0KWzxjRXsIKlxydAB/EPSTg4Eb6FLsuhhw7r0hdxp0YUgE36BLHJ1XB6oKzL3fRqm02dbNcgGt2pHS1XBbWE6ot49DWlX0uRPaCP/E8XhdOQzjdd4Q4rhyxsUjrOl2ksIprQUS9GpTcb9vTcQfbuySNC05XT17MQ2gqxhZ/xUsMLmsFTm2/y0usYvNk7oMQJiAzSfVPSvWYaMw6P12+fd1EvFt/mS6x/iZN/f9nFoZnuwfqiUjuKxd6kGS1f8VLDC5rBU5/lJi2VzSqQe6DECYgM0n1Ps+xA6KT9nRdvn3dRLxbf4i7HtrXfN5lfnky5rxZpxdI7isXepBktX/FSwwuawVO1RmJoZtlHpDugxAmIDNJ9T7PsQOik/Z0Xb593US8W3+PeFf/DkHtPni1XxGwe8KpgJCmBGfr9JjnJ6izrLEhEzNJAISUxHcKYSxthlpxKvHitb9JgesABGwNQgMOT6P2ZZCKQSfEkV2PnXPoZ+gd8K4qpwyJ3M1++dbT6Qi97pN4q83TZ4qcJJ2xdr2vdf2PZOR1v951XWTEBO4eAIl/tCmrQ7sDz9ixgJCmBGfr9Ji+k1VUhzs/Pk2VK7XkS42jYSxthlpxKvEqEyEs0Pz47WwNQgMOT6P2FNuC0AW4V+k6dr2ysjOINzWvqJQPjuLdF391VweQyL4Z7CPkWz0Bu22gjc8aycF5azSnMyvtunkvTS+xwht5rRQITsO9dm8U8Enh0GFQmbP0hlJcyuvQK5eEBbfmJ7sjRpCwbm6iiDJtpV4Sxvms9qpzJbV5QuuyYRIsO1H+d13R3h9E32cxtCDL74pXHa1m5/ck+VBS3ohqSxvs75heVuARjMPe7fH21t7nSBXVAjyQF4/gYOT77uXcGY8SuAZwBadV/dvz1s9IPjKnfC5ffHHpnrgJ7vdwiwW85Z2XbPO0/J95IEfJp/THbZwTrADcwVzVfrWtuyD9M5HzNIVIGohGeDy4xl3b,NORMAL" /><span><b>PKR</b> 13,907</span>
+                    
+                </label>
+            </td>
+            </tr>
+        </tbody>
+        </table>
+        <div class="optional_services_available">
+            <a href="static/flight_services.htm" target='_blank'>Optional Fees and Services</a>
+        </div>
+        <table id="trip_1_date_2019_12_05" class="flight_selection column-count-1 ">
+            
+            <caption style="position: absolute;background: #FFF;border: 1px solid #CCC;margin: 0 -1px;padding: 0 2px;font-size: 10px;">
+                Thursday, December 05, 2019
+            </caption>
+            <thead>
+                <tr>
+                    <th colspan="4"></th>
+                    <td>&nbsp;</td>
+                    <td colspan="1">
+                        <table class="family-group">
+                            <thead>
+                                <tr>
+                                    <th class="family-group-tab " data-family-group="Y">
+                                        <label>
+                                            <strong>Economy</strong>
+                                            <em>from</em>
+<span><b>PKR</b> 13,907</span>                                        </label>
+                                    </th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="flight">Flight(s)</th>
+                    <th class="time departing">Depart</th>
+                    <th class="route">Route</th>
+                    <th class="time arriving">Arrive</th>
+                    <td>&nbsp;</td>
+                    <th class="family family-ES family-group-Y " >
+                        <span class="data-title" title="1 Checked Bags Allowed.
+Refunds and Exchanges allowed with standard fee.
+See ticket terms and conditions for details.
+100% BlueMiles Reward">Standard (1 Bag)</span>
+                    </th>
+                </tr>
+            </thead>
+        <tbody>
+            <tr class="flight-status-ontime">
+                    <td class="flight">PA-204
+        
+    </td>
+    <td class="time leaving">6:00 PM</td>
+    <td class="route" >
+        <span>Nonstop</span>
+ <br /><span>A320</span>    </td>
+    <td class="time landing">8:10 PM</td>
+    <td class="spacer">&nbsp;</td>
+
+            <td class="family family-ES family-group-Y " rowspan="1">
+                <label data-title="All Travellers:
+PKR 13,907
+5 XBAG Available" 
+                    >
+                    <input type="radio"  name="trip_1" value="RbqVZkVbFRBwtRCe4woialWaBXatCeYXssHeDdQIwRuknRd6mlmclxG6ijbsWNqOAKLiLS1nosuBZwBsHTv3ZMzRs8itQGXSCI03zVzcZZNdOwhC8IXfcQPqMe2VQT/o28gM9EsYrWiv5b3r2xbzlHLyXFxcpRO8IF7lR9dwd2152HZbQpbPGNFewgqXHJ0AH8Q9JODgRvorhJNAuq05y6yTrWKGM/A0ojzfGVIEVaFYl83c5hbLClkPODruUCizedh2W0KWzxjRXsIKlxydAB/EPSTg4Eb6723Hdrc91QoKpruUD6JYfRLHJ1XB6oKzL3fRqm02dbNcgGt2pHS1XHhX0vto/D3KlX0uRPaCP/Fv4/0jUQRpvjgre0DzNvl2XmySmL5ysiroiBFbgoi6/D23lmAoVVNBgnCsRSRfR/3BTVKR0DT6aKcYJVTXkFPn9k5B7tJgaAkuQgER0/dmVhTNDzpoNgqjVhgfCTx6AofbVfp2iuH0pqRjmwjSUJXGUlTv3ZoRhlKklOXfUr6f0DPtPALBss9Jedh2W0KWzxjRXsIKlxydAB/EPSTg4Eb6qpMmt6TrEsMKpruUD6JYfRLHJ1XB6oKzL3fRqm02dbNcgGt2pHS1XBbWE6ot49DWlX0uRPaCP/E8XhdOQzjdd4Q4rhyxsUjrOl2ksIprQUS9GpTcb9vTcQfbuySNC05XT17MQ2gqxhZ/xUsMLmsFTm2/y0usYvNk7oMQJiAzSfVPSvWYaMw6P12+fd1EvFt/mS6x/iZN/f9nFoZnuwfqiUjuKxd6kGS1f8VLDC5rBU5/lJi2VzSqQe6DECYgM0n1Ps+xA6KT9nRdvn3dRLxbf4i7HtrXfN5lfnky5rxZpxdI7isXepBktX/FSwwuawVO1RmJoZtlHpDugxAmIDNJ9T7PsQOik/Z0Xb593US8W3+PeFf/DkHtPni1XxGwe8KpgJCmBGfr9JjnJ6izrLEhEzNJAISUxHcKYSxthlpxKvHitb9JgesABGwNQgMOT6P2ZZCKQSfEkV2PnXPoZ+gd8K4qpwyJ3M1++dbT6Qi97pN4q83TZ4qcJJ2xdr2vdf2PZOR1v951XWTEBO4eAIl/tCmrQ7sDz9ixgJCmBGfr9Ji+k1VUhzs/Pk2VK7XkS42jYSxthlpxKvEqEyEs0Pz47WwNQgMOT6P2FNuC0AW4V+k6dr2ysjOINzWvqJQPjuLdF391VweQyL4Z7CPkWz0Bu22gjc8aycF5azSnMyvtunkx+jh/Tcx9jxQITsO9dm8U8Enh0GFQmbOF4vL1pnuJAZeEBbfmJ7sjRpCwbm6iiDJtpV4Sxvms9qpzJbV5QuuyYRIsO1H+d13R3h9E32cxtNzmi3U5CqMu5/ck+VBS3ohqSxvs75heVuARjMPe7fH21t7nSBXVAjyQF4/gYOT77uXcGY8SuAZwBadV/dvz1s9IPjKnfC5ffHHpnrgJ7vdwiwW85Z2XbPO0/J95IEfJp/THbZwTrADcwVzVfrWtuyD9M5HzNIVIGlRKMkiXzfaZ,NORMAL" /><span><b>PKR</b> 13,907</span>
+                    
+                </label>
+            </td>
+            </tr>
+        </tbody>
+        </table>
+        <div class="optional_services_available">
+            <a href="static/flight_services.htm" target='_blank'>Optional Fees and Services</a>
+        </div>
+    </div>
+    <div id="trip_2" class="trip_segment_block flexible-dates">
+        <h2 class="trip_segment_header ">
+            <label class="city"><span>From</span> Islamabad <strong class="city-code">(ISB)</strong> <b></b></label>
+            <label class="city"><span>  To</span> Karachi <strong class="city-code">(KHI)</strong> <b></b></label>
+                <ul class="flight-date-search" data-search-date-selector="table.search tr.roundtrip :input.flightDate">
+        <li class="navigate navigate-last not-allowed">
+            <label data-date="2019-11-25" title="Search one week earlier">Last Week</label>
+        </li>
+        <li class="flight-date  fares-available">
+            <label for="trip_2_date_2019_11_29" data-date="2019-11-29" class="not-allowed">
+                <strong>29-Nov</strong>
+                <em></em>
+                    <span data-family-group="Y" class="lowest-fare" data-availability=""><b>PKR</b> 25,241</span>
+            </label>
+        </li>
+        <li class="flight-date  ">
+            <label for="trip_2_date_2019_11_30" data-date="2019-11-30" class="not-allowed">
+                <strong>30-Nov</strong>
+                <em>-----</em>
+            </label>
+        </li>
+        <li class="flight-date  ">
+            <label for="trip_2_date_2019_12_01" data-date="2019-12-01" class="not-allowed">
+                <strong>01-Dec</strong>
+                <em>-----</em>
+            </label>
+        </li>
+        <li class="flight-date requested-date current-date fares-available">
+            <label for="trip_2_date_2019_12_02" data-date="2019-12-02" class="">
+                <strong>02-Dec</strong>
+                <em></em>
+                    <span data-family-group="Y" class="lowest-fare" data-availability=""><b>PKR</b> 13,907</span>
+            </label>
+        </li>
+        <li class="flight-date  ">
+            <label for="trip_2_date_2019_12_03" data-date="2019-12-03" class="">
+                <strong>03-Dec</strong>
+                <em>-----</em>
+            </label>
+        </li>
+        <li class="flight-date  fares-available">
+            <label for="trip_2_date_2019_12_04" data-date="2019-12-04" class="">
+                <strong>04-Dec</strong>
+                <em></em>
+                    <span data-family-group="Y" class="lowest-fare" data-availability=""><b>PKR</b> 13,907</span>
+            </label>
+        </li>
+        <li class="flight-date  fares-available">
+            <label for="trip_2_date_2019_12_05" data-date="2019-12-05" class="">
+                <strong>05-Dec</strong>
+                <em></em>
+                    <span data-family-group="Y" class="lowest-fare" data-availability=""><b>PKR</b> 13,907</span>
+            </label>
+        </li>
+        <li class="navigate navigate-next ">
+            <label data-date="2019-12-09" title="Search one week later">Next Week</label>
+        </li>
+    </ul>
+
+        </h2>
+
+        <table id="trip_2_date_2019_11_29" class="flight_selection column-count-1 ">
+            
+            <caption style="position: absolute;background: #FFF;border: 1px solid #CCC;margin: 0 -1px;padding: 0 2px;font-size: 10px;">
+                Friday, November 29, 2019
+            </caption>
+            <thead>
+                <tr>
+                    <th colspan="4"></th>
+                    <td>&nbsp;</td>
+                    <td colspan="1">
+                        <table class="family-group">
+                            <thead>
+                                <tr>
+                                    <th class="family-group-tab " data-family-group="Y">
+                                        <label>
+                                            <strong>Economy</strong>
+                                            <em>from</em>
+<span><b>PKR</b> 25,241</span>                                        </label>
+                                    </th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="flight">Flight(s)</th>
+                    <th class="time departing">Depart</th>
+                    <th class="route">Route</th>
+                    <th class="time arriving">Arrive</th>
+                    <td>&nbsp;</td>
+                    <th class="family family-ES family-group-Y " >
+                        <span class="data-title" title="1 Checked Bags Allowed.
+Refunds and Exchanges allowed with standard fee.
+See ticket terms and conditions for details.
+100% BlueMiles Reward">Standard (1 Bag)</span>
+                    </th>
+                </tr>
+            </thead>
+        <tbody>
+            <tr class="flight-status-delayed">
+                    <td class="flight">PA-205
+        
+    </td>
+    <td class="time leaving">10:00 PM</td>
+    <td class="route" >
+        <span>Nonstop</span>
+<sup>1</sup> <br /><span>A320</span>    </td>
+    <td class="time landing">11:59 PM</td>
+    <td class="spacer">&nbsp;</td>
+
+            <td class="family family-ES family-group-Y " rowspan="1">
+                <label data-title="All Travellers:
+PKR 25,241
+5 XBAG Available" 
+                    >
+                    <input type="radio"  name="trip_2" value="RbqVZkVbFRBwtRCe4woialWaBXatCeYXssHeDdQIwRuknRd6mlmclxG6ijbsWNqOAKLiLS1nosuBZwBsHTv3ZMzRs8itQGXSCI03zVzcZZMOgdOfOvnU/wPqMe2VQT/oiPCqwff9sxV824eofR/X3HLyXFxcpRO8IF7lR9dwd2152HZbQpbPGNFewgqXHJ0AH8Q9JODgRvorhJNAuq05y6yTrWKGM/A0ojzfGVIEVaFYl83c5hbLClkPODruUCizedh2W0KWzxjRXsIKlxydAB/EPSTg4Eb63wRoH22eAF1yUXzvustuQRLHJ1XB6oKzL3fRqm02dbNcgGt2pHS1XHhX0vto/D3KlX0uRPaCP/Fv4/0jUQRpvjgre0DzNvl2XmySmL5ysiroiBFbgoi6/D23lmAoVVNBgnCsRSRfR/1llmmguf8P2ztNImzxwJyv9k5B7tJgaAkuQgER0/dmVhTNDzpoNgqjVhgfCTx6AofbVfp2iuH0ps1xap2ohWJIUlTv3ZoRhlKklOXfUr6f0DPtPALBss9Jedh2W0KWzxjRXsIKlxydAB/EPSTg4Eb6+Kry9lZPwBxyUXzvustuQRLHJ1XB6oKzL3fRqm02dbNcgGt2pHS1XBbWE6ot49DWlX0uRPaCP/E8XhdOQzjdd4Q4rhyxsUjrOl2ksIprQUS9GpTcb9vTcQfbuySNC05XT17MQ2gqxhZ/xUsMLmsFTm2/y0usYvNk7oMQJiAzSfVPSvWYaMw6P12+fd1EvFt/iLse2td83mUn6CzatlIPqY+dc+hn6B3wriqnDInczX6DgIWgvuSXXXirzdNnipwkRUapb3yuqldimuZEMpL5ysQE7h4AiX+0wb7x2e3C0+SPnXPoZ+gd8K4qpwyJ3M1+MvkQlpbOXoF4q83TZ4qcJEVGqW98rqpXYprmRDKS+crEBO4eAIl/tL7Ts4IDo8eej51z6GfoHfCuKqcMidzNfoMA6fUK2xPkeKvN02eKnCSdsXa9r3X9j2Tkdb/edV1kxATuHgCJf7QnG4u5R/TQwICQpgRn6/SYVXYsnFIbk7jEOqPnnWNqo2EsbYZacSrx4rW/SYHrAARsDUIDDk+j9of3aNgHf8hXj51z6GfoHfCuKqcMidzNfsDVOsRwsspqeKvN02eKnCSUA9nUmvlSzIMqzRnGTGMDxATuHgCJf7QwV1+SFYMitc2RnRfhQN43oOs7xJe4Eq38tlnYUQM2IEr3NSSIoP3Fd9wmoScj20Nd5ufL16ZGJUeviXMGY7QLjumCGoecgMcHcCs+5THw5KdN/yWtVLuwuO9xghHFsFi6CaulEriXDM1xap2ohWJIySBJojQwKcIYFLpBG6A9ZgtemT0K/Mjhus5GDUhTvITkalRaLfTy8AbEf4iKgf1fPppagdHusry+fPCOf9/ik2pLG+zvmF5Ww8SxBndU9zto4+UaxEX1tm4IHTNbWmdpccj5Rx1VcGqRu58Rm7psx+gqSRm/oRkaUfW3jcbpYKu0HvP2Fmakpg30wsa8T/du,NORMAL" /><span><b>PKR</b> 25,241</span>
+                    
+                </label>
+            </td>
+            </tr>
+            <tr class="flight-status-delayed"><td colspan="6" class="flight-status">
+                <sup>1</sup> Flight has been delayed</td>
+            </tr>
+        </tbody>
+        </table>
+        <div class="optional_services_available">
+            <a href="static/flight_services.htm" target='_blank'>Optional Fees and Services</a>
+        </div>
+        <table id="trip_2_date_2019_11_30" class="flight_selection column-count-1 ">
+            
+            <caption style="position: absolute;background: #FFF;border: 1px solid #CCC;margin: 0 -1px;padding: 0 2px;font-size: 10px;">
+                Saturday, November 30, 2019
+            </caption>
+            <thead>
+                <tr>
+                    <th colspan="4"></th>
+                    <td>&nbsp;</td>
+                    <td colspan="1">
+                        <table class="family-group">
+                            <thead>
+                                <tr>
+                                </tr>
+                            </thead>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="flight">Flight(s)</th>
+                    <th class="time departing">Depart</th>
+                    <th class="route">Route</th>
+                    <th class="time arriving">Arrive</th>
+                    <td>&nbsp;</td>
+                    <th class="family family-ES family-group-Y " >
+                        <span class="data-title" title="1 Checked Bags Allowed.
+Refunds and Exchanges allowed with standard fee.
+See ticket terms and conditions for details.
+100% BlueMiles Reward">Standard (1 Bag)</span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="no_flights_found">
+                    <td colspan="6" class="not-allowed">
+                        Flights on Saturday, November 30, 2019 cannot be used due to the other dates of travel you have selected
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="optional_services_available">
+            <a href="static/flight_services.htm" target='_blank'>Optional Fees and Services</a>
+        </div>
+        <table id="trip_2_date_2019_12_01" class="flight_selection column-count-1 ">
+            
+            <caption style="position: absolute;background: #FFF;border: 1px solid #CCC;margin: 0 -1px;padding: 0 2px;font-size: 10px;">
+                Sunday, December 01, 2019
+            </caption>
+            <thead>
+                <tr>
+                    <th colspan="4"></th>
+                    <td>&nbsp;</td>
+                    <td colspan="1">
+                        <table class="family-group">
+                            <thead>
+                                <tr>
+                                </tr>
+                            </thead>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="flight">Flight(s)</th>
+                    <th class="time departing">Depart</th>
+                    <th class="route">Route</th>
+                    <th class="time arriving">Arrive</th>
+                    <td>&nbsp;</td>
+                    <th class="family family-ES family-group-Y " >
+                        <span class="data-title" title="1 Checked Bags Allowed.
+Refunds and Exchanges allowed with standard fee.
+See ticket terms and conditions for details.
+100% BlueMiles Reward">Standard (1 Bag)</span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="no_flights_found">
+                    <td colspan="6" class="not-allowed">
+                        Flights on Sunday, December 01, 2019 cannot be used due to the other dates of travel you have selected
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="optional_services_available">
+            <a href="static/flight_services.htm" target='_blank'>Optional Fees and Services</a>
+        </div>
+        <table id="trip_2_date_2019_12_02" class="flight_selection column-count-1 requested-date current-date">
+            
+            <caption style="position: absolute;background: #FFF;border: 1px solid #CCC;margin: 0 -1px;padding: 0 2px;font-size: 10px;">
+                Monday, December 02, 2019
+            </caption>
+            <thead>
+                <tr>
+                    <th colspan="4"></th>
+                    <td>&nbsp;</td>
+                    <td colspan="1">
+                        <table class="family-group">
+                            <thead>
+                                <tr>
+                                    <th class="family-group-tab " data-family-group="Y">
+                                        <label>
+                                            <strong>Economy</strong>
+                                            <em>from</em>
+<span><b>PKR</b> 13,907</span>                                        </label>
+                                    </th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="flight">Flight(s)</th>
+                    <th class="time departing">Depart</th>
+                    <th class="route">Route</th>
+                    <th class="time arriving">Arrive</th>
+                    <td>&nbsp;</td>
+                    <th class="family family-ES family-group-Y " >
+                        <span class="data-title" title="1 Checked Bags Allowed.
+Refunds and Exchanges allowed with standard fee.
+See ticket terms and conditions for details.
+100% BlueMiles Reward">Standard (1 Bag)</span>
+                    </th>
+                </tr>
+            </thead>
+        <tbody>
+            <tr class="flight-status-ontime">
+                    <td class="flight">PA-201
+        
+    </td>
+    <td class="time leaving">10:30 AM</td>
+    <td class="route" >
+        <span>Nonstop</span>
+ <br /><span>A320</span>    </td>
+    <td class="time landing">12:40 PM</td>
+    <td class="spacer">&nbsp;</td>
+
+            <td class="family family-ES family-group-Y " rowspan="1">
+                <label data-title="All Travellers:
+PKR 13,907
+10 XBAG Available" 
+                    >
+                    <input type="radio"  name="trip_2" value="RbqVZkVbFRBwtRCe4woialWaBXatCeYXssHeDdQIwRuknRd6mlmclxG6ijbsWNqOAKLiLS1nosuBZwBsHTv3ZMzRs8itQGXSCI03zVzcZZNdOwhC8IXfcQPqMe2VQT/o28gM9EsYrWiv5b3r2xbzlHLyXFxcpRO8IF7lR9dwd2152HZbQpbPGNFewgqXHJ0AH8Q9JODgRvorhJNAuq05y6yTrWKGM/A0ojzfGVIEVaFYl83c5hbLClkPODruUCizedh2W0KWzxjRXsIKlxydAB/EPSTg4Eb6Ie7aoa5pMqBdxp0YUgE36BLHJ1XB6oKzL3fRqm02dbNcgGt2pHS1XHhX0vto/D3KlX0uRPaCP/Fv4/0jUQRpvjgre0DzNvl2XmySmL5ysiroiBFbgoi6/D23lmAoVVNBgnCsRSRfR/3zIdXbzoTlIbyX3oYDdBe09k5B7tJgaAkuQgER0/dmVhTNDzpoNgqjVhgfCTx6AofbVfp2iuH0pqRjmwjSUJXGUlTv3ZoRhlKklOXfUr6f0DPtPALBss9Jedh2W0KWzxjRXsIKlxydAB/EPSTg4Eb6bils5xBEW8hdxp0YUgE36BLHJ1XB6oKzL3fRqm02dbNcgGt2pHS1XBbWE6ot49DWlX0uRPaCP/E8XhdOQzjdd4Q4rhyxsUjrOl2ksIprQUS9GpTcb9vTcQfbuySNC05XT17MQ2gqxhZ/xUsMLmsFTm2/y0usYvNk7oMQJiAzSfVPSvWYaMw6P12+fd1EvFt/mS6x/iZN/f9nFoZnuwfqiUjuKxd6kGS1f8VLDC5rBU5/lJi2VzSqQe6DECYgM0n1Ps+xA6KT9nRdvn3dRLxbf4i7HtrXfN5lfnky5rxZpxdI7isXepBktX/FSwwuawVO1RmJoZtlHpDugxAmIDNJ9T7PsQOik/Z0Xb593US8W3+PeFf/DkHtPni1XxGwe8KpgJCmBGfr9JjnJ6izrLEhEzNJAISUxHcKYSxthlpxKvHitb9JgesABGwNQgMOT6P2ZZCKQSfEkV2PnXPoZ+gd8K4qpwyJ3M1++dbT6Qi97pN4q83TZ4qcJJ2xdr2vdf2PZOR1v951XWTEBO4eAIl/tCmrQ7sDz9ixgJCmBGfr9Ji+k1VUhzs/Pk2VK7XkS42jYSxthlpxKvEqEyEs0Pz47WwNQgMOT6P2FNuC0AW4V+k6dr2ysjOINzWvqJQPjuLdF391VweQyL4BMsnsc5Xb/W2gjc8aycF5azSnMyvtunnjTbKdcJfgrxQITsO9dm8U8Enh0GFQmbOnkLlGy/uZVZeEBbfmJ7sjRpCwbm6iiDKp09dQZ5/RfqpzJbV5QuuyvV0+XlX5yNjR3h9E32cxtJJ9QCgl4hO45/ck+VBS3ohqSxvs75heVuARjMPe7fH21t7nSBXVAjyQF4/gYOT77uXcGY8SuAZwBadV/dvz1s9IPjKnfC5ffHHpnrgJ7vdwiwW85Z2XbPO0/J95IEfJp/THbZwTrADcwVzVfrWtuyD9M5HzNIVIGp3lRmYGKBqd,NORMAL" /><span><b>PKR</b> 13,907</span>
+                    
+                </label>
+            </td>
+            </tr>
+        </tbody>
+        <tbody>
+            <tr class="flight-status-early">
+                    <td class="flight">PA-205
+        
+    </td>
+    <td class="time leaving">5:30 PM</td>
+    <td class="route" >
+        <span>Nonstop</span>
+<sup>1</sup> <br /><span>A321</span>    </td>
+    <td class="time landing">7:40 PM</td>
+    <td class="spacer">&nbsp;</td>
+
+            <td class="family family-ES family-group-Y " rowspan="1">
+                <label data-title="All Travellers:
+PKR 13,907
+0 XBAG Available" 
+                    >
+                    <input type="radio"  name="trip_2" value="RbqVZkVbFRBwtRCe4woialWaBXatCeYXssHeDdQIwRuknRd6mlmclxG6ijbsWNqOAKLiLS1nosuBZwBsHTv3ZMzRs8itQGXSCI03zVzcZZNdOwhC8IXfcQPqMe2VQT/o28gM9EsYrWiv5b3r2xbzlHLyXFxcpRO8IF7lR9dwd2152HZbQpbPGNFewgqXHJ0AH8Q9JODgRvorhJNAuq05y6yTrWKGM/A0ojzfGVIEVaFYl83c5hbLClkPODruUCizedh2W0KWzxjRXsIKlxydAB/EPSTg4Eb6hFbhfojVqYOC+zKSMKwlRBLHJ1XB6oKzL3fRqm02dbNcgGt2pHS1XHhX0vto/D3KlX0uRPaCP/Fv4/0jUQRpvjgre0DzNvl2XmySmL5ysiroiBFbgoi6/D23lmAoVVNBgnCsRSRfR/1IcDKulEb0oPIfmQD09I589k5B7tJgaAkuQgER0/dmVhTNDzpoNgqjVhgfCTx6AofbVfp2iuH0pqRjmwjSUJXGUlTv3ZoRhlKklOXfUr6f0DPtPALBss9Jedh2W0KWzxjRXsIKlxydAB/EPSTg4Eb6ejzAUKkDiC6C+zKSMKwlRBLHJ1XB6oKzL3fRqm02dbNcgGt2pHS1XBbWE6ot49DWlX0uRPaCP/E8XhdOQzjdd4Q4rhyxsUjrOl2ksIprQUS9GpTcb9vTcQfbuySNC05XT17MQ2gqxhZ/xUsMLmsFTm2/y0usYvNk7oMQJiAzSfVPSvWYaMw6P12+fd1EvFt/mS6x/iZN/f9nFoZnuwfqiUjuKxd6kGS1f8VLDC5rBU5/lJi2VzSqQe6DECYgM0n1Ps+xA6KT9nRdvn3dRLxbf4i7HtrXfN5lfnky5rxZpxdI7isXepBktX/FSwwuawVO1RmJoZtlHpDugxAmIDNJ9T7PsQOik/Z0Xb593US8W3+PeFf/DkHtPni1XxGwe8KpgJCmBGfr9JjnJ6izrLEhEzNJAISUxHcKYSxthlpxKvHitb9JgesABGwNQgMOT6P2ZZCKQSfEkV2PnXPoZ+gd8K4qpwyJ3M1++dbT6Qi97pN4q83TZ4qcJJ2xdr2vdf2PZOR1v951XWTEBO4eAIl/tCmrQ7sDz9ixgJCmBGfr9Ji+k1VUhzs/Pk2VK7XkS42jYSxthlpxKvEqEyEs0Pz47WwNQgMOT6P2FNuC0AW4V+k6dr2ysjOINzWvqJQPjuLdF391VweQyL4BMsnsc5Xb/W2gjc8aycF5azSnMyvtunlB86+lFuclaBQITsO9dm8U8Enh0GFQmbMfDuKDd+RhP5eEBbfmJ7sjRpCwbm6iiDKp09dQZ5/RfqpzJbV5QuuyvV0+XlX5yNjR3h9E32cxtDzLc4Gkj6Bz5/ck+VBS3ohqSxvs75heVuARjMPe7fH21t7nSBXVAjyQF4/gYOT77uXcGY8SuAZwBadV/dvz1s9IPjKnfC5ffHHpnrgJ7vdwiwW85Z2XbPO0/J95IEfJp/THbZwTrADcwVzVfrWtuyD9M5HzNIVIGmArj0Ea6Hmj,NORMAL" /><span><b>PKR</b> 13,907</span>
+                    
+                </label>
+            </td>
+            </tr>
+            <tr class="flight-status-early"><td colspan="6" class="flight-status">
+                <sup>1</sup> Flight departure will be earlier than published schedule</td>
+            </tr>
+        </tbody>
+        </table>
+        <div class="optional_services_available">
+            <a href="static/flight_services.htm" target='_blank'>Optional Fees and Services</a>
+        </div>
+        <table id="trip_2_date_2019_12_03" class="flight_selection column-count-1 ">
+            
+            <caption style="position: absolute;background: #FFF;border: 1px solid #CCC;margin: 0 -1px;padding: 0 2px;font-size: 10px;">
+                Tuesday, December 03, 2019
+            </caption>
+            <thead>
+                <tr>
+                    <th colspan="4"></th>
+                    <td>&nbsp;</td>
+                    <td colspan="1">
+                        <table class="family-group">
+                            <thead>
+                                <tr>
+                                </tr>
+                            </thead>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="flight">Flight(s)</th>
+                    <th class="time departing">Depart</th>
+                    <th class="route">Route</th>
+                    <th class="time arriving">Arrive</th>
+                    <td>&nbsp;</td>
+                    <th class="family family-ES family-group-Y " >
+                        <span class="data-title" title="1 Checked Bags Allowed.
+Refunds and Exchanges allowed with standard fee.
+See ticket terms and conditions for details.
+100% BlueMiles Reward">Standard (1 Bag)</span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="no_flights_found">
+                    <td colspan="6" class="">
+                        Flights are not available on Tuesday, December 03, 2019
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="optional_services_available">
+            <a href="static/flight_services.htm" target='_blank'>Optional Fees and Services</a>
+        </div>
+        <table id="trip_2_date_2019_12_04" class="flight_selection column-count-1 ">
+            
+            <caption style="position: absolute;background: #FFF;border: 1px solid #CCC;margin: 0 -1px;padding: 0 2px;font-size: 10px;">
+                Wednesday, December 04, 2019
+            </caption>
+            <thead>
+                <tr>
+                    <th colspan="4"></th>
+                    <td>&nbsp;</td>
+                    <td colspan="1">
+                        <table class="family-group">
+                            <thead>
+                                <tr>
+                                    <th class="family-group-tab " data-family-group="Y">
+                                        <label>
+                                            <strong>Economy</strong>
+                                            <em>from</em>
+<span><b>PKR</b> 13,907</span>                                        </label>
+                                    </th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="flight">Flight(s)</th>
+                    <th class="time departing">Depart</th>
+                    <th class="route">Route</th>
+                    <th class="time arriving">Arrive</th>
+                    <td>&nbsp;</td>
+                    <th class="family family-ES family-group-Y " >
+                        <span class="data-title" title="1 Checked Bags Allowed.
+Refunds and Exchanges allowed with standard fee.
+See ticket terms and conditions for details.
+100% BlueMiles Reward">Standard (1 Bag)</span>
+                    </th>
+                </tr>
+            </thead>
+        <tbody>
+            <tr class="flight-status-ontime">
+                    <td class="flight">PA-201
+        
+    </td>
+    <td class="time leaving">10:30 AM</td>
+    <td class="route" >
+        <span>Nonstop</span>
+ <br /><span>A320</span>    </td>
+    <td class="time landing">12:40 PM</td>
+    <td class="spacer">&nbsp;</td>
+
+            <td class="family family-ES family-group-Y " rowspan="1">
+                <label data-title="All Travellers:
+PKR 13,907
+10 XBAG Available" 
+                    >
+                    <input type="radio"  name="trip_2" value="RbqVZkVbFRBwtRCe4woialWaBXatCeYXssHeDdQIwRuknRd6mlmclxG6ijbsWNqOAKLiLS1nosuBZwBsHTv3ZMzRs8itQGXSCI03zVzcZZNdOwhC8IXfcQPqMe2VQT/o28gM9EsYrWiv5b3r2xbzlHLyXFxcpRO8IF7lR9dwd2152HZbQpbPGNFewgqXHJ0AH8Q9JODgRvorhJNAuq05y6yTrWKGM/A0ojzfGVIEVaFYl83c5hbLClkPODruUCizedh2W0KWzxjRXsIKlxydAB/EPSTg4Eb6i0kM38y7rYuC+zKSMKwlRBLHJ1XB6oKzL3fRqm02dbNcgGt2pHS1XHhX0vto/D3KlX0uRPaCP/Fv4/0jUQRpvjgre0DzNvl2XmySmL5ysiroiBFbgoi6/D23lmAoVVNBgnCsRSRfR/2eislEhdQwcmoBcHtJAfnA9k5B7tJgaAkuQgER0/dmVhTNDzpoNgqjVhgfCTx6AofbVfp2iuH0pqRjmwjSUJXGUlTv3ZoRhlKklOXfUr6f0DPtPALBss9Jedh2W0KWzxjRXsIKlxydAB/EPSTg4Eb63bfre0wpi9uC+zKSMKwlRBLHJ1XB6oKzL3fRqm02dbNcgGt2pHS1XBbWE6ot49DWlX0uRPaCP/E8XhdOQzjdd4Q4rhyxsUjrOl2ksIprQUS9GpTcb9vTcQfbuySNC05XT17MQ2gqxhZ/xUsMLmsFTm2/y0usYvNk7oMQJiAzSfVPSvWYaMw6P12+fd1EvFt/mS6x/iZN/f9nFoZnuwfqiUjuKxd6kGS1f8VLDC5rBU5/lJi2VzSqQe6DECYgM0n1Ps+xA6KT9nRdvn3dRLxbf4i7HtrXfN5lfnky5rxZpxdI7isXepBktX/FSwwuawVO1RmJoZtlHpDugxAmIDNJ9T7PsQOik/Z0Xb593US8W3+PeFf/DkHtPni1XxGwe8KpgJCmBGfr9JjnJ6izrLEhEzNJAISUxHcKYSxthlpxKvHitb9JgesABGwNQgMOT6P2ZZCKQSfEkV2PnXPoZ+gd8K4qpwyJ3M1++dbT6Qi97pN4q83TZ4qcJJ2xdr2vdf2PZOR1v951XWTEBO4eAIl/tCmrQ7sDz9ixgJCmBGfr9Ji+k1VUhzs/Pk2VK7XkS42jYSxthlpxKvEqEyEs0Pz47WwNQgMOT6P2FNuC0AW4V+k6dr2ysjOINzWvqJQPjuLdF391VweQyL4BMsnsc5Xb/W2gjc8aycF5azSnMyvtunnjTbKdcJfgrxQITsO9dm8U8Enh0GFQmbME8OMIOAoKwJeEBbfmJ7sjRpCwbm6iiDKp09dQZ5/RfqpzJbV5QuuyvV0+XlX5yNjR3h9E32cxtIjRZDYTo/Ny5/ck+VBS3ohqSxvs75heVuARjMPe7fH21t7nSBXVAjyQF4/gYOT77uXcGY8SuAZwBadV/dvz1s9IPjKnfC5ffHHpnrgJ7vdwiwW85Z2XbPO0/J95IEfJp/THbZwTrADcwVzVfrWtuyD9M5HzNIVIGkcTe4KSgPNs,NORMAL" /><span><b>PKR</b> 13,907</span>
+                    
+                </label>
+            </td>
+            </tr>
+        </tbody>
+        </table>
+        <div class="optional_services_available">
+            <a href="static/flight_services.htm" target='_blank'>Optional Fees and Services</a>
+        </div>
+        <table id="trip_2_date_2019_12_05" class="flight_selection column-count-1 ">
+            
+            <caption style="position: absolute;background: #FFF;border: 1px solid #CCC;margin: 0 -1px;padding: 0 2px;font-size: 10px;">
+                Thursday, December 05, 2019
+            </caption>
+            <thead>
+                <tr>
+                    <th colspan="4"></th>
+                    <td>&nbsp;</td>
+                    <td colspan="1">
+                        <table class="family-group">
+                            <thead>
+                                <tr>
+                                    <th class="family-group-tab " data-family-group="Y">
+                                        <label>
+                                            <strong>Economy</strong>
+                                            <em>from</em>
+<span><b>PKR</b> 13,907</span>                                        </label>
+                                    </th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="flight">Flight(s)</th>
+                    <th class="time departing">Depart</th>
+                    <th class="route">Route</th>
+                    <th class="time arriving">Arrive</th>
+                    <td>&nbsp;</td>
+                    <th class="family family-ES family-group-Y " >
+                        <span class="data-title" title="1 Checked Bags Allowed.
+Refunds and Exchanges allowed with standard fee.
+See ticket terms and conditions for details.
+100% BlueMiles Reward">Standard (1 Bag)</span>
+                    </th>
+                </tr>
+            </thead>
+        <tbody>
+            <tr class="flight-status-ontime">
+                    <td class="flight">PA-205
+        
+    </td>
+    <td class="time leaving">9:00 PM</td>
+    <td class="route" >
+        <span>Nonstop</span>
+ <br /><span>A320</span>    </td>
+    <td class="time landing">11:10 PM</td>
+    <td class="spacer">&nbsp;</td>
+
+            <td class="family family-ES family-group-Y " rowspan="1">
+                <label data-title="All Travellers:
+PKR 13,907" 
+                    >
+                    <input type="radio"  name="trip_2" value="RbqVZkVbFRBwtRCe4woialWaBXatCeYXssHeDdQIwRuknRd6mlmclxG6ijbsWNqOAKLiLS1nosuBZwBsHTv3ZMzRs8itQGXSCI03zVzcZZNdOwhC8IXfcQPqMe2VQT/o28gM9EsYrWiv5b3r2xbzlHLyXFxcpRO8IF7lR9dwd2152HZbQpbPGNFewgqXHJ0AH8Q9JODgRvorhJNAuq05y6yTrWKGM/A0ojzfGVIEVaFYl83c5hbLClkPODruUCizedh2W0KWzxjRXsIKlxydAB/EPSTg4Eb6j6sErQvCvbtdxp0YUgE36BLHJ1XB6oKzL3fRqm02dbNcgGt2pHS1XHhX0vto/D3KlX0uRPaCP/Fv4/0jUQRpvjgre0DzNvl2XmySmL5ysiroiBFbgoi6/D23lmAoVVNBgnCsRSRfR/3BTVKR0DT6aPkN3y7mqrL09k5B7tJgaAkuQgER0/dmVhTNDzpoNgqjVhgfCTx6AofbVfp2iuH0pqRjmwjSUJXGUlTv3ZoRhlKklOXfUr6f0DPtPALBss9Jedh2W0KWzxjRXsIKlxydAB/EPSTg4Eb6mqbASfLCPwpdxp0YUgE36BLHJ1XB6oKzL3fRqm02dbNcgGt2pHS1XBbWE6ot49DWlX0uRPaCP/E8XhdOQzjdd4Q4rhyxsUjrOl2ksIprQUS9GpTcb9vTcQfbuySNC05XT17MQ2gqxhZ/xUsMLmsFTm2/y0usYvNk7oMQJiAzSfVPSvWYaMw6P12+fd1EvFt/mS6x/iZN/f9nFoZnuwfqiUjuKxd6kGS1f8VLDC5rBU5/lJi2VzSqQe6DECYgM0n1Ps+xA6KT9nRdvn3dRLxbf4i7HtrXfN5lfnky5rxZpxdI7isXepBktX/FSwwuawVO1RmJoZtlHpDugxAmIDNJ9T7PsQOik/Z0Xb593US8W3+PeFf/DkHtPni1XxGwe8KpgJCmBGfr9JjnJ6izrLEhEzNJAISUxHcKYSxthlpxKvHitb9JgesABGwNQgMOT6P2ZZCKQSfEkV2PnXPoZ+gd8K4qpwyJ3M1++dbT6Qi97pN4q83TZ4qcJJ2xdr2vdf2PZOR1v951XWTEBO4eAIl/tCmrQ7sDz9ixgJCmBGfr9Ji+k1VUhzs/Pk2VK7XkS42jYSxthlpxKvEqEyEs0Pz47WwNQgMOT6P2FNuC0AW4V+k6dr2ysjOINzWvqJQPjuLdF391VweQyL4BMsnsc5Xb/W2gjc8aycF5azSnMyvtunlB86+lFuclaBQITsO9dm8U8Enh0GFQmbPWkAOUuVVbQ5eEBbfmJ7sjRpCwbm6iiDKp09dQZ5/RfqpzJbV5QuuyvV0+XlX5yNjR3h9E32cxtByV8Oevo3YO5/ck+VBS3ohqSxvs75heVuARjMPe7fH21t7nSBXVAjyQF4/gYOT77uXcGY8SuAZwBadV/dvz1s9IPjKnfC5ffHHpnrgJ7vdwiwW85Z2XbPO0/J95IEfJp/THbZwTrADcwVzVfrWtuyD9M5HzNIVIGiXYSHu1GRI3,NORMAL" /><span><b>PKR</b> 13,907</span>
+                    
+                </label>
+            </td>
+            </tr>
+        </tbody>
+        </table>
+        <div class="optional_services_available">
+            <a href="static/flight_services.htm" target='_blank'>Optional Fees and Services</a>
+        </div>
+    </div>
+
+        <div>
+            <span class="nav_next"><label onclick=";" class="action" data-text="Continue &#8658;"><input type="submit" value="Continue &#8658;" /></label></span>
+                <div class="Body_Text">
+        <label onclick=";">NOTE:</label> 
+        <span>The fares listed above are for a single traveller. Complete fare details can be reviewed on the next page.</span>
+    </div>
+
+        </div>
+    </form>
+    <div style='clear:both'></div></div></div>    <script>framesRemaining += 1;</script>
+    <iframe id="footer_frame" onload="checkDocReady(this)" src="../shell.asp?section=footer&amp;pageIndex=9999" frameborder="0" scrolling="no" allowTransparency="true"></iframe>
+<script src='/shell.asp?get=bookings.js'></script></body>
+</html>
+<script>if (history.replaceState) history.replaceState(null, null, window.location.pathname);</script>

@@ -1,0 +1,184 @@
+
+<!DOCTYPE html>
+<html data-avg="857">
+<head>    <script>
+        var framesRemaining = 0;
+        function checkDocReady(frame) {
+            if (!--framesRemaining)
+                setTimeout(function () { document.body.className += " loaded"; });
+            if (window.$ !== undefined)
+                $(frame).trigger('loaded');
+        }
+    </script>
+ <script type="text/javascript" src="static/code/clickables.js?8jgwoh"></script>  <link rel="stylesheet" type="text/css" href="static/site.css?7lbvPq" />  <link rel="stylesheet" type="text/css" href="static/common.css?6idwtq" />         <link rel="stylesheet" type="text/css" href="../shell.asp?get=bookings.css" />
+    <style>
+        body { visibility: hidden !important } 
+        body.loaded  { visibility: visible !important } 
+    </style>
+
+    <title>Flight Selection</title>
+     <link rel="stylesheet" type="text/css" href="static/theme/jquery-ui.min.css?3iddvW" />  <link rel="stylesheet" type="text/css" href="static/searching.css?3jwwME" />  <link rel="stylesheet" type="text/css" href="static/wizard_bar.css?3kybtk" />  <link rel="stylesheet" type="text/css" href="static/clickables.css?8k7wjo" />  <link rel="stylesheet" type="text/css" href="static/flight_search.css?4bruBH" />  <link rel="stylesheet" type="text/css" href="static/flight_selection.css?8jgwoh" />  <script type="text/javascript" src="static/code/jquery-1.9.0.min.js?3iddvW"></script>  <script type="text/javascript" src="static/code/jquery-ui.min.js?3iddvW"></script>  <script type="text/javascript" src="static/code/site.js?5gqxVQ"></script>         <!--[if lt IE 9]> <script type="text/javascript" src="static/code/site_ie.js?3kfa6O"></script> <![endif]-->
+ <script type="text/javascript" src="static/code/moment.min.js?5gqxVQ"></script>  <script type="text/javascript" src="static/code/datepick.js?7kdxC5"></script>  <script type="text/javascript" src="static/code/flight_selection.js?8jgwoh"></script>  <script type="text/javascript" src="static/code/custom_tooltips.js?3iddvW"></script> 
+    
+    <style> input[type="text"].date { margin: -1px; width: 10em; } </style>
+</head>
+<body>    <script>framesRemaining += 1;</script>
+    <iframe id="header_frame" onload="checkDocReady(this)" src="../shell.asp?section=header&amp;pageIndex=9999" frameborder="0" scrolling="no" allowTransparency="true"></iframe>
+    <script>framesRemaining += 1;</script>
+    <iframe id="menu_frame" onload="checkDocReady(this)" src="../shell.asp?section=menu&amp;pageIndex=9999" frameborder="0" scrolling="no" allowTransparency="true"></iframe>
+<div id='content' class='page_content'><div class='page_content_border'>
+    <div id="current_step">
+        <h1>
+            Search for Flights 
+            <a id='flight_schedule' target='_blank' href='static/flight_schedule.htm'>View Flight Schedule</a>
+        </h1>
+        <ol class="reservation-step">
+            <li class="selected">Find Flights</li>
+            <li>Choose Flights</li>
+            <li>Travellers</li>
+            <li>Additional Items</li>
+            <li>Finished Booking</li>
+        </ol>
+    </div>
+    <form method="get" action="" target="_top" class="flight_search TT_RT-checked " onsubmit="document.getElementById('content').className+=' searching';">
+        <input type="radio" id="TT_RT" name="TT" value="RT"  /> <label onclick=";" for="TT_RT">Round Trip</label>
+        <input type="radio" id="TT_OW" name="TT" value="OW" checked /> <label onclick=";" for="TT_OW">One Way</label>
+        <input type="radio" id="TT_MC" name="TT" value="MC"  /> <label onclick=";" for="TT_MC">Multi-City</label>
+        <br />
+        <input type="hidden" name="SS" value="" />
+        <input type="hidden" name="RT" value="" />
+        <table class="search ">
+            <thead>
+                <tr>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>
+                        <select name="FL">
+                            <option value="">Fixed Dates</option>
+                            <option value="on" selected>Flexible Dates</option>
+                        </select>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="oneway">
+                    <td>
+                        <select name="DC" >
+                            <option />                            <option value="AUH" selected data-targets="ISB,LHE,PEW">Abu Dhabi</option>                            <option value="DXB"  data-targets="ISB,KHI,LHE,MUX,PEW">Dubai</option>                            <option value="ISB"  data-targets="AUH,DXB,JED,KHI,MED,PEW,RUH,SHJ">Islamabad</option>                            <option value="JED"  data-targets="ISB,KHI,LHE,MUX,PEW">Jeddah</option>                            <option value="KHI"  data-targets="ISB,JED,KHI,LHE,MED,PEW,RYK,SHJ">Karachi</option>                            <option value="LHE"  data-targets="AUH,DMM,DXB,ISB,JED,KHI,MCT,MED,RUH,SHJ,SKT">Lahore</option>                            <option value="MED"  data-targets="ISB,KHI,LHE,MUX,PEW">Medina</option>                            <option value="MUX"  data-targets="DXB,JED,MED,SHJ">Multan</option>                            <option value="PEW"  data-targets="AUH,DXB,ISB,JED,MED,RUH,SHJ">Peshawar</option>                            <option value="UET"  data-targets="MUX">Quetta</option>                            <option value="RUH"  data-targets="ISB,LHE,PEW">Riyadh</option>                            <option value="SHJ"  data-targets="ISB,LHE,MUX,PEW">Sharjah</option>                        </select>
+                    </td>
+                    <td>
+                        <select name="AC" >
+                            <option />                            <option value="AUH"  data-targets="ISB,LHE,PEW">Abu Dhabi</option>                            <option value="DMM"  data-targets="LHE">Dammam</option>                            <option value="DXB"  data-targets="ISB,LHE,MUX,PEW">Dubai</option>                            <option value="ISB"  data-targets="AUH,DXB,JED,KHI,LHE,MED,PEW,RUH,SHJ">Islamabad</option>                            <option value="JED"  data-targets="ISB,KHI,LHE,MUX,PEW">Jeddah</option>                            <option value="KHI" selected data-targets="DXB,ISB,JED,KHI,LHE,MED">Karachi</option>                            <option value="LHE"  data-targets="AUH,DXB,JED,KHI,MED,RUH,SHJ">Lahore</option>                            <option value="MED"  data-targets="ISB,KHI,LHE,MUX,PEW">Medina</option>                            <option value="MUX"  data-targets="DXB,JED,MED,SHJ,UET">Multan</option>                            <option value="MCT"  data-targets="LHE">Muscat</option>                            <option value="PEW"  data-targets="AUH,DXB,ISB,JED,KHI,MED,RUH,SHJ">Peshawar</option>                            <option value="RYK"  data-targets="KHI">Rahim Yar Khan</option>                            <option value="RUH"  data-targets="ISB,LHE,PEW">Riyadh</option>                            <option value="SHJ"  data-targets="ISB,KHI,LHE,MUX,PEW">Sharjah</option>                            <option value="SKT"  data-targets="LHE">Sialkot</option>                        </select>
+                    </td>
+                    <td class="flight_date">
+                        <strong>On&nbsp;</strong><select name="AM"  min="-1">
+                            <option />                            <option value="2019-11" >November</option>                            <option value="2019-12" selected>December</option>                            <option value="2020-01" >2020 Jan</option>                            <option value="2020-02" >2020 Feb</option>                            <option value="2020-03" >2020 Mar</option>                            <option value="2020-04" >2020 Apr</option>                            <option value="2020-05" >2020 May</option>                            <option value="2020-06" >2020 Jun</option>                            <option value="2020-07" >2020 Jul</option>                            <option value="2020-08" >2020 Aug</option>                            <option value="2020-09" >2020 Sep</option>                            <option value="2020-10" >2020 Oct</option>                        </select><select name="AD" >
+                            <option></option>                            <option >01</option>                            <option selected>02</option>                            <option >03</option>                            <option >04</option>                            <option >05</option>                            <option >06</option>                            <option >07</option>                            <option >08</option>                            <option >09</option>                            <option >10</option>                            <option >11</option>                            <option >12</option>                            <option >13</option>                            <option >14</option>                            <option >15</option>                            <option >16</option>                            <option >17</option>                            <option >18</option>                            <option >19</option>                            <option >20</option>                            <option >21</option>                            <option >22</option>                            <option >23</option>                            <option >24</option>                            <option >25</option>                            <option >26</option>                            <option >27</option>                            <option >28</option>                            <option >29</option>                            <option >30</option>                            <option >31</option>                        </select>
+                    </td>
+                </tr>
+                <tr class="multicity">
+                    <td>
+                        <select name="DC" >
+                            <option />                            <option value="AUH"  data-targets="ISB,LHE,PEW">Abu Dhabi</option>                            <option value="DXB"  data-targets="ISB,KHI,LHE,MUX,PEW">Dubai</option>                            <option value="ISB"  data-targets="AUH,DXB,JED,KHI,MED,PEW,RUH,SHJ">Islamabad</option>                            <option value="JED"  data-targets="ISB,KHI,LHE,MUX,PEW">Jeddah</option>                            <option value="KHI"  data-targets="ISB,JED,KHI,LHE,MED,PEW,RYK,SHJ">Karachi</option>                            <option value="LHE"  data-targets="AUH,DMM,DXB,ISB,JED,KHI,MCT,MED,RUH,SHJ,SKT">Lahore</option>                            <option value="MED"  data-targets="ISB,KHI,LHE,MUX,PEW">Medina</option>                            <option value="MUX"  data-targets="DXB,JED,MED,SHJ">Multan</option>                            <option value="PEW"  data-targets="AUH,DXB,ISB,JED,MED,RUH,SHJ">Peshawar</option>                            <option value="UET"  data-targets="MUX">Quetta</option>                            <option value="RUH"  data-targets="ISB,LHE,PEW">Riyadh</option>                            <option value="SHJ"  data-targets="ISB,LHE,MUX,PEW">Sharjah</option>                        </select>
+                    </td>
+                    <td>
+                        <select name="AC" >
+                            <option />                            <option value="AUH"  data-targets="ISB,LHE,PEW">Abu Dhabi</option>                            <option value="DMM"  data-targets="LHE">Dammam</option>                            <option value="DXB"  data-targets="ISB,LHE,MUX,PEW">Dubai</option>                            <option value="ISB"  data-targets="AUH,DXB,JED,KHI,LHE,MED,PEW,RUH,SHJ">Islamabad</option>                            <option value="JED"  data-targets="ISB,KHI,LHE,MUX,PEW">Jeddah</option>                            <option value="KHI"  data-targets="DXB,ISB,JED,KHI,LHE,MED">Karachi</option>                            <option value="LHE"  data-targets="AUH,DXB,JED,KHI,MED,RUH,SHJ">Lahore</option>                            <option value="MED"  data-targets="ISB,KHI,LHE,MUX,PEW">Medina</option>                            <option value="MUX"  data-targets="DXB,JED,MED,SHJ,UET">Multan</option>                            <option value="MCT"  data-targets="LHE">Muscat</option>                            <option value="PEW"  data-targets="AUH,DXB,ISB,JED,KHI,MED,RUH,SHJ">Peshawar</option>                            <option value="RYK"  data-targets="KHI">Rahim Yar Khan</option>                            <option value="RUH"  data-targets="ISB,LHE,PEW">Riyadh</option>                            <option value="SHJ"  data-targets="ISB,KHI,LHE,MUX,PEW">Sharjah</option>                            <option value="SKT"  data-targets="LHE">Sialkot</option>                        </select>
+                    </td>
+                    <td class="flight_date">
+                        <strong>On&nbsp;</strong><select name="AM"  min="-1">
+                            <option />                            <option value="2019-11" >November</option>                            <option value="2019-12" >December</option>                            <option value="2020-01" >2020 Jan</option>                            <option value="2020-02" >2020 Feb</option>                            <option value="2020-03" >2020 Mar</option>                            <option value="2020-04" >2020 Apr</option>                            <option value="2020-05" >2020 May</option>                            <option value="2020-06" >2020 Jun</option>                            <option value="2020-07" >2020 Jul</option>                            <option value="2020-08" >2020 Aug</option>                            <option value="2020-09" >2020 Sep</option>                            <option value="2020-10" >2020 Oct</option>                        </select><select name="AD" >
+                            <option></option>                            <option >01</option>                            <option >02</option>                            <option >03</option>                            <option >04</option>                            <option >05</option>                            <option >06</option>                            <option >07</option>                            <option >08</option>                            <option >09</option>                            <option >10</option>                            <option >11</option>                            <option >12</option>                            <option >13</option>                            <option >14</option>                            <option >15</option>                            <option >16</option>                            <option >17</option>                            <option >18</option>                            <option >19</option>                            <option >20</option>                            <option >21</option>                            <option >22</option>                            <option >23</option>                            <option >24</option>                            <option >25</option>                            <option >26</option>                            <option >27</option>                            <option >28</option>                            <option >29</option>                            <option >30</option>                            <option >31</option>                        </select>
+                    </td>
+                </tr>
+                <tr class="multicity">
+                    <td>
+                        <select name="DC" >
+                            <option />                            <option value="AUH"  data-targets="ISB,LHE,PEW">Abu Dhabi</option>                            <option value="DXB"  data-targets="ISB,KHI,LHE,MUX,PEW">Dubai</option>                            <option value="ISB"  data-targets="AUH,DXB,JED,KHI,MED,PEW,RUH,SHJ">Islamabad</option>                            <option value="JED"  data-targets="ISB,KHI,LHE,MUX,PEW">Jeddah</option>                            <option value="KHI"  data-targets="ISB,JED,KHI,LHE,MED,PEW,RYK,SHJ">Karachi</option>                            <option value="LHE"  data-targets="AUH,DMM,DXB,ISB,JED,KHI,MCT,MED,RUH,SHJ,SKT">Lahore</option>                            <option value="MED"  data-targets="ISB,KHI,LHE,MUX,PEW">Medina</option>                            <option value="MUX"  data-targets="DXB,JED,MED,SHJ">Multan</option>                            <option value="PEW"  data-targets="AUH,DXB,ISB,JED,MED,RUH,SHJ">Peshawar</option>                            <option value="UET"  data-targets="MUX">Quetta</option>                            <option value="RUH"  data-targets="ISB,LHE,PEW">Riyadh</option>                            <option value="SHJ"  data-targets="ISB,LHE,MUX,PEW">Sharjah</option>                        </select>
+                    </td>
+                    <td>
+                        <select name="AC" >
+                            <option />                            <option value="AUH"  data-targets="ISB,LHE,PEW">Abu Dhabi</option>                            <option value="DMM"  data-targets="LHE">Dammam</option>                            <option value="DXB"  data-targets="ISB,LHE,MUX,PEW">Dubai</option>                            <option value="ISB"  data-targets="AUH,DXB,JED,KHI,LHE,MED,PEW,RUH,SHJ">Islamabad</option>                            <option value="JED"  data-targets="ISB,KHI,LHE,MUX,PEW">Jeddah</option>                            <option value="KHI"  data-targets="DXB,ISB,JED,KHI,LHE,MED">Karachi</option>                            <option value="LHE"  data-targets="AUH,DXB,JED,KHI,MED,RUH,SHJ">Lahore</option>                            <option value="MED"  data-targets="ISB,KHI,LHE,MUX,PEW">Medina</option>                            <option value="MUX"  data-targets="DXB,JED,MED,SHJ,UET">Multan</option>                            <option value="MCT"  data-targets="LHE">Muscat</option>                            <option value="PEW"  data-targets="AUH,DXB,ISB,JED,KHI,MED,RUH,SHJ">Peshawar</option>                            <option value="RYK"  data-targets="KHI">Rahim Yar Khan</option>                            <option value="RUH"  data-targets="ISB,LHE,PEW">Riyadh</option>                            <option value="SHJ"  data-targets="ISB,KHI,LHE,MUX,PEW">Sharjah</option>                            <option value="SKT"  data-targets="LHE">Sialkot</option>                        </select>
+                    </td>
+                    <td class="flight_date">
+                        <strong>On&nbsp;</strong><select name="AM"  min="-1">
+                            <option />                            <option value="2019-11" >November</option>                            <option value="2019-12" >December</option>                            <option value="2020-01" >2020 Jan</option>                            <option value="2020-02" >2020 Feb</option>                            <option value="2020-03" >2020 Mar</option>                            <option value="2020-04" >2020 Apr</option>                            <option value="2020-05" >2020 May</option>                            <option value="2020-06" >2020 Jun</option>                            <option value="2020-07" >2020 Jul</option>                            <option value="2020-08" >2020 Aug</option>                            <option value="2020-09" >2020 Sep</option>                            <option value="2020-10" >2020 Oct</option>                        </select><select name="AD" >
+                            <option></option>                            <option >01</option>                            <option >02</option>                            <option >03</option>                            <option >04</option>                            <option >05</option>                            <option >06</option>                            <option >07</option>                            <option >08</option>                            <option >09</option>                            <option >10</option>                            <option >11</option>                            <option >12</option>                            <option >13</option>                            <option >14</option>                            <option >15</option>                            <option >16</option>                            <option >17</option>                            <option >18</option>                            <option >19</option>                            <option >20</option>                            <option >21</option>                            <option >22</option>                            <option >23</option>                            <option >24</option>                            <option >25</option>                            <option >26</option>                            <option >27</option>                            <option >28</option>                            <option >29</option>                            <option >30</option>                            <option >31</option>                        </select>
+                    </td>
+                </tr>
+                <tr class="multicity">
+                    <td>
+                        <select name="DC" >
+                            <option />                            <option value="AUH"  data-targets="ISB,LHE,PEW">Abu Dhabi</option>                            <option value="DXB"  data-targets="ISB,KHI,LHE,MUX,PEW">Dubai</option>                            <option value="ISB"  data-targets="AUH,DXB,JED,KHI,MED,PEW,RUH,SHJ">Islamabad</option>                            <option value="JED"  data-targets="ISB,KHI,LHE,MUX,PEW">Jeddah</option>                            <option value="KHI"  data-targets="ISB,JED,KHI,LHE,MED,PEW,RYK,SHJ">Karachi</option>                            <option value="LHE"  data-targets="AUH,DMM,DXB,ISB,JED,KHI,MCT,MED,RUH,SHJ,SKT">Lahore</option>                            <option value="MED"  data-targets="ISB,KHI,LHE,MUX,PEW">Medina</option>                            <option value="MUX"  data-targets="DXB,JED,MED,SHJ">Multan</option>                            <option value="PEW"  data-targets="AUH,DXB,ISB,JED,MED,RUH,SHJ">Peshawar</option>                            <option value="UET"  data-targets="MUX">Quetta</option>                            <option value="RUH"  data-targets="ISB,LHE,PEW">Riyadh</option>                            <option value="SHJ"  data-targets="ISB,LHE,MUX,PEW">Sharjah</option>                        </select>
+                    </td>
+                    <td>
+                        <select name="AC" >
+                            <option />                            <option value="AUH"  data-targets="ISB,LHE,PEW">Abu Dhabi</option>                            <option value="DMM"  data-targets="LHE">Dammam</option>                            <option value="DXB"  data-targets="ISB,LHE,MUX,PEW">Dubai</option>                            <option value="ISB"  data-targets="AUH,DXB,JED,KHI,LHE,MED,PEW,RUH,SHJ">Islamabad</option>                            <option value="JED"  data-targets="ISB,KHI,LHE,MUX,PEW">Jeddah</option>                            <option value="KHI"  data-targets="DXB,ISB,JED,KHI,LHE,MED">Karachi</option>                            <option value="LHE"  data-targets="AUH,DXB,JED,KHI,MED,RUH,SHJ">Lahore</option>                            <option value="MED"  data-targets="ISB,KHI,LHE,MUX,PEW">Medina</option>                            <option value="MUX"  data-targets="DXB,JED,MED,SHJ,UET">Multan</option>                            <option value="MCT"  data-targets="LHE">Muscat</option>                            <option value="PEW"  data-targets="AUH,DXB,ISB,JED,KHI,MED,RUH,SHJ">Peshawar</option>                            <option value="RYK"  data-targets="KHI">Rahim Yar Khan</option>                            <option value="RUH"  data-targets="ISB,LHE,PEW">Riyadh</option>                            <option value="SHJ"  data-targets="ISB,KHI,LHE,MUX,PEW">Sharjah</option>                            <option value="SKT"  data-targets="LHE">Sialkot</option>                        </select>
+                    </td>
+                    <td class="flight_date">
+                        <strong>On&nbsp;</strong><select name="AM"  min="-1">
+                            <option />                            <option value="2019-11" >November</option>                            <option value="2019-12" >December</option>                            <option value="2020-01" >2020 Jan</option>                            <option value="2020-02" >2020 Feb</option>                            <option value="2020-03" >2020 Mar</option>                            <option value="2020-04" >2020 Apr</option>                            <option value="2020-05" >2020 May</option>                            <option value="2020-06" >2020 Jun</option>                            <option value="2020-07" >2020 Jul</option>                            <option value="2020-08" >2020 Aug</option>                            <option value="2020-09" >2020 Sep</option>                            <option value="2020-10" >2020 Oct</option>                        </select><select name="AD" >
+                            <option></option>                            <option >01</option>                            <option >02</option>                            <option >03</option>                            <option >04</option>                            <option >05</option>                            <option >06</option>                            <option >07</option>                            <option >08</option>                            <option >09</option>                            <option >10</option>                            <option >11</option>                            <option >12</option>                            <option >13</option>                            <option >14</option>                            <option >15</option>                            <option >16</option>                            <option >17</option>                            <option >18</option>                            <option >19</option>                            <option >20</option>                            <option >21</option>                            <option >22</option>                            <option >23</option>                            <option >24</option>                            <option >25</option>                            <option >26</option>                            <option >27</option>                            <option >28</option>                            <option >29</option>                            <option >30</option>                            <option >31</option>                        </select>
+                    </td>
+                </tr>
+                <tr class="roundtrip">
+                    <td colspan="2" class="flight-options">
+                    </td>
+                    <td class="flight_date">
+                        <strong><b>Return&nbsp;</b>On&nbsp;</strong><select name="RM"  min="-1">
+                            <option />                            <option value="2019-11" >November</option>                            <option value="2019-12" >December</option>                            <option value="2020-01" >2020 Jan</option>                            <option value="2020-02" >2020 Feb</option>                            <option value="2020-03" >2020 Mar</option>                            <option value="2020-04" >2020 Apr</option>                            <option value="2020-05" >2020 May</option>                            <option value="2020-06" >2020 Jun</option>                            <option value="2020-07" >2020 Jul</option>                            <option value="2020-08" >2020 Aug</option>                            <option value="2020-09" >2020 Sep</option>                            <option value="2020-10" >2020 Oct</option>                        </select><select name="RD" >
+                            <option />                            <option >01</option>                            <option >02</option>                            <option >03</option>                            <option >04</option>                            <option >05</option>                            <option >06</option>                            <option >07</option>                            <option >08</option>                            <option >09</option>                            <option >10</option>                            <option >11</option>                            <option >12</option>                            <option >13</option>                            <option >14</option>                            <option >15</option>                            <option >16</option>                            <option >17</option>                            <option >18</option>                            <option >19</option>                            <option >20</option>                            <option >21</option>                            <option >22</option>                            <option >23</option>                            <option >24</option>                            <option >25</option>                            <option >26</option>                            <option >27</option>                            <option >28</option>                            <option >29</option>                            <option >30</option>                            <option >31</option>                        </select>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="search ">
+            <thead>
+                <tr>
+                    <th class="passengers">Travellers</th>
+                    <th class="options">Options</th>
+                    <th class="search">Promo Code</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="passengers" data-max-passengers="6">
+                        <select id="PA" name="PA" >
+        <option value="1" selected>Adults: 1</option>        <option value="2" >Adults: 2</option>        <option value="3" >Adults: 3</option>        <option value="4" >Adults: 4</option>        <option value="5" >Adults: 5</option>        <option value="6" >Adults: 6</option></select><br />
+    <select id="PC" name="PC" >
+        <option value="">Children (2-12)</option>        <option value="1" >Children: 1</option>        <option value="2" >Children: 2</option>        <option value="3" >Children: 3</option>        <option value="4" >Children: 4</option>        <option value="5" >Children: 5</option>        <option value="6" >Children: 6</option>    </select><br />
+    <select id="PI" name="PI" >
+        <option value="">Infants</option>        <option value="1" >Infants: 1</option>        <option value="2" >Infants: 2</option>        <option value="3" >Infants: 3</option>        <option value="4" >Infants: 4</option>        <option value="5" >Infants: 5</option>        <option value="6" >Infants: 6</option>    </select>
+
+                    </td>
+                    <td class="options">
+                        <select name="CC">
+                            <option value="">Any Cabin</option>
+                            <option value="Y" selected>Economy</option>                        </select>
+                        <br />
+                        <select name="NS">
+                            <option value="">Show all flights</option>
+                            <option value="on" >Direct flights only</option>
+                        </select>
+                    </td>
+                    <td class="search">
+                        <input type="text" name="CD" id="CD" value="" /><br /><br />
+                        <span class="button"><label onclick=";" class="action" data-text="Find Flights"><input type="submit" value="Find Flights" /></label></span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+
+        <table class="flight_selection requested-date current-date" style="position: relative;top: 2em;height: 10em;width: 98%;">
+            <tbody>
+                <tr class="no_flights_found first-child last-child">
+                    <td>Flights are not available on the dates selected</td>
+                </tr>
+            </tbody>
+        </table>
+    <div style='clear:both'></div></div></div>    <script>framesRemaining += 1;</script>
+    <iframe id="footer_frame" onload="checkDocReady(this)" src="../shell.asp?section=footer&amp;pageIndex=9999" frameborder="0" scrolling="no" allowTransparency="true"></iframe>
+<script src='/shell.asp?get=bookings.js'></script></body>
+</html>
+<script>if (history.replaceState) history.replaceState(null, null, window.location.pathname);</script>
