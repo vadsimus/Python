@@ -128,13 +128,12 @@ def get_cost(tbody):
     """get flight_type, cost and currency from tbody"""
     result = []
     Costs = namedtuple('Costs', ['flight_type', 'cost', 'currency'])
-    for flight_type in ['family-ED', 'family-ES']:
+    for tbody_td in tbody[0].find_class('family'):
         try:
-            cost = tbody[0].find_class(flight_type)[0].xpath(
-                'label/span/text()')[0]
+            flight_type = tbody_td.xpath('@class')[0].split()[1]
+            cost = tbody_td.xpath('label/span/text()')[0]
             cost = int(''.join(cost.split(',')))
-            currency = tbody[0].find_class(flight_type)[0].xpath(
-                'label/span/b/text()')[0]
+            currency = tbody_td.xpath('label/span/b/text()')[0]
             result.append(Costs(flight_type, cost, currency))
         except IndexError:
             pass

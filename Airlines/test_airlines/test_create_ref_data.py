@@ -12,8 +12,10 @@ for root, dirs, files in os.walk(path, topdown=False):
         if data[4].split('.')[0] == 'None':
             bkd = None
         else:
-            bkd = datetime.strptime(data[4].split('.')[0], FRMT)
-        all_flights = get_info_from_doc(answer, data[1], data[2])
+            bkd = datetime.strptime(data[4].split('.')[0], FRMT).date()
+        all_flights = get_info_from_doc(
+            answer, data[1], data[2],
+            datetime.strptime(data[3].split('.')[0], FRMT).date(), bkd)
 
         for f in all_flights:
             file = open('flights.txt', 'a')
