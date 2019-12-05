@@ -5,6 +5,7 @@ import sys
 from datetime import datetime, date, timedelta
 from itertools import product
 from collections import namedtuple
+import sqlite3
 import lxml.html
 import requests
 
@@ -14,6 +15,11 @@ AIRPORTS = {'AUH': 'Abu Dhabi', 'DXB': 'Dubai', 'DMM': 'Dammam',
             'MCT': 'Muscat', 'PEW': 'Peshawar', 'RYK': 'Rahim Yar Khan',
             'UET': 'Quetta', 'RUH': 'Riyadh', 'SHJ': 'Sharjah',
             'SKT': 'Sialkot'}
+
+Flight = namedtuple(
+    'Flight', ['depart_datetime', 'arrive_datetime',
+               'departure_airport', 'arrive_airport',
+               'flight', 'type_flight', 'cost', 'currency'])
 
 
 def get_params_commandline():
@@ -107,7 +113,7 @@ def get_document_from_site(departure, arrive, depart_date, back_date=None):
 def get_base_flight_data(tbody, search_date):
     """gettig base data from tbody"""
     Base_info = namedtuple('Base_info', ['flight', 'depart_time',
-                                         'arrive_time', 'time_in_flight'])
+                                         'arrive_time'])
     flight = tbody[0].find_class('flight')[0].text.strip()
     depart_time = tbody[0].find_class('time leaving')[0].text
     depart_time = datetime.strptime('{}-{}'.format(
@@ -117,11 +123,7 @@ def get_base_flight_data(tbody, search_date):
         search_date, arrive_time.lower()), '%Y-%m-%d-%I:%M %p')
     if arrive_time < depart_time:
         arrive_time = arrive_time + timedelta(days=1)
-    time_in_flight = arrive_time - depart_time
-    h_in_flight = time_in_flight.seconds // 3600
-    m_in_flight = (time_in_flight.seconds // 60) % 60
-    time_in_flight = '{}h {}m'.format(h_in_flight, m_in_flight)
-    return Base_info(flight, depart_time, arrive_time, time_in_flight)
+    return Base_info(flight, depart_time, arrive_time)
 
 
 def get_cost(tbody):
@@ -144,11 +146,6 @@ def get_cost(tbody):
 def get_info_from_doc(answer, departure_airport, arrive_airport,
                       depart_date, arrive_date):
     """parsing answer from website"""
-    Flight = namedtuple(
-        'Flight', ['depart_datetime', 'arrive_datetime',
-                   'departure_airport', 'arrive_airport',
-                   'time_in_flight', 'flight',
-                   'type_flight', 'cost', 'currency'])
     result = []
     for i, table in enumerate(lxml.html.fromstring(answer).xpath(
             "//table[contains(@class,'requested-date')]")):
@@ -164,7 +161,7 @@ def get_info_from_doc(answer, departure_airport, arrive_airport,
                     base_data.depart_time, base_data.arrive_time,
                     departure_airport if i == 0 else arrive_airport,
                     arrive_airport if i == 0 else departure_airport,
-                    base_data.time_in_flight, base_data.flight,
+                    base_data.flight,
                     'Standard (1 Bag)' if cost.flight_type == 'family-ES'
                     else 'Discount (No Bags)',
                     cost.cost, cost.currency
@@ -172,34 +169,43 @@ def get_info_from_doc(answer, departure_airport, arrive_airport,
     return result
 
 
+def divide_flights(all_flights, departure):
+    """devide all flights to forward and back directions"""
+    forward_flights = []
+    back_flights = []
+    for i in all_flights:
+        if i.departure_airport == departure:
+            forward_flights.append(i)
+        else:
+            back_flights.append(i)
+    return forward_flights, back_flights
+
+
 def print_flight(flight):
     """print all info from flight"""
     format_dt = '%Y-%m-%d %H:%M'
+    time_in_flight = flight.arrive_datetime - flight.depart_datetime
+    h_in_flight = time_in_flight.seconds // 3600
+    m_in_flight = (time_in_flight.seconds // 60) % 60
+    time_in_flight = '{}h {}m'.format(h_in_flight, m_in_flight)
     print(f'{flight.departure_airport}-{flight.arrive_airport}:'
           f'{flight.flight} '
           f'{flight.depart_datetime.strftime(format_dt)} - '
           f'{flight.arrive_datetime.strftime(format_dt)} '
-          f'({flight.time_in_flight}) {flight.type_flight} '
+          f'({time_in_flight}) {flight.type_flight} '
           f'{flight.cost} {flight.currency}')
 
 
-def print_all_flights(all_flights, departure, back_date):
+def print_all_flights(forward_flights, back_flights, back_date):
     """print all flights sorted by cost"""
     if not back_date:
-        print('The following flights were found:' if all_flights
+        print('The following flights were found:' if forward_flights
               else 'No fights found.')
-        all_flights.sort(key=lambda fl: fl.cost)
-        for index, flight in enumerate(all_flights):
+        forward_flights.sort(key=lambda fl: fl.cost)
+        for index, flight in enumerate(forward_flights):
             print(f'{index + 1}) ', end='')
             print_flight(flight)
     else:
-        forward_flights = []
-        back_flights = []
-        for i in all_flights:
-            if i.departure_airport == departure:
-                forward_flights.append(i)
-            else:
-                back_flights.append(i)
         combinations = []
         for comb in product(forward_flights, back_flights):
             if comb[0].arrive_datetime < comb[1].depart_datetime:
@@ -218,6 +224,55 @@ def print_all_flights(all_flights, departure, back_date):
                     f'{i[0].currency}')
 
 
+def create_table(crs):
+    """create table in database if not exists"""
+    crs.execute("create table if not exists flights ("
+                "'roundtrip' int,"
+                "'departdt' string(30),"
+                "'arrivedt' string(30),"
+                "'depart' string(3), 'arrive' string(3),"
+                "'flight' string(10),"
+                "'typeflight' string(15), 'cost' int,"
+                "'currency' string(3))")
+
+
+def add_flights_to_db(crs, forward_flights, back_flights, params):
+    """add flight info to database"""
+    rtrp = 1 if params.back_date else 0
+    for flights in (forward_flights, back_flights):
+        for flight in flights:
+            cur = crs.execute('select * from flights where roundtrip = ? and '
+                              'depart = ? and arrive = ? and flight = ? and '
+                              'typeflight = ? and departdt like ?',
+                              [rtrp, flight.departure_airport,
+                               flight.arrive_airport,
+                               flight.flight, flight.type_flight,
+                               str(flight.depart_datetime.date()) + '%'])
+            if len(cur.fetchall()) == 0:
+                crs.execute('insert or ignore into flights values'
+                            '(?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                            [rtrp, *flight])
+
+
+def get_flights_from_db(crs, params):
+    """get flights info from database"""
+    frmt = '%Y-%m-%d %H:%M:%S'
+    rtrp = 1 if params.back_date else 0
+    result = []
+    for i, search_date in enumerate((params.depart_date, params.back_date)):
+        cur = crs.execute('select * from flights where roundtrip = ? and '
+                          'depart = ? and arrive = ? and departdt like ?',
+                          [rtrp, params.departure if i == 0 else params.arrive,
+                           params.arrive if i == 0 else params.departure,
+                           str(search_date) + '%'])
+        for k in cur.fetchall():
+            result.append(Flight(datetime.strptime(k[1], frmt),
+                                 datetime.strptime(k[2], frmt),
+                                 k[3], k[4], k[5], k[6], k[7],
+                                 k[8]))
+    return result
+
+
 def main():
     """Main function"""
     try:
@@ -227,10 +282,23 @@ def main():
         departure = airport_input('Departure:')
         arrive = airport_input('Destination:')
         depart_date, back_date = input_dates()
-    answer = get_document_from_site(departure, arrive, depart_date, back_date)
-    all_flights = get_info_from_doc(answer.content, departure, arrive,
-                                    depart_date, back_date)
-    print_all_flights(all_flights, departure, back_date)
+    Params = namedtuple('Params',
+                        ['departure', 'arrive', 'depart_date', 'back_date'])
+    params = Params(departure, arrive, depart_date, back_date)
+    conn = sqlite3.connect('flights.db')
+    crs = conn.cursor()
+    create_table(crs)
+    all_flights = get_flights_from_db(crs, params)
+    forward_flights, back_flights = divide_flights(all_flights, departure)
+    if not forward_flights or not all([back_date, back_flights]):
+        print('Go to the web')
+        answer = get_document_from_site(*params)
+        all_flights = get_info_from_doc(answer.content, *params)
+        forward_flights, back_flights = divide_flights(all_flights, departure)
+        add_flights_to_db(crs, forward_flights, back_flights, params)
+    print_all_flights(forward_flights, back_flights, back_date)
+    conn.commit()
+    conn.close()
 
 
 if __name__ == "__main__":

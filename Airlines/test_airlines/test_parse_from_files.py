@@ -1,3 +1,4 @@
+"""Parse all files """
 from airlines import get_info_from_doc
 import os
 from datetime import datetime
@@ -23,15 +24,15 @@ for root, dirs, files in os.walk(path, topdown=False):
         if data[4].split('.')[0] == 'None':
             bkd = None
         else:
-            bkd = datetime.strptime(data[4].split('.')[0], FRMT)
-        all_flights = get_info_from_doc(answer, data[1], data[2])
+            bkd = datetime.strptime(data[4].split('.')[0], FRMT).date()
+        all_flights = get_info_from_doc(answer, data[1], data[2],datetime.strptime(data[3].split('.')[0], FRMT).date() , bkd)
         format_dt = '%Y-%m-%d %H:%M'
         for flight in all_flights:
             fl = (f'{flight.departure_airport}-{flight.arrive_airport}:'
                   f'{flight.flight} '
                   f'{flight.depart_datetime.strftime(format_dt)} - '
                   f'{flight.arrive_datetime.strftime(format_dt)} '
-                  f'({flight.time_in_flight}) {flight.type_flight} '
+                  f'{flight.type_flight} '
                   f'{flight.cost} {flight.currency}')
             print(name, flight.flight, flight.depart_datetime, end='...')
             expected = str(next(reference))

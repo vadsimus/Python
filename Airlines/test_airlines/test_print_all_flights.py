@@ -1,14 +1,15 @@
 """test airlines.print_all_flights"""
-from airlines import print_all_flights
 from collections import namedtuple
 import json
 from datetime import datetime
+from airlines import print_all_flights
 
 
 def datetime_conv(dic):
     """serialize datetime to ISO format"""
     if 'datetime' in dic:
         return datetime.fromisoformat(dic['datetime'])
+    return repr(dic)
 
 
 Flight = namedtuple(

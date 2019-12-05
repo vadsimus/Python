@@ -1,17 +1,21 @@
+"""Create json file by all answers"""
 import os
-from airlines import *
 import json
+from datetime import datetime
+from airlines import get_info_from_doc
 
 FRMT = '%Y-%m-%d'
-path = './/Answers'
+PATH = './/Answers'
 
 
-def datetime_convert(o):
-    if isinstance(o, datetime):
-        return {'datetime': o.isoformat()}
+def datetime_convert(datet):
+    """Convet datetime format to dict"""
+    if isinstance(datet, datetime):
+        return {'datetime': datet.isoformat()}
+    return repr(datet)
 
 
-for root, dirs, files in os.walk(path, topdown=False):
+for root, dirs, files in os.walk(PATH, topdown=False):
     for name in files:
         file_path = os.path.join(root, name)
         with open(file_path, 'r') as file:
