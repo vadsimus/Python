@@ -291,11 +291,12 @@ def main():
     all_flights = get_flights_from_db(crs, params)
     forward_flights, back_flights = divide_flights(all_flights, departure)
     if not forward_flights or not all([back_date, back_flights]):
-        print('Go to the web')
         answer = get_document_from_site(*params)
         all_flights = get_info_from_doc(answer.content, *params)
         forward_flights, back_flights = divide_flights(all_flights, departure)
         add_flights_to_db(crs, forward_flights, back_flights, params)
+    else:
+        print('Info from local database')
     print_all_flights(forward_flights, back_flights, back_date)
     conn.commit()
     conn.close()
