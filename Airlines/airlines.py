@@ -107,7 +107,7 @@ def get_document_from_site(departure, arrive, depart_date, back_date=None):
 def get_base_flight_data(tbody, search_date):
     """gettig base data from tbody"""
     Base_info = namedtuple('Base_info', ['flight', 'depart_time',
-                                         'arrive_time', 'time_in_flight'])
+                                         'arrive_time'])
     flight = tbody[0].find_class('flight')[0].text.strip()
     depart_time = tbody[0].find_class('time leaving')[0].text
     depart_time = datetime.strptime('{}-{}'.format(
@@ -117,11 +117,7 @@ def get_base_flight_data(tbody, search_date):
         search_date, arrive_time.lower()), '%Y-%m-%d-%I:%M %p')
     if arrive_time < depart_time:
         arrive_time = arrive_time + timedelta(days=1)
-    time_in_flight = arrive_time - depart_time
-    h_in_flight = time_in_flight.seconds // 3600
-    m_in_flight = (time_in_flight.seconds // 60) % 60
-    time_in_flight = '{}h {}m'.format(h_in_flight, m_in_flight)
-    return Base_info(flight, depart_time, arrive_time, time_in_flight)
+    return Base_info(flight, depart_time, arrive_time)
 
 
 def get_cost(tbody):
@@ -145,8 +141,7 @@ def get_info_from_doc(answer, departure_airport, arrive_airport,
     """parsing answer from website"""
     Flight = namedtuple(
         'Flight', ['depart_datetime', 'arrive_datetime',
-                   'departure_airport', 'arrive_airport',
-                   'time_in_flight', 'flight',
+                   'departure_airport', 'arrive_airport', 'flight',
                    'type_flight', 'cost', 'currency'])
     result = []
     for i, table in enumerate(lxml.html.fromstring(answer).xpath(
@@ -163,7 +158,7 @@ def get_info_from_doc(answer, departure_airport, arrive_airport,
                     base_data.depart_time, base_data.arrive_time,
                     departure_airport if i == 0 else arrive_airport,
                     arrive_airport if i == 0 else departure_airport,
-                    base_data.time_in_flight, base_data.flight,
+                    base_data.flight,
                     'Standard (1 Bag)' if cost.flight_type == 'family-ES'
                     else 'Discount (No Bags)',
                     cost.cost, cost.currency
@@ -174,11 +169,15 @@ def get_info_from_doc(answer, departure_airport, arrive_airport,
 def print_flight(flight):
     """print all info from flight"""
     format_dt = '%Y-%m-%d %H:%M'
+    time_in_flight = flight.arrive_datetime - flight.depart_datetime
+    h_in_flight = time_in_flight.seconds // 3600
+    m_in_flight = (time_in_flight.seconds // 60) % 60
+    time_in_flight = '{}h {}m'.format(h_in_flight, m_in_flight)
     print(f'{flight.departure_airport}-{flight.arrive_airport}:'
           f'{flight.flight} '
           f'{flight.depart_datetime.strftime(format_dt)} - '
           f'{flight.arrive_datetime.strftime(format_dt)} '
-          f'({flight.time_in_flight}) {flight.type_flight} '
+          f'({time_in_flight}) {flight.type_flight} '
           f'{flight.cost} {flight.currency}')
 
 

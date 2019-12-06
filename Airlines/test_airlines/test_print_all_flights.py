@@ -14,8 +14,7 @@ def datetime_conv(dic):
 Flight = namedtuple(
     'Flight', ['depart_datetime', 'arrive_datetime',
                'departure_airport', 'arrive_airport',
-               'time_in_flight', 'flight',
-               'type_flight', 'cost', 'currency'])
+               'flight', 'type_flight', 'cost', 'currency'])
 with open('flights.json') as file:
     for line in file:
         data = json.loads(line, object_hook=datetime_conv)

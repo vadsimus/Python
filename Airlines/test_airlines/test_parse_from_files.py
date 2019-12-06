@@ -1,4 +1,4 @@
-from airlines import get_info_from_doc
+from Airlines.airlines import get_info_from_doc
 import os
 from datetime import datetime
 
@@ -29,11 +29,15 @@ for root, dirs, files in os.walk(path, topdown=False):
             datetime.strptime(data[3].split('.')[0], FRMT).date(), bkd)
         format_dt = '%Y-%m-%d %H:%M'
         for flight in all_flights:
+            time_in_flight = flight.arrive_datetime - flight.depart_datetime
+            h_in_flight = time_in_flight.seconds // 3600
+            m_in_flight = (time_in_flight.seconds // 60) % 60
+            time_in_flight = '{}h {}m'.format(h_in_flight, m_in_flight)
             fl = (f'{flight.departure_airport}-{flight.arrive_airport}:'
                   f'{flight.flight} '
                   f'{flight.depart_datetime.strftime(format_dt)} - '
                   f'{flight.arrive_datetime.strftime(format_dt)} '
-                  f'({flight.time_in_flight}) {flight.type_flight} '
+                  f'({time_in_flight}) {flight.type_flight} '
                   f'{flight.cost} {flight.currency}')
             print(name, flight.flight, flight.depart_datetime, end='...')
             expected = str(next(reference))
