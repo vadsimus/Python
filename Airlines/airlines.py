@@ -143,30 +143,42 @@ def get_cost(tbody):
     return result
 
 
-def get_info_from_doc(answer, departure_airport, arrive_airport,
-                      depart_date, arrive_date):
+def get_info_from_doc(answer, params):
     """parsing answer from website"""
-    result = []
-    for i, table in enumerate(lxml.html.fromstring(answer).xpath(
-            "//table[contains(@class,'requested-date')]")):
+    forward = []
+    back = []
+    for table in lxml.html.fromstring(answer).xpath(
+            "//table[contains(@class,'flight_selection')]"):
+        table_id = table.xpath('@id')[0].split('_', maxsplit=3)
+        way = table_id[1]
+        table_date = datetime.strptime(table_id[3], '%Y_%m_%d').date()
         for tbody in table.findall('tbody'):
             try:
-                base_data = get_base_flight_data(tbody, depart_date if i == 0
-                                                 else arrive_date)
+                base_data = get_base_flight_data(tbody, table_date)
             except IndexError:
                 continue
             cost_data = get_cost(tbody)
             for cost in cost_data:
-                result.append(Flight(
-                    base_data.depart_time, base_data.arrive_time,
-                    departure_airport if i == 0 else arrive_airport,
-                    arrive_airport if i == 0 else departure_airport,
-                    base_data.flight,
-                    'Standard (1 Bag)' if cost.flight_type == 'family-ES'
-                    else 'Discount (No Bags)',
-                    cost.cost, cost.currency
-                ))
-    return result
+                if way == '1':
+                    forward.append(Flight(
+                        base_data.depart_time, base_data.arrive_time,
+                        params.departure,
+                        params.arrive,
+                        base_data.flight,
+                        'Standard (1 Bag)' if cost.flight_type == 'family-ES'
+                        else 'Discount (No Bags)',
+                        cost.cost, cost.currency))
+                else:
+                    back.append(Flight(
+                        base_data.depart_time, base_data.arrive_time,
+                        params.arrive,
+                        params.departure,
+                        base_data.flight,
+                        'Standard (1 Bag)' if cost.flight_type == 'family-ES'
+                        else 'Discount (No Bags)',
+                        cost.cost, cost.currency))
+
+    return forward, back
 
 
 def divide_flights(all_flights, departure):
@@ -292,9 +304,11 @@ def main():
     forward_flights, back_flights = divide_flights(all_flights, departure)
     if not forward_flights or not all([back_date, back_flights]):
         answer = get_document_from_site(*params)
-        all_flights = get_info_from_doc(answer.content, *params)
-        forward_flights, back_flights = divide_flights(all_flights, departure)
+        forward_flights, back_flights = get_info_from_doc(answer.content,
+                                                          params)
         add_flights_to_db(crs, forward_flights, back_flights, params)
+        all_flights = get_flights_from_db(crs, params)
+        forward_flights, back_flights = divide_flights(all_flights, departure)
     else:
         print('Info from local database')
     print_all_flights(forward_flights, back_flights, back_date)
