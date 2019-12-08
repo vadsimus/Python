@@ -119,13 +119,15 @@ def get_base_flight_data(tbody, search_date):
     return Base_info(flight, depart_time, arrive_time)
 
 
-def get_cost(tbody):
+def get_cost(tbody, thead):
     """get flight_type, cost and currency from tbody"""
     result = []
     Costs = namedtuple('Costs', ['flight_type', 'cost', 'currency'])
     for tbody_td in tbody[0].find_class('family'):
         try:
-            flight_type = tbody_td.xpath('@class')[0].split()[1]
+            flight_type = thead.find_class(
+                tbody_td.xpath('@class')[0].split()[1])[0].xpath(
+                    'span/text()')[0]
             cost = tbody_td.xpath('label/span/text()')[0]
             cost = float(cost.replace(',', ''))
             currency = tbody_td.xpath('label/span/b/text()')[0]
@@ -151,7 +153,7 @@ def get_info_from_doc(answer, departure_airport, arrive_airport,
                                                  else arrive_date)
             except IndexError:
                 continue
-            cost_data = get_cost(tbody)
+            cost_data = get_cost(tbody, table.findall('thead')[0])
             for cost in cost_data:
                 result.append(Flight(
                     base_data.depart_time, base_data.arrive_time,
