@@ -1,4 +1,4 @@
-from Airlines.airlines import get_info_from_doc
+from airlines import get_info_from_doc
 import os
 from datetime import datetime
 
@@ -38,7 +38,8 @@ for root, dirs, files in os.walk(path, topdown=False):
                   f'{flight.depart_datetime.strftime(format_dt)} - '
                   f'{flight.arrive_datetime.strftime(format_dt)} '
                   f'({time_in_flight}) {flight.type_flight} '
-                  f'{flight.cost} {flight.currency}')
+                  f'{int(flight.cost) if flight.cost.is_integer() else flight.cost} '
+                  f'{flight.currency}')
             print(name, flight.flight, flight.depart_datetime, end='...')
             expected = str(next(reference))
             print(
