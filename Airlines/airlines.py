@@ -81,8 +81,7 @@ def airport_input(prompt):
 def get_document_from_site(departure, arrive, depart_date, back_date=None):
     """returns answer from website"""
     my_url = "https://www.airblue.com/bookings/flight_selection.aspx?"
-    my_params = {'FL': 'on', 'CC': 'Y', 'CD': '',
-                 'PA': '1', 'PC': '', 'PI': '', 'x': '40', 'y': '20',
+    my_params = {'PA': '1',
                  'AM': '{:0>4}-{:0>2}'.format(depart_date.year,
                                               depart_date.month),
                  'AD': '{:0>2}'.format(depart_date.day),
@@ -110,11 +109,11 @@ def get_base_flight_data(tbody, search_date):
                                          'arrive_time'])
     flight = tbody[0].find_class('flight')[0].text.strip()
     depart_time = tbody[0].find_class('time leaving')[0].text
-    depart_time = datetime.strptime('{}-{}'.format(
-        search_date, depart_time.lower()), '%Y-%m-%d-%I:%M %p')
+    depart_time = datetime.strptime(str(search_date) + '-' +
+                                    depart_time.lower(), '%Y-%m-%d-%I:%M %p')
     arrive_time = tbody[0].find_class('time landing')[0].text
-    arrive_time = datetime.strptime('{}-{}'.format(
-        search_date, arrive_time.lower()), '%Y-%m-%d-%I:%M %p')
+    arrive_time = datetime.strptime(str(search_date) + '-' +
+                                    arrive_time.lower(), '%Y-%m-%d-%I:%M %p')
     if arrive_time < depart_time:
         arrive_time = arrive_time + timedelta(days=1)
     return Base_info(flight, depart_time, arrive_time)
@@ -128,7 +127,7 @@ def get_cost(tbody):
         try:
             flight_type = tbody_td.xpath('@class')[0].split()[1]
             cost = tbody_td.xpath('label/span/text()')[0]
-            cost = int(''.join(cost.split(',')))
+            cost = float(cost.replace(',', ''))
             currency = tbody_td.xpath('label/span/b/text()')[0]
             result.append(Costs(flight_type, cost, currency))
         except IndexError:
@@ -159,8 +158,7 @@ def get_info_from_doc(answer, departure_airport, arrive_airport,
                     departure_airport if i == 0 else arrive_airport,
                     arrive_airport if i == 0 else departure_airport,
                     base_data.flight,
-                    'Standard (1 Bag)' if cost.flight_type == 'family-ES'
-                    else 'Discount (No Bags)',
+                    cost.flight_type,
                     cost.cost, cost.currency
                 ))
     return result
@@ -178,7 +176,8 @@ def print_flight(flight):
           f'{flight.depart_datetime.strftime(format_dt)} - '
           f'{flight.arrive_datetime.strftime(format_dt)} '
           f'({time_in_flight}) {flight.type_flight} '
-          f'{flight.cost} {flight.currency}')
+          f'{int(flight.cost) if flight.cost.is_integer() else flight.cost} '
+          f'{flight.currency}')
 
 
 def print_all_flights(all_flights, departure, back_date):
@@ -187,7 +186,8 @@ def print_all_flights(all_flights, departure, back_date):
         print('The following flights were found:' if all_flights
               else 'No fights found.')
         all_flights.sort(key=lambda fl: fl.cost)
-        for index, flight in enumerate(all_flights):
+        for index, flight in enumerate(sorted(all_flights,
+                                              key=lambda fl: fl.cost)):
             print(f'{index + 1}) ', end='')
             print_flight(flight)
     else:
