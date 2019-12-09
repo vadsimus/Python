@@ -5,6 +5,7 @@ import sys
 from datetime import datetime, date, timedelta
 from itertools import product
 from collections import namedtuple
+import argparse
 import lxml.html
 import requests
 
@@ -17,23 +18,33 @@ AIRPORTS = {'AUH': 'Abu Dhabi', 'DXB': 'Dubai', 'DMM': 'Dammam',
 
 
 def get_params_commandline():
-    '''returns data from command line if exists'''
-    if 3 > len(sys.argv) > 5 or \
-            sys.argv[1].upper() not in AIRPORTS or \
-            sys.argv[2].upper() not in AIRPORTS:
+    '''returns data from command line if exists.
+    Can raise IndexError if wrong airport or ValueError if wrong dates'''
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        'depart', nargs='?', help='depart airport', default=None)
+    parser.add_argument(
+        'arrive', nargs='?', help='arrive airport', default=None)
+    parser.add_argument('depart_date', nargs='?',
+                        help='departure date', default=None)
+    parser.add_argument('back_date', nargs='?',
+                        help='back date', default=None)
+    args = parser.parse_args()
+    if args.depart.upper() not in AIRPORTS or \
+            args.arrive.upper() not in AIRPORTS:
         raise IndexError
-    departure = sys.argv[1].upper()
-    arrive = sys.argv[2].upper()
-    depart_date = date.fromisoformat(sys.argv[3])
-    try:
-        back_date = date.fromisoformat(sys.argv[4])
+    if not args.depart_date:
+        raise ValueError
+    depart_date = date.fromisoformat(args.depart_date)
+    if args.back_date:
+        back_date = date.fromisoformat(args.back_date)
         if back_date < depart_date:
             print('Back date can\'t be before depart date')
-            print('One way search:')
             raise IndexError
-    except IndexError:
+    else:
         back_date = None
-    return departure, arrive, depart_date, back_date
+    return args.depart.upper(), args.arrive.upper(), \
+           depart_date, back_date
 
 
 def input_dates():
@@ -133,7 +144,7 @@ def get_cost(tbody, thead):
             currency = tbody_td.xpath('label/span/b/text()')[0]
             result.append(Costs(flight_type, cost, currency))
         except IndexError:
-            pass
+            continue
     return result
 
 
