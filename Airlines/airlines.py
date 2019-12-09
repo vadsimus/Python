@@ -1,6 +1,6 @@
-"""
-This module gets information about flights from www.airblue.com
-"""
+'''
+This module receives flight information from www.airblue.com
+'''
 import sys
 from datetime import datetime, date, timedelta
 from itertools import product
@@ -17,7 +17,7 @@ AIRPORTS = {'AUH': 'Abu Dhabi', 'DXB': 'Dubai', 'DMM': 'Dammam',
 
 
 def get_params_commandline():
-    """returns data from command line if exists"""
+    '''returns data from command line if exists'''
     if 3 > len(sys.argv) > 5 or \
             sys.argv[1].upper() not in AIRPORTS or \
             sys.argv[2].upper() not in AIRPORTS:
@@ -37,7 +37,7 @@ def get_params_commandline():
 
 
 def input_dates():
-    """returns dates inputed by user"""
+    '''returns dates entered by user'''
     while True:
         f_out = input('Date of flight out {YYYY-MM-DD}:')
         f_back = input('Date to return back {YYYY-MM-DD} or empty:')
@@ -64,7 +64,7 @@ def input_dates():
 
 
 def airport_input(prompt):
-    """returns irport inputed by user"""
+    '''returns airport inputed by user'''
     print('Input airport (AUH,DXB,...) or help')
     while True:
         airport = input(prompt).upper().strip()
@@ -75,12 +75,12 @@ def airport_input(prompt):
             for code, name in AIRPORTS.items():
                 print(code, ':', name)
         else:
-            print("Airport input is invalid.")
+            print('Airport input is invalid.')
 
 
 def get_document_from_site(departure, arrive, depart_date, back_date=None):
-    """returns answer from website"""
-    my_url = "https://www.airblue.com/bookings/flight_selection.aspx?"
+    '''returns answer from website'''
+    my_url = 'https://www.airblue.com/bookings/flight_selection.aspx'
     my_params = {'PA': '1',
                  'AM': '{:0>4}-{:0>2}'.format(depart_date.year,
                                               depart_date.month),
@@ -104,7 +104,7 @@ def get_document_from_site(departure, arrive, depart_date, back_date=None):
 
 
 def get_base_flight_data(tbody, search_date):
-    """gettig base data from tbody"""
+    '''gets base data from tbody'''
     Base_info = namedtuple('Base_info', ['flight', 'depart_time',
                                          'arrive_time'])
     flight = tbody[0].find_class('flight')[0].text.strip()
@@ -120,7 +120,7 @@ def get_base_flight_data(tbody, search_date):
 
 
 def get_cost(tbody, thead):
-    """get flight_type, cost and currency from tbody"""
+    '''gets flight_type, cost and currency from tbody'''
     result = []
     Costs = namedtuple('Costs', ['flight_type', 'cost', 'currency'])
     for tbody_td in tbody[0].find_class('family'):
@@ -139,35 +139,37 @@ def get_cost(tbody, thead):
 
 def get_info_from_doc(answer, departure_airport, arrive_airport,
                       depart_date, arrive_date):
-    """parsing answer from website"""
+    '''parsing the response from the site'''
     Flight = namedtuple(
         'Flight', ['depart_datetime', 'arrive_datetime',
                    'departure_airport', 'arrive_airport', 'flight',
                    'type_flight', 'cost', 'currency'])
     result = []
-    for i, table in enumerate(lxml.html.fromstring(answer).xpath(
-            "//table[contains(@class,'requested-date')]")):
+    for is_outbound, table in enumerate(lxml.html.fromstring(answer).xpath(
+            '//table[contains(@class,"requested-date")]')):
+        flights = []
         for tbody in table.findall('tbody'):
             try:
-                base_data = get_base_flight_data(tbody, depart_date if i == 0
-                                                 else arrive_date)
+                base_data = get_base_flight_data(
+                    tbody, depart_date if is_outbound == 0 else arrive_date)
             except IndexError:
                 continue
             cost_data = get_cost(tbody, table.findall('thead')[0])
             for cost in cost_data:
-                result.append(Flight(
+                flights.append(Flight(
                     base_data.depart_time, base_data.arrive_time,
-                    departure_airport if i == 0 else arrive_airport,
-                    arrive_airport if i == 0 else departure_airport,
+                    departure_airport if is_outbound == 0 else arrive_airport,
+                    arrive_airport if is_outbound == 0 else departure_airport,
                     base_data.flight,
                     cost.flight_type,
                     cost.cost, cost.currency
                 ))
+        result.append(flights)
     return result
 
 
 def print_flight(flight):
-    """print all info from flight"""
+    '''print all flight information'''
     format_dt = '%Y-%m-%d %H:%M'
     time_in_flight = flight.arrive_datetime - flight.depart_datetime
     h_in_flight = time_in_flight.seconds // 3600
@@ -182,24 +184,17 @@ def print_flight(flight):
           f'{flight.currency}')
 
 
-def print_all_flights(all_flights, departure, back_date):
-    """print all flights sorted by cost"""
+def print_all_flights(back_date, forward_flights, back_flights=None):
+    '''print all flights sorted by cost'''
     if not back_date:
-        print('The following flights were found:' if all_flights
+        print('The following flights were found:' if forward_flights
               else 'No fights found.')
-        all_flights.sort(key=lambda fl: fl.cost)
-        for index, flight in enumerate(sorted(all_flights,
+        forward_flights.sort(key=lambda fl: fl.cost)
+        for index, flight in enumerate(sorted(forward_flights,
                                               key=lambda fl: fl.cost)):
             print(f'{index + 1}) ', end='')
             print_flight(flight)
     else:
-        forward_flights = []
-        back_flights = []
-        for i in all_flights:
-            if i.departure_airport == departure:
-                forward_flights.append(i)
-            else:
-                back_flights.append(i)
         combinations = []
         for comb in product(forward_flights, back_flights):
             if comb[0].arrive_datetime < comb[1].depart_datetime:
@@ -219,7 +214,7 @@ def print_all_flights(all_flights, departure, back_date):
 
 
 def main():
-    """Main function"""
+    '''Main function'''
     try:
         departure, arrive, depart_date, back_date = get_params_commandline()
     except (IndexError, ValueError):
@@ -230,8 +225,8 @@ def main():
     answer = get_document_from_site(departure, arrive, depart_date, back_date)
     all_flights = get_info_from_doc(answer.content, departure, arrive,
                                     depart_date, back_date)
-    print_all_flights(all_flights, departure, back_date)
+    print_all_flights(back_date, *all_flights)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
