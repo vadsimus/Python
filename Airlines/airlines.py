@@ -86,7 +86,8 @@ def airport_input(prompt):
             print(AIRPORTS[airport])
             return airport
         if airport == 'HELP':
-            print([f'{code}:{name}' for code, name in AIRPORTS.items()])
+            for i in (f'{code}:{name}' for code, name in AIRPORTS.items()):
+                print(i)
         else:
             print('Airport input is invalid.')
 
