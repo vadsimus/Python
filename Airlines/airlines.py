@@ -160,7 +160,7 @@ def get_info_from_doc(answer, departure_airport, arrive_airport,
     result = []
     for i, table in enumerate(lxml.html.fromstring(answer).xpath(
             '//table[contains(@class,"requested-date")]')):
-        is_outbound = i
+        is_outbound = not i
         flights = []
         for tbody in table.findall('tbody'):
             try:
