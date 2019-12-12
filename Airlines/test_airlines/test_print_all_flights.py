@@ -9,6 +9,9 @@ def datetime_conv(dic):
     """serialize datetime to ISO format"""
     if 'datetime' in dic:
         return datetime.fromisoformat(dic['datetime'])
+    if 'date' in dic:
+        return datetime.fromisoformat(dic['date'])
+
 
 
 Flight = namedtuple(
@@ -17,12 +20,21 @@ Flight = namedtuple(
                'flight', 'type_flight', 'cost', 'currency'])
 with open('flights.json') as file:
     for line in file:
+        forward = []
+        back = []
         data = json.loads(line, object_hook=datetime_conv)
-        all_flights = []
-        for f in data[1]:
-            flight = Flight(*f)
-            all_flights.append(flight)
+        for i, fls in enumerate(data[1]):
+            for f in fls:
+                flight = Flight(*f)
+                if i==0:
+                    forward.append(flight)
+                else:
+                    back.append(flight)
+        if data[0][1]:
+            bkd = data[0][1].date()
+        else:
+            bkd = None
         print('-' * 50)
-        print('File: ', data[0][2])
+        print('File: ', data[0][0])
         print('-' * 50)
-        print_all_flights(all_flights, data[0][0], data[0][1])
+        print_all_flights(bkd, forward, back)

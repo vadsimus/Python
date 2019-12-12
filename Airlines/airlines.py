@@ -140,8 +140,8 @@ def get_cost(tbody, thead):
     for tbody_td in tbody[0].find_class('family'):
         try:
             flight_type = thead.find_class(
-                tbody_td.xpath('@class')[0].split()[1])[0].xpath(
-                    'span/text()')[0]
+                tbody_td.xpath(
+                    '@class')[0].split()[1])[0].xpath('span/text()')[0]
             cost = tbody_td.xpath('label/span/text()')[0]
             cost = float(cost.replace(',', ''))
             currency = tbody_td.xpath('label/span/b/text()')[0]
@@ -190,13 +190,13 @@ def print_flight(flight):
     h_in_flight = time_in_flight.seconds // 3600
     m_in_flight = (time_in_flight.seconds // 60) % 60
     time_in_flight = '{}h {}m'.format(h_in_flight, m_in_flight)
-    print(f'{flight.departure_airport}-{flight.arrive_airport}:'
-          f'{flight.flight} '
-          f'{flight.depart_datetime.strftime(format_dt)} - '
-          f'{flight.arrive_datetime.strftime(format_dt)} '
-          f'({time_in_flight}) {flight.type_flight} '
-          f'{int(flight.cost) if flight.cost.is_integer() else flight.cost} '
-          f'{flight.currency}')
+    return (f'{flight.departure_airport}-{flight.arrive_airport}:'
+            f'{flight.flight} '
+            f'{flight.depart_datetime.strftime(format_dt)} - '
+            f'{flight.arrive_datetime.strftime(format_dt)} '
+            f'({time_in_flight}) {flight.type_flight} '
+            f'{int(flight.cost) if flight.cost.is_integer() else flight.cost} '
+            f'{flight.currency}')
 
 
 def print_all_flights(back_date, forward_flights, back_flights=None):
@@ -207,27 +207,22 @@ def print_all_flights(back_date, forward_flights, back_flights=None):
     if not back_date:
         print('The following flights were found:')
         for index, flight in enumerate(sorted(forward_flights,
-                                              key=lambda fl: fl.cost)):
-            print(f'{index + 1}) ', end='')
-            print_flight(flight)
+                                              key=lambda fl: fl.cost), 1):
+            print(f'{index}) {print_flight(flight)}')
     else:
         combinations = []
-
         for comb in product(forward_flights, back_flights):
             if comb[0].arrive_datetime < comb[1].depart_datetime:
                 combinations.append(comb)
         combinations.sort(key=lambda x: x[0].cost + x[1].cost)
         print('The following flight combinations were found:' if combinations
               else 'No flight combinations found.')
-        for index, i in enumerate(combinations):
+        for index, i in enumerate(combinations, 1):
             if i[0].arrive_datetime < i[1].depart_datetime:
-                print(f'{index + 1})', end='')
-                print_flight(i[0])
-                print('  ', end='')
-                print_flight(i[1])
-                print(
-                    f'  Total price: {i[0].cost + i[1].cost} '
-                    f'{i[0].currency}')
+                print(f'{index}) {print_flight(i[0])}\n   '
+                      f'{print_flight(i[1])}\n   '
+                      f'Total price: {i[0].cost + i[1].cost} '
+                      f'{i[0].currency}')
 
 
 def main():

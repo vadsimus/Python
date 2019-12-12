@@ -17,8 +17,9 @@ for root, dirs, files in os.walk(path, topdown=False):
             answer, data[1], data[2],
             datetime.strptime(data[3].split('.')[0], FRMT).date(), bkd)
 
-        for f in all_flights:
-            file = open('flights.txt', 'a')
-            sys.stdout = file
-            print_flight(f)
-            file.close()
+        for fl in all_flights:
+            for f in fl:
+                file = open('flights.txt', 'a')
+                sys.stdout = file
+                print_flight(f)
+                file.close()
